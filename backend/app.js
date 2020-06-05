@@ -4,6 +4,18 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const userRoutes = require('./api/routes/users');
+
+mongoose.connect(
+    "mongodb+srv://mealAdmin:mealAdmin@cluster0-zhcek.mongodb.net/test?retryWrites=true&w=majority",
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
+    }
+);
+
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -19,6 +31,9 @@ app.use((req,res,next) => {
     next();
 });
 
+
+app.use('/users', userRoutes);
+
 app.use((req,res,next) => {
     const error = new Error('Not found');
     error.status = 404;
@@ -33,5 +48,6 @@ app.use((error, req, res, next) => {
         }
     });
 });
+
 
 module.exports = app;
