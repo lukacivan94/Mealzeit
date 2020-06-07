@@ -80,6 +80,12 @@ exports.users_login = (req, res, next) => {
                             expiresIn: "1h"
                         }
                     );
+                    User.findOne({email: req.body.email}, function(err, doc) {
+                        doc.last_login = new Date();
+                        doc.save();
+                      })
+                        //.then(result => {})
+                        //.catch(err => {});
                     return res.status(200).json({
                         message: 'Login successful',
                         token: token,
@@ -122,6 +128,94 @@ exports.users_get_all = (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
+            error: err
+        });
+    });
+};
+
+
+exports.users_get_user =  (req, res, next) => {
+    const id = req.params.userId;
+    User.findById(id)
+    .select('email first_name last_name _id phone_number gender date_of_birth languages created_events joined_events created_recipes notifications date_joined last_login is_expert_user is_premium_user is_verified')
+    .exec()
+    .then(doc => {
+        if(doc){
+            res.status(200).json({
+                user: doc,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/users/'
+                }
+            });
+        } else {
+            res.status(404).json({message: 'No valid entry found '});
+        }
+    })
+    .catch(err => {
+        console.log(err),
+        res.status(500).json({error: err});
+    });
+};
+
+exports.users_patch_user =  (req, res, next) => {
+    const id = req.params.userId;
+    const updateOps = {};
+    for(const ops of req.body){
+        updateOps[ops.propName] = ops.value
+    };
+    User.update({ _id: id }, { $set: updateOps })
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'User updated',
+            request: {
+                 type: 'GET',
+                 url: 'http://localhost:3000/users/' + id
+            }
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.users_delete_user =  (req, res, next) => {
+    const id = req.params.userId;
+    User.remove({_id: id})
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'User deleted',
+            request: {
+                type: 'POST',
+                url: 'http://localhost:3000/users/',
+            }
+        })
+    })
+    .catch(err => {
+        res.status(400).json({
+            error: err
+        });
+    });
+};
+
+exports.users_delete_all =  (req, res, next) => {
+    User.deleteMany()
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'All users deleted',
+            request: {
+                type: 'POST',
+                url: 'http://localhost:3000/users/',
+            }
+        })
+    })
+    .catch(err => {
+        res.status(400).json({
             error: err
         });
     });
