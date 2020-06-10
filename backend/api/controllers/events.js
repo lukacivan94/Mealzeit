@@ -1,11 +1,8 @@
 const Event = require('../models/event');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 exports.events_get_all = (req, res, next) => {
     event.find()
-    .select('users _id ')
+    .select('_id users')
     .exec()
     .then(docs => {
         const response = {
