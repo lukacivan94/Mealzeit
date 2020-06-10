@@ -1,7 +1,7 @@
 const Event = require('../models/event');
 
 exports.events_get_all = (req, res, next) => {
-    event.find()
+    Event.find()
     .select('_id users')
     .exec()
     .then(docs => {
@@ -9,7 +9,7 @@ exports.events_get_all = (req, res, next) => {
             count: docs.length,
             events: docs.map(doc => {
                 return {
-                    first_name: doc.first_name,
+                    userId: doc.userId,
                     _id: doc._id,
                     request: {
                         type: 'GET',
