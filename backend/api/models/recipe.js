@@ -8,7 +8,6 @@ const recipeSchema = Schema({
     cuisine_type: { type: String },
     preparation_time: { type: String },
     instructions: { type: String },
-    date_of_birth: { type: Date },
     calorie_count: { type: Number },
     recipe_rating: { type: Number },
     ingredients: [{
