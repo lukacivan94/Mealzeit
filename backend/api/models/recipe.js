@@ -12,15 +12,10 @@ const recipeSchema = Schema({
     recipe_rating: { type: Number },
     ingredients: [{
         food_name: String,
-        service_size: Number,
-        number_of_servings: Number
+        amount: Number,
     }],
     is_public: { type: Boolean },
-    shared_friends: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    message: { type: String }
+    shared_with_friends: { type: Array },
 });
 
 module.exports = mongoose.model('Recipe', recipeSchema);

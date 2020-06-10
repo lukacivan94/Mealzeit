@@ -31,7 +31,7 @@ exports.recipes_get_all = (req, res, next) => {
 exports.recipes_get_recipe = (req, res, next) => {
     const id = req.params.recipeId;
     Recipe.findById(id)
-        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating ingredients is_public shared_friends message')
+        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating ingredients is_public shared_with_friends ')
         .exec()
         .then(doc => {
             if (doc) {
