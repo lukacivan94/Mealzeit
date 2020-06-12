@@ -53,3 +53,67 @@ exports.recipes_get_recipe = (req, res, next) => {
                 });
         });
 };
+
+exports.recipes_edit_recipe = (req, res, next) => {
+    const id = req.params.recipeId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value
+    };
+    Recipe.update({ _id: id }, { $set: updateOps })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'Recipe is updated',
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/recipes/' + id
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.recipes_delete_recipe = (req, res, next) => {
+    const id = req.params.recipeId;
+    Recipe.remove({ _id: id })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'Recipe is deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/recipes/',
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).json({
+                error: err
+            });
+        });
+};
+
+
+exports.recipes_delete_all = (req, res, next) => {
+    Recipe.deleteMany()
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'All recipes are deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/recipes/',
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).json({
+                error: err
+            });
+        });
+};
