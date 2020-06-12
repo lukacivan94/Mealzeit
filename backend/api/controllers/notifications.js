@@ -1,8 +1,8 @@
 const Notification = require('../models/notification');
 
-exports.notification_get_all = (req, res, next) => {
+exports.notifications_get_all = (req, res, next) => {
     Notification.find()
-        .select('userId _id')
+        .select('_id userId eventId memberId date_creted text is_read')
         .exec()
         .then(docs => {
             const response = {
@@ -28,10 +28,10 @@ exports.notification_get_all = (req, res, next) => {
         });
 };
 
-exports.notification_get_recipe = (req, res, next) => {
+exports.notifications_get_notification = (req, res, next) => {
     const id = req.params.userID;
     Recipe.findById(id)
-        .select('')
+        .select('_id userId eventId memberId date_created text is_read')
         .exec()
         .then(doc => {
             if (doc) {

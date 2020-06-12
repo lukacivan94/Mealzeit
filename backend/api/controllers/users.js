@@ -28,12 +28,16 @@ exports.users_signup = (req, res, next) => {
                             gender: req.body.gender,
                             date_of_birth: new Date(req.body.date_of_birth),
                             languages: req.body.languages,
+                            created_events: [],
+                            joined_events: [],
+                            created_recipes: [],
                             is_expert_user: req.body.is_expert_user,
                             is_premium_user: req.body.is_premium_user,
                             is_verified: false,
-                            notifications: ["Welcome to Mealzeit" + req.body.first_name],
+                            notifications: [],
+                            followers: [],
+                            following: [],
                             date_joined: new Date(),
-
                         });
                         user.save()
                             .then(result => {

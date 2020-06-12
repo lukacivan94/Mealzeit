@@ -1,4 +1,60 @@
+const mongoose = require("mongoose");
 const Recipe = require('../models/recipe');
+const User = require("../models/user");
+
+
+exports.recipes_add_recipe = (req, res, next) => {
+    const userId = req.body.userId;
+    let recipeId;
+    const today = new Date();
+    User.findById(userId)
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({
+                    message: "User not found"
+                });
+            }
+            const recipe = new Recipe({
+                _id: new mongoose.Types.ObjectId(),
+                userId: userId,
+                recipe_title: req.body.recipe_title,
+                date_of_publish: today,
+                food_type: req.body.food_type,
+                cuisine_type: req.body.cuisine_type,
+                preparation_time: req.body.preparation_time,
+                instructions: req.body.instructions,
+                calorie_count: req.body.calorie_count,
+                ingredients: req.body.ingredients,
+                is_public: req.body.is_public,
+                shared_with_friends: [userId]
+            });
+            recipeId = recipe._id;
+            return recipe
+                .save()
+                .then(doc =>
+                    User.findOneAndUpdate(
+                        { _id: userId },
+                        { $addToSet: { created_recipes: [doc._id] } }
+                    )
+                );
+        })
+        .then(result => {
+            res.status(201).json({
+                message: "Recipe saved",
+                recipeId: recipeId,
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/recipes/"
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}
 
 exports.recipes_get_all = (req, res, next) => {
     Recipe.find()
@@ -36,7 +92,7 @@ exports.recipes_get_recipe = (req, res, next) => {
         .then(doc => {
             if (doc) {
                 res.status(200).json({
-                    user: doc,
+                    recipe: doc,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3000/recipes/'
