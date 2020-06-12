@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./api/routes/users');
-const recipeRoutes = require('./api/routes/recipe');
+const eventRoutes = require('./api/routes/events');
+const recipeRoutes = require('./api/routes/recipes');
+const notificationRoutes = require('./api/routes/notifications');
 
 mongoose.connect(
     "mongodb+srv://mealAdmin:mealAdmin@cluster0-zhcek.mongodb.net/test?retryWrites=true&w=majority",
@@ -34,7 +36,9 @@ app.use((req, res, next) => {
 
 
 app.use('/users', userRoutes);
+app.use('/events', eventRoutes);
 app.use('/recipes', recipeRoutes);
+app.use('/notifications', notificationRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
@@ -50,6 +54,5 @@ app.use((error, req, res, next) => {
         }
     });
 });
-
 
 module.exports = app;
