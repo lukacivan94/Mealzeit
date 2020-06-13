@@ -3,7 +3,6 @@ const router = express.Router();
 
 const RecipeController = require('../controllers/recipes');
 
-/// recipes_add_recipe
 router.get('/', RecipeController.recipes_get_all);
 router.get('/:recipeId', RecipeController.recipes_get_recipe);
 router.post('/', RecipeController.recipes_add_recipe);

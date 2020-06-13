@@ -111,7 +111,7 @@ exports.users_login = (req, res, next) => {
 
 exports.users_get_all = (req, res, next) => {
     User.find()
-    .select('first_name _id ')
+    .select('first_name _id last_name')
     .exec()
     .then(docs => {
         const response = {
@@ -120,6 +120,7 @@ exports.users_get_all = (req, res, next) => {
                 return {
                     first_name: doc.first_name,
                     _id: doc._id,
+                    last_name: doc.last_name,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3000/users/' + doc._id
