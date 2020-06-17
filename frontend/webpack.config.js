@@ -6,7 +6,8 @@ module.exports = {
     entry: './src/index',
     output: {
         path: path.join(__dirname, '/dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
 
     resolve: {
@@ -30,6 +31,9 @@ module.exports = {
                 loader: 'url-loader?limit=100000'
             }
         ]
+    },
+    devServer: {
+        historyApiFallback: true
     },
     plugins: [
         new HtmlWebpackPlugin({
