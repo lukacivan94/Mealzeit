@@ -39,7 +39,7 @@ const StyledListItem = styled.li`
 `;
 
 const Footer = () => (
-    <div>
+    <>
         <StyledFooterHeader />
         <StyledFooter >
             <StyledList >
@@ -51,9 +51,8 @@ const Footer = () => (
                 <StyledListItem><span>-</span></StyledListItem>
                 <StyledListItem><StyledLink href='/'>Partnership</StyledLink></StyledListItem>
             </StyledList>
-            <div>{}</div>
         </StyledFooter>
-    </div>
+    </>
 );
 
 export default Footer;
