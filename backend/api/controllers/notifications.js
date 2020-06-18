@@ -53,3 +53,41 @@ exports.notifications_get_notification = (req, res, next) => {
                 });
         });
 };
+exports.notifications_delete_notification = (req, res, next) => {
+    const id = req.params.notificationId;
+    Notification.remove({ _id: id })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'Notification deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/notifications/',
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).json({
+                error: err
+            });
+        });
+};
+
+exports.notifications_delete_all = (req, res, next) => {
+    Notification.deleteMany()
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'All Notifications deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/notifications/',
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).json({
+                error: err
+            });
+        });
+};
