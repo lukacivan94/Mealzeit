@@ -111,15 +111,15 @@ exports.users_login = (req, res, next) => {
 
 exports.users_get_all = (req, res, next) => {
     User.find()
-    .select('first_name _id last_name')
+    .select('_id first_name last_name')
     .exec()
     .then(docs => {
         const response = {
             count: docs.length,
             users: docs.map(doc => {
                 return {
-                    first_name: doc.first_name,
                     _id: doc._id,
+                    first_name: doc.first_name,
                     last_name: doc.last_name,
                     request: {
                         type: 'GET',
@@ -142,7 +142,7 @@ exports.users_get_all = (req, res, next) => {
 exports.users_get_user =  (req, res, next) => {
     const id = req.params.userId;
     User.findById(id)
-    .select('email first_name last_name _id phone_number gender date_of_birth languages created_events joined_events created_recipes notifications date_joined last_login is_expert_user is_premium_user is_verified')
+    .select('_id email first_name last_name phone_number gender date_of_birth languages created_cookrooms joined_cookrooms created_courses joined_courses created_recipes is_expert_user is_premium_user is_verified notifications followers following date_joined last_login')
     .exec()
     .then(doc => {
         if(doc){

@@ -6,12 +6,14 @@ const userSchema = mongoose.Schema({
     password: {type: String, required: true},
     first_name: {type: String},
     last_name: {type: String},
-    phone_number: {type: String},
-    gender: {type: String},
+    phone_number: {type: String}, //add address?
+    gender: {type: String}, //maybe char?
     date_of_birth: {type: Date},
     languages: {type: Array},
-    created_events: {type: Array},
-    joined_events: {type: Array},
+    created_cookrooms: {type: Array},
+    joined_cookrooms: {type: Array},
+    created_courses: {type: Array},
+    joined_courses: {type: Array},
     created_recipes: {type: Array},
     is_expert_user: {type: Boolean},
     is_premium_user: {type: Boolean},
@@ -24,3 +26,6 @@ const userSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('User', userSchema);
+// we export the model which we give the name - User 
+// and choose the schema which the model will use as a blueprint - userSchema
+// in the mongoose.model function

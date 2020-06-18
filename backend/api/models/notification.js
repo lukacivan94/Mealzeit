@@ -16,3 +16,6 @@ const notificationSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('Notification', notificationSchema);
+// we export the model which we give the name - Notification 
+// and choose the schema which the model will use as a blueprint - notificationSchema
+// in the mongoose.model function

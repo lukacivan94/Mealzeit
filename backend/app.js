@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./api/routes/users');
-const eventRoutes = require('./api/routes/events');
+const cookroomRoutes = require('./api/routes/cookrooms');
 const recipeRoutes = require('./api/routes/recipes');
 const notificationRoutes = require('./api/routes/notifications');
 
@@ -18,6 +18,16 @@ mongoose.connect(
         useCreateIndex: true
     }
 );
+ 
+// This function is used for inheritance
+// Cookroom and Course models inherit from the Event model using extendSchema
+function extendSchema (Schema, definition, options) {
+  return new mongoose.Schema(
+    Object.assign({}, Schema.obj, definition),
+    options
+  );
+}
+module.exports = extendSchema;
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,7 +46,7 @@ app.use((req, res, next) => {
 
 
 app.use('/users', userRoutes);
-app.use('/events', eventRoutes);
+app.use('/cookrooms', cookroomRoutes);
 app.use('/recipes', recipeRoutes);
 app.use('/notifications', notificationRoutes);
 

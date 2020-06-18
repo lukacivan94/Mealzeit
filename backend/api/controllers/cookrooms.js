@@ -1,10 +1,16 @@
 const mongoose = require("mongoose");
-const Event = require('../models/event');
+const Cookroom = require('../models/cookroom');
 const User = require("../models/user");
 
-exports.events_add_event = (req, res, next) => {
+/** (✓)
+ * This function handles cookroom POST requests
+ * It first checks if the user exists
+ * then creates new Cookroom object, saves it to database 
+ * and updates the user's created_cookrooms field with cookroom's id
+ */
+exports.cookrooms_add_cookroom = (req, res) => {
     const userId = req.body.userId;
-    let eventId;
+    let cookroomId;
     const today = new Date();
     User.findById(userId)
         .then(user => {
@@ -13,45 +19,41 @@ exports.events_add_event = (req, res, next) => {
                     message: "User not found"
                 });
             }
-            const event = new Event({
+            const cookroom = new Cookroom({
                 _id: new mongoose.Types.ObjectId(),
                 userId: userId,
                 title: req.body.title,
                 location: req.body.location,
-                date_time: req.body.date_time,
                 date_of_publish: today,
-                
-                list_of_recipes: req.body.list_of_recipes,
-                is_virtual: req.body.is_virtual,
-                price_of_course: req.body.price_of_course,
-                is_included_in_premium: req.body.is_included_in_premium,
+                description: req.body.description,
+                members: [],
                 number_of_members: req.body.number_of_members,
-
-                members: [userId],
+                date_time: req.body.date_time,
+                recipe: req.body.recipe,
+                invited_friends: req.body.invited_friends,
                 instant_join: req.body.instant_join,
                 requests: [],
-                description: req.body.description,
                 is_volunteering: req.body.is_volunteering,
                 required_items: req.body.required_items,
                 suggested_price: req.body.suggested_price
             });
-            eventId = event._id;
-            return event
+            cookroomId = cookroom._id;
+            return cookroom
                 .save()
                 .then(doc =>
                     User.findOneAndUpdate(
                         { _id: userId },
-                        { $addToSet: { created_events: [doc._id] } }
+                        { $addToSet: { created_cookrooms: [doc._id] } }
                     )
                 );
         })
         .then(result => {
             res.status(201).json({
-                message: "Event saved",
-                eventId: eventId,
+                message: "Cookroom saved",
+                cookroomId: cookroomId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/events/"
+                    url: "http://localhost:3000/cookrooms/"
                 }
             });
         })
@@ -63,20 +65,26 @@ exports.events_add_event = (req, res, next) => {
         });
 }
 
-exports.events_get_all = (req, res, next) => {
-    Event.find()
-        .select('_id users')
+/** (✓)
+ * This function handles cookroom GET requests
+ * It finds all cookroom entries in the database 
+ * and returns them in the response
+ */
+exports.cookrooms_get_all = (req, res) => {
+    Cookroom.find()
+        .select('_id userId title')
         .exec()
         .then(docs => {
             const response = {
                 count: docs.length,
-                events: docs.map(doc => {
+                cookrooms: docs.map(doc => {
                     return {
-                        userId: doc.userId,
                         _id: doc._id,
+                        userId: doc.userId,
+                        title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/events/' + doc._id
+                            url: 'http://localhost:3000/cookrooms/' + doc._id
                         }
                     }
                 })
@@ -91,19 +99,23 @@ exports.events_get_all = (req, res, next) => {
         });
 };
 
-
-exports.events_get_event = (req, res, next) => {
-    const id = req.params.eventId;
-    Event.findById(id)
-        .select('location date_time date_of_publish list_of_recipes course_rating is_virtual price_of_course is_included_in_premium number_of_members members instant_join description is_volunteering required_items suggested_price')
+/** (✓)
+ * This function handles cookroom GET requests
+ * It finds cookroom entry in the database with the matching id 
+ * and returns it in the response
+ */
+exports.cookrooms_get_cookroom = (req, res) => {
+    const id = req.params.cookroomId;
+    Cookroom.findById(id)
+        .select('_id userId title location date_of_publish description members number_of_members date_time recipe invited_friends instant_join requests is_volunteering required_items suggested_price')
         .exec()
         .then(doc => {
             if (doc) {
                 res.status(200).json({
-                    event: doc,
+                    cookroom: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/events/'
+                        url: 'http://localhost:3000/cookrooms/'
                     }
                 });
             } else {
@@ -116,20 +128,25 @@ exports.events_get_event = (req, res, next) => {
         });
 };
 
-exports.events_patch_event = (req, res, next) => {
-    const id = req.params.eventId;
+/** (✓)
+ * This function handles cookroom PATCH requests
+ * It finds cookroom entry in the database with the matching id 
+ * and updates the cookroom's properties
+ */
+exports.cookrooms_patch_cookroom = (req, res) => {
+    const id = req.params.cookroomId;
     const updateOps = {};
     for (const ops of req.body) {
         updateOps[ops.propName] = ops.value
     };
-    Event.update({ _id: id }, { $set: updateOps })
+    Cookroom.update({ _id: id }, { $set: updateOps })
         .exec()
         .then(result => {
             res.status(200).json({
-                message: 'Event updated',
+                message: 'Cookroom updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/events/' + id
+                    url: 'http://localhost:3000/cookrooms/' + id
                 }
             });
         })
@@ -140,16 +157,20 @@ exports.events_patch_event = (req, res, next) => {
         });
 };
 
-exports.events_delete_event = (req, res, next) => {
-    const id = req.params.eventId;
-    Event.remove({ _id: id })
+/** (✓)
+ * This function handles cookroom DELETE requests
+ * It removes the cookroom entry from the database with the matching id 
+ */
+exports.cookrooms_delete_cookroom = (req, res) => {
+    const id = req.params.cookroomId;
+    Cookroom.remove({ _id: id })
         .exec()
         .then(result => {
             res.status(200).json({
-                message: 'Event deleted',
+                message: 'Cookroom deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/events/',
+                    url: 'http://localhost:3000/cookrooms/',
                 }
             })
         })
@@ -160,15 +181,19 @@ exports.events_delete_event = (req, res, next) => {
         });
 };
 
-exports.events_delete_all = (req, res, next) => {
-    Event.deleteMany()
+/** (✓)
+ * This function handles cookroom DELETE requests
+ * It removes all the cookroom entries from the database
+ */
+exports.cookrooms_delete_all = (req, res) => {
+    Cookroom.deleteMany()
         .exec()
         .then(result => {
             res.status(200).json({
-                message: 'All events deleted',
+                message: 'All cookrooms deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/events/',
+                    url: 'http://localhost:3000/cookrooms/',
                 }
             })
         })
