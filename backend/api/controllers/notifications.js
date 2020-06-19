@@ -91,3 +91,34 @@ exports.notifications_delete_all = (req, res, next) => {
             });
         });
 };
+
+exports.notifications_get_unread_notifications_of_user = (req, res) => {
+    const userId = req.params.userId;
+    Notification.find({ isRead: false, userId: userId})
+    .select('user _id ')
+    .populate('user', 'user _id first_name')
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count: docs.length,
+            notifications: docs.map(doc => {
+                return { 
+                    _id: doc._id,
+                    type: doc.type,
+                    userId: doc.userId,
+                    cookroomId: doc.cookroomId,
+                    date: doc.date,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/notifications/' + doc._id
+                    }
+                }
+            })
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+};
