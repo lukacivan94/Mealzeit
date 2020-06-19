@@ -23,3 +23,6 @@ const recipeSchema = Schema({
 });
 
 module.exports = mongoose.model('Recipe', recipeSchema);
+// we export the model which we give the name - Recipe 
+// and choose the schema which the model will use as a blueprint - recipeSchema
+// in the mongoose.model function
