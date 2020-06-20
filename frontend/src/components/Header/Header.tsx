@@ -12,8 +12,7 @@ const StyledHeader = styled.header`
     position: fixed;
     top: 0;
     left: 0;
-    //background-color: white;
-    background-color: transparent;
+    background-color: white;
     box-sizing: border-box;
     z-index: 90;
     box-shadow: 0 4px 2px rgba(50, 50, 50, 0.4);
@@ -49,7 +48,7 @@ export const Header = () => {
             <StyledDiv>
                 <StyledNav> <Search style={{ "paddingRight": '5px' }} /> Find an event </StyledNav>
                 <StyledNav> <PlusCircle style={{ "paddingRight": '5px' }} /> Create an event </StyledNav>
-                <Name>Shoto Todoroki</Name>
+                <Name>John Doe</Name>
                 <Profile imageSource={profilePic} altText='ProfilePic' />
             </StyledDiv>
 
