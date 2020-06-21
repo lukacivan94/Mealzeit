@@ -1,16 +1,15 @@
 const Notification = require('../models/notification');
 
-exports.notifications_get_all = (req, res, next) => {
+exports.notifications_get_all = (req, res) => {
     Notification.find()
-        .select('_id notificationId userId eventId memberId date_created text is_read')
+        .select('_id userId eventId date_created type is_read')
         .exec()
         .then(docs => {
             const response = {
                 count: docs.length,
-                notification: docs.map(doc => {
+                notifications: docs.map(doc => {
                     return {
-                        notificationId: doc.notificationId,
-                        _id: doc._id,
+                        notification: doc,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/notifications/' + doc._id
@@ -28,15 +27,15 @@ exports.notifications_get_all = (req, res, next) => {
         });
 };
 
-exports.notifications_get_notification = (req, res, next) => {
-    const id = req.params.userID;
+exports.notifications_get_notification = (req, res) => {
+    const id = req.params.notificationId;
     Notification.findById(id)
-        .select('_id notificationId userId eventID memberId date_created text is_read')
+        .select('_id userId eventId memberId date_created type text is_read')
         .exec()
         .then(doc => {
             if (doc) {
                 res.status(200).json({
-                    notificationId: doc.notificationId,
+                    notification: doc,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3000/notifications/'
@@ -53,7 +52,7 @@ exports.notifications_get_notification = (req, res, next) => {
                 });
         });
 };
-exports.notifications_delete_notification = (req, res, next) => {
+exports.notifications_delete_notification = (req, res) => {
     const id = req.params.notificationId;
     Notification.remove({ _id: id })
         .exec()
@@ -73,7 +72,7 @@ exports.notifications_delete_notification = (req, res, next) => {
         });
 };
 
-exports.notifications_delete_all = (req, res, next) => {
+exports.notifications_delete_all = (req, res) => {
     Notification.deleteMany()
         .exec()
         .then(result => {

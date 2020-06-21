@@ -22,7 +22,8 @@ const userSchema = mongoose.Schema({
     followers: {type: Array},
     following: {type: Array},
     date_joined: {type: Date},
-    last_login: {type: Date}
+    last_login: {type: Date},
+    profile_picture: {type: String}
 });
 
 module.exports = mongoose.model('User', userSchema);
