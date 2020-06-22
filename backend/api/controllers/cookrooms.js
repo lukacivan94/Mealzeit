@@ -286,6 +286,65 @@ exports.cookroom_accept_request = (req, res) => {
         )
       );
   }
+  /*
+ * After the cookroom host rejected the request, removes the user id from
+ * cookrooms's requests array and makes a rejection notification for user
+ * that was reject to join
+ */
+exports.cookroom_reject_request = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    const userId = req.params.userId;
+    Cookroom.update({ _id: cookroomId }, { $pull: { requests: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    makeRejectionNotification(cookroomId, userId);
+};
+async function makeRejectionNotification(cookroomId, userId) {
+    let hostId, title;
+    try {
+        await Cookroom.findById(cookroomId)
+            .then(function (data) {
+                hostId = data.userId; // User who created the cookroom
+                title = data.title; // Title of the cookroom
+                console.log(hostId, title);
+            });
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+    const notification = new Notification({
+        _id: new mongoose.Types.ObjectId(),
+        userId: userId,
+        eventId: cookroomId,
+        memberId: hostId,
+        date_created: new Date(),
+        type: "rejection",
+        text:
+            "Your request to join " + title + " was rejected.",
+        isRead: false,
+    });
+    return notification
+        .save()
+        .then(doc =>
+            User.findOneAndUpdate(
+                { _id: userId },
+                { $addToSet: { notifications: [doc._id] } }
+            )
+        );
+}
+
 
 /** (✓)
  * This function handles cookroom DELETE requests
