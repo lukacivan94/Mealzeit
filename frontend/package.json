@@ -49,6 +49,7 @@
     "react-dom": "^16.13.1",
     "redux-devtools-extension": "^2.13.8",
     "styled-components": "^5.1.1",
-    "url-loader": "^4.1.0"
+    "url-loader": "^4.1.0",
+    "leaflet": "^1.6.0"
   }
 }

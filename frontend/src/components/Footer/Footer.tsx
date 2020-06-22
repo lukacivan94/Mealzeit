@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+
 const StyledFooter = styled.div`
     background-color: #F88805;
     border-top: 1px solid #E7E7E7;
@@ -43,7 +44,6 @@ const Footer = () => (
         <StyledFooterHeader />
         <StyledFooter >
             <StyledList >
-                <StyledListItem><StyledLink href='/'>About Us</StyledLink></StyledListItem>
                 <StyledListItem><span>-</span></StyledListItem>
                 <StyledListItem><StyledLink href='/'>Team</StyledLink></StyledListItem>
                 <StyledListItem><span>-</span></StyledListItem>
