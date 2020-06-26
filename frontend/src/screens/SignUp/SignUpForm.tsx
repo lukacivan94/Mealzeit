@@ -12,6 +12,16 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/icons/Send';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import { MultipleSelectField } from '../../components/MultipleSelectField/MultipleSelectField';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+const languages = [
+    'English',
+    'German',
+    'Turkish'
+];
 
 const validate = values => {
     const errors = { email: '' };
@@ -56,13 +66,33 @@ const renderTextField = ({
     );
 
 const radioButton = ({ input, ...rest }) => (
-    <FormControl>
-        <RadioGroup {...input} {...rest}>
-            <FormControlLabel value='female' control={<Radio />} label='Female' />
-            <FormControlLabel value='male' control={<Radio />} label='Male' />
-            <FormControlLabel value='other' control={<Radio />} label='Other' />
-        </RadioGroup>
-    </FormControl>
+    <StyledFieldDiv>
+        <InputLabel>Gender</InputLabel>
+        <FormControl>
+            <RadioGroup  {...input} {...rest}>
+                <FormControlLabel value='female' control={<Radio style={{ color: 'darkorange' }} />} label='Female' />
+                <FormControlLabel value='male' control={<Radio style={{ color: 'darkorange' }} />} label='Male' />
+                <FormControlLabel value='other' control={<Radio style={{ color: 'darkorange' }} />} label='Other' />
+            </RadioGroup>
+        </FormControl>
+    </StyledFieldDiv>
+);
+
+const renderCheckbox = ({ input, label }) => (
+    <div>
+        <FormControlLabel
+            control={
+                <Checkbox
+                    checked={!!input.value}
+                    onChange={input.onChange}
+                    style={{
+                        color: 'darkorange'
+                    }}
+                />
+            }
+            label={label}
+        />
+    </div>
 );
 
 const StyledForm = styled.form`
@@ -104,7 +134,7 @@ const SignUpForm = (props) => {
                     style={{ color: 'mediumblue' }}
                     component='h1'
                     variant='h5'>
-                    Sign up
+                    Sign-up Form
                 </Typography>
             </StyledFieldDiv>
             <StyledFieldDiv>
@@ -121,13 +151,7 @@ const SignUpForm = (props) => {
                     label='Last Name'
                 />
             </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='email'
-                    component={renderTextField}
-                    label='Email'
-                />
-            </StyledFieldDiv>
+
             <StyledFieldDiv>
                 <Field name='gender' component={radioButton}>
                     <Radio value='male' />
@@ -154,6 +178,35 @@ const SignUpForm = (props) => {
                 />
             </StyledFieldDiv>
             <StyledFieldDiv>
+                <InputLabel>Profile Picture</InputLabel>
+                <input accept='image/*' id='icon-button-file' type='file' />
+                <label htmlFor='icon-button-file'>
+                    <IconButton color='primary' className={classes.button} component='span'>
+                        {/* <PhotoCamera /> */}
+                    </IconButton>
+                </label>
+            </StyledFieldDiv>
+            <StyledFieldDiv>
+                <MultipleSelectField
+                    name='languages'
+                    inputLabel='Languages'
+                    items={languages}
+                />
+            </StyledFieldDiv>
+            <StyledFieldDiv>
+                <Field
+                    name='isExpertUser'
+                    component={renderCheckbox}
+                    label='Expert User' />
+            </StyledFieldDiv>
+            <StyledFieldDiv>
+                <Field
+                    name='email'
+                    component={renderTextField}
+                    label='Email'
+                />
+            </StyledFieldDiv>
+            <StyledFieldDiv>
                 <Field
                     name='password'
                     component={renderTextField}
@@ -167,6 +220,7 @@ const SignUpForm = (props) => {
                     color='primary'
                     endIcon={<Icon />}
                     className={classes.button}
+                    onClick={props.handleSubmit}
                 >
                     Submit
                   </StyledButton>
@@ -190,6 +244,7 @@ export default reduxForm({
     form: 'signUpForm', // a unique identifier for this form
     validate,
     initialValues: {
-        dateOfBirth: moment(new Date()).format('YYYY-MM-DD')
+        dateOfBirth: moment(new Date()).format('YYYY-MM-DD'),
+        languages: []
     }
 })(SignUpForm);
