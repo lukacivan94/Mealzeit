@@ -5,6 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'redux-logger';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const reducers = {
     form: formReducer
@@ -12,13 +13,17 @@ const reducers = {
 const reducer = combineReducers(reducers);
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(logger)));
 
+const theme = createMuiTheme();
+
 class App extends React.PureComponent {
 
     render() {
 
         return (
             <Provider store={store}>
-                <Routes />
+                <MuiThemeProvider theme={theme}>
+                    <Routes />
+                </MuiThemeProvider>
             </Provider>
         );
     }

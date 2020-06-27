@@ -10,5 +10,6 @@ router.delete('/:notificationId', NotificationsController.notifications_delete_n
 router.delete('/', NotificationsController.notifications_delete_all);
 router.get('/', NotificationsController.notifications_get_all);
 router.get('/:notificationId', NotificationsController.notifications_get_notification);
+router.get('/', NotificationsController.notifications_get_unread_notifications_of_user);
 
 module.exports = router;
