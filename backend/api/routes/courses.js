@@ -11,6 +11,7 @@ router.get('/:courseId', CoursesController.courses_get_course);
 router.post('/', CoursesController.courses_add_course);
 router.patch('/:courseId', CoursesController.courses_patch_course);
 router.delete('/:courseId', CoursesController.courses_delete_course);
+router.patch('/join/:courseId/:userId', CoursesController.courses_join_course);
 router.delete('/', CoursesController.courses_delete_all);
 
 module.exports = router;

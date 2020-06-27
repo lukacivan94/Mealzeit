@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Course = require('../models/course');
 const User = require("../models/user");
+const Notification = require('../models/notification');
 
 /** (✓)
  * This function handles course POST requests
@@ -30,8 +31,8 @@ exports.courses_add_course = (req, res) => {
                 number_of_members: req.body.number_of_members,
                 date_time: req.body.date_time,
                 list_of_recipes: req.body.list_of_recipes,
-                course_rating: req.body.course_rating,
-                number_of_ratings: req.body.number_of_ratings,
+                course_rating: -1,
+                number_of_ratings: 0,
                 is_virtual: req.body.is_virtual,
                 price_of_course: req.body.price_of_course,
                 is_included_in_premium: req.body.is_included_in_premium
@@ -155,6 +156,97 @@ exports.courses_patch_course = (req, res) => {
             });
         });
 };
+
+/*
+ * After the user clicked on join course we add his id to course's members array.
+ * Next we add the course id to user's joined_courses array
+ * and we make a notification for the host of the course
+ */
+exports.courses_join_course = (req, res) => {
+    const courseId = req.params.courseId;
+    const userId = req.params.userId;
+    Course.update(
+        { _id: courseId },
+        { $addToSet: { members: [userId] } }
+    )
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Course updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/courses/" + courseId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+        addToJoinedCourses(courseId, userId);
+        makeJoinNotification(courseId, userId);
+}
+
+async function addToJoinedCourses(courseId, userId){
+    try {
+        await User.update(
+            { _id: userId },
+            { $addToSet: { joined_courses: [courseId] } }
+        )
+            .exec()
+            .then(result => {
+                res.status(200).json({
+                    message: "User updated",
+                    request: {
+                        type: "GET",
+                        url: "http://localhost:3000/users/" + userId
+                    }
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
+
+async function makeJoinNotification(courseId, userId){
+    let hostId;
+    let title;
+    try {
+        await Course.findById(courseId)
+        .then(function (data){
+            hostId = data.userId,
+            title = data.title
+        })
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+    const notification = new Notification({
+        _id: new mongoose.Types.ObjectId(),
+        userId: hostId, //creator of course
+        eventId: courseId,
+        memberId: userId, //user that joined
+        date_created: new Date(),
+        type: "join",
+        text: "New user joined your " + title + " course",
+        isRead: false,
+    });
+    return notification
+        .save()
+        .then(doc =>
+            // We add the notification id to host's notification array
+            User.findOneAndUpdate(
+                { _id: hostId },
+                { $addToSet: { notifications: [doc._id] } }
+            )
+        );
+}
+
 
 /** (✓)
  * This function handles course DELETE requests
