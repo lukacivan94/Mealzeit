@@ -8,22 +8,22 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     height: 100%;
     padding: 0;
+    box-sizing: border-box;
   }
 `
 
 const StyledDiv= styled.div`
-    height: 100%;
     display: inline-block;
     flex-direction: column;
     background-color: transparent;
     justify-content: space-between;
-    z-index: 1000;
+    margin: 20px 0 0 200px;
+    align-items: center;
 `;
 
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  //flex: 1;
   padding: 30px;
   border: none;
   display: inline-block;
@@ -34,22 +34,25 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const TextDiv= styled.div`
+const TextDiv= styled.div<{big: string}>`
     font-size: ${props => props.big ? "50px" : "18px"};
     padding-top: 30px;
     padding-bottom: ${props => props.big ? "5px" : "30px"};
 `;
 
-const Button = styled.button`
+const Button = styled.button<{primary: string}>`
   background: ${props => props.primary ? "#F88805" : "white"};
   color: ${props => props.primary ? "white" : "#F88805"};
-  font-size: 1em;
+  font-size: 1.25em;
   margin: 1em;
-  padding: 0.25em 1em;
+  padding: 0.5em 1em;
   border: 2px solid #F88805;
-  border-radius: 3px;
-  font-size: 16px;
+  border-radius: 25px;
 `;
+
+Button.defaultProps = {
+  primary: "white"
+}
 
 class HomePage extends Component {
     render() {
@@ -58,9 +61,9 @@ class HomePage extends Component {
                 <StyledDiv>
                     <GlobalStyle />
                     <Wrapper> 
-                        <TextDiv big>And Who will you meet next? </TextDiv>
+                        <TextDiv big>And who will you meet next? </TextDiv>
                         <TextDiv>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</TextDiv>
-                        <Button primary>find an event</Button> 
+                        <Button primary>Find an event</Button> 
                     </Wrapper>     
                 </StyledDiv>
             </Screen>

@@ -28,6 +28,6 @@ interface Props {
 export const Logo = (props: Props) => (
     <StyledDiv>
         <StyledImage src={props.imageSource} alt={props.altText} />
-        <Title>MealZeit</Title>
+        <Title> MealZeit</Title>
     </StyledDiv>
 );
