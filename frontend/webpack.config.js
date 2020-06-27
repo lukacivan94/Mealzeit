@@ -28,7 +28,7 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loader: 'style-loader!css-loader!sassloader'
+                loader: 'style-loader!css-loader!sass-loader'
 
             },
             {
@@ -42,7 +42,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './src/index.html',
+            favicon: "./src/assets/images/favicon.ico"
         })
     ]
 };
