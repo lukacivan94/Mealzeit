@@ -10,9 +10,9 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
-`
+`;
 
-const StyledDiv= styled.div`
+const StyledDiv = styled.div`
     display: inline-block;
     flex-direction: column;
     background-color: transparent;
@@ -34,15 +34,15 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const TextDiv= styled.div<{big: string}>`
-    font-size: ${props => props.big ? "50px" : "18px"};
+const TextDiv = styled.div<{ big: string }>`
+    font-size: ${props => props.big ? '50px' : '18px'};
     padding-top: 30px;
-    padding-bottom: ${props => props.big ? "5px" : "30px"};
+    padding-bottom: ${props => props.big ? '5px' : '30px'};
 `;
 
-const Button = styled.button<{primary: string}>`
-  background: ${props => props.primary ? "#F88805" : "white"};
-  color: ${props => props.primary ? "white" : "#F88805"};
+const Button = styled.button<{ primary: string }>`
+  background: ${props => props.primary ? '#F88805' : 'white'};
+  color: ${props => props.primary ? 'white' : '#F88805'};
   font-size: 1.25em;
   margin: 1em;
   padding: 0.5em 1em;
@@ -51,24 +51,24 @@ const Button = styled.button<{primary: string}>`
 `;
 
 Button.defaultProps = {
-  primary: "white"
-}
+  primary: 'white'
+};
 
 class HomePage extends Component {
-    render() {
-        return (
-            <Screen>
-                <StyledDiv>
-                    <GlobalStyle />
-                    <Wrapper> 
-                        <TextDiv big>And who will you meet next? </TextDiv>
-                        <TextDiv>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</TextDiv>
-                        <Button primary>Find an event</Button> 
-                    </Wrapper>     
-                </StyledDiv>
-            </Screen>
-        );
-    }
+  render() {
+    return (
+      <Screen>
+        <StyledDiv>
+          <GlobalStyle />
+          <Wrapper>
+            <TextDiv big>And who will you meet next? </TextDiv>
+            <TextDiv>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</TextDiv>
+            <Button primary>Find an event</Button>
+          </Wrapper>
+        </StyledDiv>
+      </Screen>
+    );
+  }
 }
 
 export default HomePage;

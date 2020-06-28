@@ -9,7 +9,7 @@ const StyledFooter = styled.div`
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 20px;
+    height: 2%;
     width: 100%;
     box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.5);
 `;
@@ -37,7 +37,7 @@ const StyledList = styled.div`
     font-size: 18px;
     font-weight: bold;
     display: flex;
-    align-items: center;    
+    align-items: center;
 `;
 
 const StyledListItem = styled.nav`
