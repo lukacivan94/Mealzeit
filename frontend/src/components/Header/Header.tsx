@@ -7,7 +7,7 @@ import profilePic from '../../assets/images/Profile_Pic.png';
 import { Search, PlusCircle } from 'react-bootstrap-icons';
 
 const StyledHeader = styled.header`
-    height: 120px;
+    height: 13%;
     width: 100%;
     position: fixed;
     top: 0;
@@ -46,8 +46,8 @@ export const Header = () => {
         <StyledHeader>
             <Logo imageSource={mealZeitLogo} altText='MealZeit' />
             <StyledDiv>
-                <StyledNav> <Search style={{ "paddingRight": '5px' }} /> Find an event </StyledNav>
-                <StyledNav> <PlusCircle style={{ "paddingRight": '5px' }} /> Create an event </StyledNav>
+                <StyledNav> <Search style={{ 'paddingRight': '5px' }} /> Find an event </StyledNav>
+                <StyledNav> <PlusCircle style={{ 'paddingRight': '5px' }} /> Create an event </StyledNav>
                 <Name>John Doe</Name>
                 <Profile imageSource={profilePic} altText='ProfilePic' />
             </StyledDiv>
