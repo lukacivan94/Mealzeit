@@ -12,7 +12,7 @@ const cookroomSchema = extendSchema(Event.schema, {
     },
     invited_friends: {type: Array},
     instant_join: {type: Boolean},
-    requests: {type: Array},
+    requests: {type: Array}, // Array of users who requested to join the cookroom
     is_volunteering: {type: Boolean},
     required_items: {type: Array},
     suggested_price: {type: Number}
