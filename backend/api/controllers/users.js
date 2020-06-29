@@ -38,6 +38,7 @@ exports.users_signup = (req, res, next) => {
                             followers: [],
                             following: [],
                             date_joined: new Date(),
+                            profile_picture: req.body.profile_picture
                         });
                         user.save()
                             .then(result => {
