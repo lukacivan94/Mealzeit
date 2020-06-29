@@ -1,43 +1,49 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-//import { Slider } from './Slider';
+import MaterialUIPickers from './assets/DateTime';
 
-import Screen from '../Screen/Screen';
-import EventMove from './EventMove';
-
-const TextDiv= styled.div<{big: string}>`
+const TextDiv= styled.div`
     font-family: 'Source Sans Pro', sans-serif;
-    font-size: ${props => props.big ? "50px" : "18px"};
-    padding-top: 30px;
-    padding-bottom: ${props => props.big ? "5px" : "30px"};
+    font-size: 35px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 `;
-
-const inputBox= styled.input`
+const StyledDiv = styled.div`
     font-family: 'Source Sans Pro', sans-serif;
-    padding-top: 30px;
+    padding: 0px 20px 70px 80px;
 `;
 
 const Input = styled.input`
-  padding: 0.5em;
-  margin: 0.5em;
-  background: white;
-  border-radius: 25px;
-  width: 75%;
+    padding: 0.5em;
+    margin: 0.5em;
+    background: white;
+    border-radius: 25px;
+    width: 75%;
+    border: 1px solid grey;
+    padding-left: 20px;
+    :focus {
+        outline: none;
+    },
+    ::placeholder {
+        color: black;
+        opacity: 0.8;
+        padding-left: 20px;
+      }
 `;
 
 class EventPage extends Component {
     render() {
         return (
-            <Screen>
-                <EventMove>
-                    <TextDiv big>
-                        Where are you planning your event?
-                    </TextDiv>
-                    <Input defaultValue="type your text" type="text" />
-                    
-                </EventMove>
-    
-            </Screen>
+            <StyledDiv>
+                <TextDiv>
+                    Where are you planning your event?
+                </TextDiv>
+                <Input placeholder="Type your address" type="text" />
+                <TextDiv>
+                    When are you planning your event?
+                </TextDiv>
+                <MaterialUIPickers />
+            </StyledDiv>
         );
     }
 }
