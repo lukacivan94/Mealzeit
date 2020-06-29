@@ -3,8 +3,6 @@ const router = express.Router();
 
 const NotificationsController = require('../controllers/notifications');
 
-/// notifications_delete_notification
-/// notifications_delete_all
 /// notifications_get_unread_notifications_of_user
 router.delete('/:notificationId', NotificationsController.notifications_delete_notification);
 router.delete('/', NotificationsController.notifications_delete_all);
