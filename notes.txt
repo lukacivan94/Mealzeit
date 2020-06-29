@@ -1,1 +1,3 @@
 This file serves for sharing notes related to this app development
+
+Code alignment on Mac : Shift + Option + F
