@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Logo } from '../Logo/Logo';
 import mealZeitLogo from '../../assets/images/logo.jpg';
 
+
 const StyledHeader = styled.header`
     height: 80px;
     width: 100%;

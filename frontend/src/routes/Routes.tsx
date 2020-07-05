@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Screen from '../components/Screen/Screen';
+import BrowsePage from '../components/BrowsePage';
+
 import Auth from '../screens/Auth/Auth';
 
 const Routes = () => (
@@ -8,6 +10,7 @@ const Routes = () => (
         <Switch>
             <Route exact path='/' component={() => <Screen><h1>Login Page</h1></Screen>} />
             <Route path='/home' component={() => <Screen><h1>HOME Page</h1></Screen>} />
+            <Route path='/browse' component={() => <BrowsePage/>} />
             <Route render={() => <h1>404 Page not found</h1>} />
         </Switch>
     </Router>
