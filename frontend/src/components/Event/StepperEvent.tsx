@@ -7,8 +7,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { orange  } from '@material-ui/core/colors';
 
-import EventCarousel from './assets/EventCarousel';
-import { EventCreatedMessage } from './assets/EventCreatedMessage';
+import EventCarousel from './EventCarousel';
+import { EventCreatedMessage } from './EventCreatedMessage';
+import JoinPage from './JoinPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +52,7 @@ function getStepContent(step) {
     case 0:
       return <EventCarousel />;
     case 1:
-      return "here other thing";
+      return <JoinPage />;
     case 2:
       return "here goes something";
     case 3:
