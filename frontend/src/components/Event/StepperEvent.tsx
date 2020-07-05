@@ -1,28 +1,46 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Typography from '@material-ui/core/Typography';
+import { orange  } from '@material-ui/core/colors';
 
-import EventCarousel from './EventCarousel';
-
+import EventCarousel from './assets/EventCarousel';
+import { EventCreatedMessage } from './assets/EventCreatedMessage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '90%',
     height: '60%',
+    margin: '20px',
   },
   button: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(4),
   },
   instructions: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+  },
+  margin: {
+    width: '100%',
+    justifyContent: 'center', 
+    paddingBottom: '50px',
+    alignItems: "center",
+    display: 'flex',
   }
 }));
+
+const ColorButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(orange[500]),
+    backgroundColor: orange[500],
+    '&:hover': {
+      backgroundColor: orange[700],
+    },
+  },
+}))(Button);
 
 function getSteps() {
   return ['Select place and time', 'Create invites', 'Select Recipes', 'Additional information'];
@@ -31,13 +49,13 @@ function getSteps() {
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <EventCarousel></EventCarousel>;
+      return <EventCarousel />;
     case 1:
-      return 'What is an ad group anyways?';
+      return "here other thing";
     case 2:
-      return 'This is the bit I really care about!';
+      return "here goes something";
     case 3:
-        return 'TELL ME SOME MORE!';
+        return "something is here!";
     default:
       return 'Unknown step';
   }
@@ -78,28 +96,30 @@ export default function HorizontalLinearStepper() {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+                <EventCreatedMessage />
             </Typography>
-            <Button onClick={handleReset} className={classes.button}>
-              Reset
-            </Button>
+            <div className={classes.margin}>
+                <Button onClick={handleReset} variant="contained" className={classes.button}>
+                  Reset
+                </Button>
+            </div>
           </div>
         ) : (
-          <div>
+          <div style={{paddingBottom: '50px'}}>
             <Typography className={classes.instructions}  component={'div'} variant={'body2'}>{getStepContent(activeStep)}</Typography>
-            <ButtonGroup style={{width: '100%', justifyContent: 'center'}}>
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                className={classes.button}
-              >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button>
-            </ButtonGroup>
+            <div className={classes.margin}>
+                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className={classes.button}>
+                  Back
+                </Button>
+                <ColorButton
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  className={classes.button}
+                >
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </ColorButton>
+            </div>
           </div>
         )}
       </div>

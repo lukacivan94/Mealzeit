@@ -14,6 +14,8 @@ const TextDiv= styled.div`
     font-size: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
+    padding-left: 0px;
+    padding-right: 0px;
 `;
 
 export default function MaterialUIPickers() {
