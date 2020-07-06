@@ -3,7 +3,7 @@ const Recipe = require('../models/recipe');
 const User = require("../models/user");
 
 
-exports.recipes_add_recipe = (req, res, next) => {
+exports.recipes_add_recipe = (req, res) => {
     const userId = req.body.userId;
     let recipeId;
     const today = new Date();
@@ -25,6 +25,8 @@ exports.recipes_add_recipe = (req, res, next) => {
                 instructions: req.body.instructions,
                 calorie_count: req.body.calorie_count,
                 ingredients: req.body.ingredients,
+                recipe_rating: 0,
+                number_of_ratings: 0,
                 is_public: req.body.is_public,
                 shared_with_friends: [userId]
             });
@@ -56,7 +58,7 @@ exports.recipes_add_recipe = (req, res, next) => {
         });
 }
 
-exports.recipes_get_all = (req, res, next) => {
+exports.recipes_get_all = (req, res) => {
     Recipe.find()
         .select('recipe_title _id ')
         .exec()
@@ -84,10 +86,10 @@ exports.recipes_get_all = (req, res, next) => {
         });
 };
 
-exports.recipes_get_recipe = (req, res, next) => {
+exports.recipes_get_recipe = (req, res) => {
     const id = req.params.recipeId;
     Recipe.findById(id)
-        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating ingredients is_public shared_with_friends ')
+        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating number_of_ratings ingredients is_public shared_with_friends ')
         .exec()
         .then(doc => {
             if (doc) {
@@ -110,7 +112,7 @@ exports.recipes_get_recipe = (req, res, next) => {
         });
 };
 
-exports.recipes_edit_recipe = (req, res, next) => {
+exports.recipes_edit_recipe = (req, res) => {
     const id = req.params.recipeId;
     const updateOps = {};
     for (const ops of req.body) {
@@ -134,7 +136,7 @@ exports.recipes_edit_recipe = (req, res, next) => {
         });
 };
 
-exports.recipes_delete_recipe = (req, res, next) => {
+exports.recipes_delete_recipe = (req, res) => {
     const id = req.params.recipeId;
     Recipe.remove({ _id: id })
         .exec()
@@ -155,7 +157,7 @@ exports.recipes_delete_recipe = (req, res, next) => {
 };
 
 
-exports.recipes_delete_all = (req, res, next) => {
+exports.recipes_delete_all = (req, res) => {
     Recipe.deleteMany()
         .exec()
         .then(result => {
