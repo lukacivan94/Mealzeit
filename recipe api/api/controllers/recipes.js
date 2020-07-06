@@ -21,7 +21,7 @@ exports.recipes_add_recipe = (req, res, next) => {
                 recipeId: recipe._id,
                 request: {
                     type: "GET",
-                    url: "https://mealzeit-recipe-api.herokuapp.com/recipes" + recipe._id
+                    url: "https://mealzeit-recipe-api.herokuapp.com/recipes/" + recipe._id
                 }
             })
         )
@@ -47,7 +47,7 @@ exports.recipes_get_all = (req, res) => {
                         _id: doc._id,
                         request: {
                             type: 'GET',
-                            url: 'https://mealzeit-recipe-api.herokuapp.com/recipes' + doc._id
+                            url: 'https://mealzeit-recipe-api.herokuapp.com/recipes/' + doc._id
                         }
                     }
                 })
