@@ -21,7 +21,7 @@ exports.recipes_add_recipe = (req, res, next) => {
                 recipeId: recipe._id,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/recipes/" + recipe._id
+                    url: "https://mealzeit-recipe-api.herokuapp.com/recipes" + recipe._id
                 }
             })
         )
@@ -47,7 +47,7 @@ exports.recipes_get_all = (req, res) => {
                         _id: doc._id,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/recipes/' + doc._id
+                            url: 'https://mealzeit-recipe-api.herokuapp.com/recipes' + doc._id
                         }
                     }
                 })
@@ -73,7 +73,7 @@ exports.recipes_get_recipe = (req, res) => {
                     recipe: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/recipes/'
+                        url: 'https://mealzeit-recipe-api.herokuapp.com/recipes'
                     }
                 });
             } else {
