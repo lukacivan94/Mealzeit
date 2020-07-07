@@ -99,7 +99,40 @@ exports.cookrooms_get_all = (req, res) => {
             });
         });
 };
-
+/** (✓)
+ * This function handles cookroom GET requests
+ * It finds all cookroom entries in the database of the specified user
+ * and returns them in the response
+ */
+exports.cookrooms_get_cookrooms_of_user = (req, res) => {
+    let userId = req.params.userId
+    Cookroom.find({ userId: userId })
+        .select('_id userId title')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                cookrooms: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        userId: doc.userId,
+                        title: doc.title,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 /** (✓)
  * This function handles cookroom GET requests
  * It finds cookroom entry in the database with the matching id 
