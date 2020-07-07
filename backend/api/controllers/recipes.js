@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 const Recipe = require('../models/recipe');
 const User = require("../models/user");
 
-
+/** (✓)
+ * This function handles recipe POST requests
+ * It first checks if the user exists
+ * then creates new Recipe object, saves it to database 
+ * and updates the user's created_recipes field with recipe's id
+ */
 exports.recipes_add_recipe = (req, res) => {
     const userId = req.body.userId;
     let recipeId;
@@ -58,6 +63,11 @@ exports.recipes_add_recipe = (req, res) => {
         });
 }
 
+/** (✓)
+ * This function handles recipe GET requests
+ * It finds all recipe entries in the database 
+ * and returns them in the response
+ */
 exports.recipes_get_all = (req, res) => {
     Recipe.find()
         .select('recipe_title _id ')
@@ -86,6 +96,11 @@ exports.recipes_get_all = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles recipe GET requests
+ * It finds recipe entry in the database with the matching id 
+ * and returns it in the response
+ */
 exports.recipes_get_recipe = (req, res) => {
     const id = req.params.recipeId;
     Recipe.findById(id)
@@ -112,6 +127,46 @@ exports.recipes_get_recipe = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles cookroom GET requests
+ * It finds all cookroom entries in the database of the specified user
+ * and returns them in the response
+ */
+exports.recipes_get_recipes_of_user = (req, res) => {
+    let userId = req.params.userId
+    Recipe.find({ userId: userId })
+        .select('_id userId recipe_title')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                cookrooms: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        userId: doc.userId,
+                        title: doc.recipe_title,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/recipes/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+/** (✓)
+ * This function handles recipe PATCH requests
+ * It finds recipe entry in the database with the matching id 
+ * and updates the recipe's properties
+ */
 exports.recipes_edit_recipe = (req, res) => {
     const id = req.params.recipeId;
     const updateOps = {};
@@ -136,6 +191,10 @@ exports.recipes_edit_recipe = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles recipe DELETE requests
+ * It removes the recipe entry from the database with the matching id 
+ */
 exports.recipes_delete_recipe = (req, res) => {
     const id = req.params.recipeId;
     Recipe.remove({ _id: id })
@@ -156,7 +215,10 @@ exports.recipes_delete_recipe = (req, res) => {
         });
 };
 
-
+/** (✓)
+ * This function handles recipe DELETE requests
+ * It removes all the recipe entries from the database
+ */
 exports.recipes_delete_all = (req, res) => {
     Recipe.deleteMany()
         .exec()
