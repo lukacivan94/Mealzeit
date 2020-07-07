@@ -144,7 +144,7 @@ exports.users_get_all = (req, res) => {
 exports.users_get_user = (req, res) => {
     const id = req.params.userId;
     User.findById(id)
-        .select('_id email first_name last_name phone_number gender date_of_birth languages created_cookrooms joined_cookrooms created_courses joined_courses created_recipes is_expert_user is_premium_user is_verified notifications sent_friend_requests received_friend_requests friends date_joined last_login')
+        .select('_id email first_name last_name phone_number gender date_of_birth languages created_cookrooms joined_cookrooms created_courses joined_courses created_recipes is_expert_user is_premium_user is_verified notifications sent_friend_requests received_friend_requests friends date_joined last_login profile_picture')
         .exec()
         .then(doc => {
             if (doc) {
