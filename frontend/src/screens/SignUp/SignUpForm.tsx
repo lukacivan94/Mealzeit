@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -16,6 +16,7 @@ import { MultipleSelectField } from '../../components/MultipleSelectField/Multip
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { Container } from '@material-ui/core';
 
 const languages = [
     'English',
@@ -60,26 +61,31 @@ const renderTextField = ({
             placeholder={label}
             error={touched && invalid}
             helperText={touched && error}
+            fullWidth
             {...input}
             {...custom}
         />
     );
 
 const radioButton = ({ input, ...rest }) => (
-    <StyledFieldDiv>
-        <InputLabel>Gender</InputLabel>
-        <FormControl>
-            <RadioGroup  {...input} {...rest}>
-                <FormControlLabel value='female' control={<Radio style={{ color: 'darkorange' }} />} label='Female' />
-                <FormControlLabel value='male' control={<Radio style={{ color: 'darkorange' }} />} label='Male' />
-                <FormControlLabel value='other' control={<Radio style={{ color: 'darkorange' }} />} label='Other' />
-            </RadioGroup>
-        </FormControl>
-    </StyledFieldDiv>
+    <>
+        <StyledFieldDiv>
+            <InputLabel>Gender</InputLabel>
+        </StyledFieldDiv>
+        <StyledRadioField>
+            <FormControl>
+                <RadioGroup  {...input} {...rest}>
+                    <FormControlLabel value='female' control={<Radio style={{ color: 'darkorange' }} />} label='Female' />
+                    <FormControlLabel value='male' control={<Radio style={{ color: 'darkorange' }} />} label='Male' />
+                    <FormControlLabel value='other' control={<Radio style={{ color: 'darkorange' }} />} label='Other' />
+                </RadioGroup>
+            </FormControl>
+        </StyledRadioField>
+    </>
 );
 
 const renderCheckbox = ({ input, label }) => (
-    <div>
+    <StyledRadioField>
         <FormControlLabel
             control={
                 <Checkbox
@@ -92,12 +98,12 @@ const renderCheckbox = ({ input, label }) => (
             }
             label={label}
         />
-    </div>
+    </StyledRadioField>
 );
 
 const renderImageField = ({ classesButton, onDropMethod, value, ...custom }) => (
     <div>
-        <InputLabel>Profile Picture</InputLabel>
+        <StyledInputLabel>Profile Picture</StyledInputLabel>
         <input accept='image/*' id='icon-button-file' type='file' onChange={onDropMethod} />
         <label htmlFor='icon-button-file'>
             <IconButton color='primary' className={classesButton} component='span'>
@@ -107,30 +113,46 @@ const renderImageField = ({ classesButton, onDropMethod, value, ...custom }) => 
     </div>
 );
 
-const StyledForm = styled.form`
-    margin: 0% 30%;
-    background-color: lightgrey;
-    padding: 5% 0% 5% 10%;
-    width: 30%;
-`;
-
-const StyledButton = styled(Button)`
-    margin: 20px;
-    width: 50%;
-`;
-
-const StyledClearButton = styled.div`
-    margin-left: 10px;
+const StyledInputLabel = styled(InputLabel)`
+    margin-bottom: 10px;
 `;
 
 const StyledFieldDiv = styled.div`
-    margin-bottom: 10px;
+    margin: 10px 0;
+`;
+
+const StyledRadioField = styled(StyledFieldDiv)`
+            display: flex;
+            justify-content: center;
+`;
+
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
 `;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        paper: {
+            marginTop: theme.spacing(8),
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            boxSizing: 'unset'
+        },
+        form: {
+            width: '100%',
+            marginTop: theme.spacing(1),
+            display: 'flex',
+            flexDirection: 'column'
+        },
+        submit: {
+            margin: theme.spacing(3, 0, 2),
+            backgroundColor: 'darkorange'
+        },
         button: {
             margin: theme.spacing(1)
+
         }
     })
 );
@@ -162,115 +184,118 @@ const SignUpForm = (props: SignUpProps & InjectedFormProps<{}, SignUpProps>) => 
     };
 
     return (
-        <StyledForm onSubmit={handleSubmit}>
-            <StyledFieldDiv>
-                <Typography
-                    style={{ color: 'mediumblue' }}
-                    component='h1'
-                    variant='h5'>
-                    Sign-up Form
+        <Container component='main' maxWidth='xs'>
+            <StyledDiv>
+                <form onSubmit={handleSubmit} className={classes.form}>
+                    <StyledFieldDiv>
+                        <Typography
+                            style={{ color: 'darkorange' }}
+                            component='h1'
+                            variant='h5'>
+                            Sign-up Form
                 </Typography>
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='firstName'
-                    component={renderTextField}
-                    label='First Name'
-                />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='lastName'
-                    component={renderTextField}
-                    label='Last Name'
-                />
-            </StyledFieldDiv>
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='firstName'
+                            component={renderTextField}
+                            label='First Name'
+                        />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='lastName'
+                            component={renderTextField}
+                            label='Last Name'
+                        />
+                    </StyledFieldDiv>
 
-            <StyledFieldDiv>
-                <Field name='gender' component={radioButton}>
-                    <Radio value='male' />
-                    <Radio value='female' />
-                </Field>
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='dateOfBirth'
-                    component={renderTextField}
-                    type='date'
-                    label='Date Of Birth'
-                    InputLabelProps={{
-                        shrink: true
-                    }}
-                />
-            </StyledFieldDiv>
-            <div />
-            <StyledFieldDiv>
-                <Field
-                    name='phoneNumber'
-                    component={renderTextField}
-                    label='Phone Number'
-                    classesButton={classes.button}
-                />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='image'
-                    component={renderImageField}
-                    label='Image'
-                    onDropMethod={onDrop}
-                />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <MultipleSelectField
-                    name='languages'
-                    inputLabel='Languages'
-                    items={languages}
-                />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='isExpertUser'
-                    component={renderCheckbox}
-                    label='Expert User' />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='email'
-                    component={renderTextField}
-                    label='Email'
-                />
-            </StyledFieldDiv>
-            <StyledFieldDiv>
-                <Field
-                    name='password'
-                    component={renderTextField}
-                    label='Password'
-                    type='password'
-                />
-            </StyledFieldDiv>
-            <div>
-                <StyledButton
-                    variant='contained'
-                    color='primary'
-                    endIcon={<Icon />}
-                    className={classes.button}
-                    onClick={props.handleSubmit}
-                >
-                    Submit
-                  </StyledButton>
-            </div>
-            <StyledClearButton>
-                <Button
-                    type='button'
-                    variant='contained'
-                    color='default'
-                    disabled={pristine || submitting}
-                    onClick={reset}
-                >
-                    Clear Values
+                    <StyledFieldDiv>
+                        <Field name='gender' component={radioButton}>
+                            <Radio value='male' />
+                            <Radio value='female' />
+                        </Field>
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='dateOfBirth'
+                            component={renderTextField}
+                            type='date'
+                            label='Date Of Birth'
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                        />
+                    </StyledFieldDiv>
+                    <div />
+                    <StyledFieldDiv>
+                        <Field
+                            name='phoneNumber'
+                            component={renderTextField}
+                            label='Phone Number'
+                            classesButton={classes.button}
+                        />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='image'
+                            component={renderImageField}
+                            label='Image'
+                            onDropMethod={onDrop}
+                        />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <MultipleSelectField
+                            name='languages'
+                            inputLabel='Languages'
+                            items={languages}
+                        />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='isExpertUser'
+                            component={renderCheckbox}
+                            label='Expert User' />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='email'
+                            component={renderTextField}
+                            label='Email'
+                        />
+                    </StyledFieldDiv>
+                    <StyledFieldDiv>
+                        <Field
+                            name='password'
+                            component={renderTextField}
+                            label='Password'
+                            type='password'
+                        />
+                    </StyledFieldDiv>
+                    <Button
+                        type='submit'
+                        fullWidth
+                        variant='contained'
+                        color='primary'
+                        endIcon={<Icon />}
+                        className={classes.submit}
+                        onClick={props.handleSubmit}
+                    >
+                        Sign Up
+                        </Button>
+                    <Button
+                        type='button'
+                        variant='contained'
+                        color='default'
+                        fullWidth
+                        disabled={pristine || submitting}
+                        onClick={reset}
+                    >
+                        Clear Values
                   </Button>
-            </StyledClearButton>
-        </StyledForm>
+                </form>
+            </StyledDiv>
+        </Container>
     );
 };
 
