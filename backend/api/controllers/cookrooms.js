@@ -99,7 +99,40 @@ exports.cookrooms_get_all = (req, res) => {
             });
         });
 };
-
+/** (✓)
+ * This function handles cookroom GET requests
+ * It finds all cookroom entries in the database of the specified user
+ * and returns them in the response
+ */
+exports.cookrooms_get_cookrooms_of_user = (req, res) => {
+    let userId = req.params.userId
+    Cookroom.find({ userId: userId })
+        .select('_id userId title')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                cookrooms: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        userId: doc.userId,
+                        title: doc.title,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 /** (✓)
  * This function handles cookroom GET requests
  * It finds cookroom entry in the database with the matching id 
@@ -217,7 +250,7 @@ async function makeRequestNotification(cookroomId, userId) {
                 { $addToSet: { notifications: [doc._id] } }
             )
         );
-}
+};
 
 
 /*
@@ -229,28 +262,28 @@ exports.cookroom_accept_request = (req, res) => {
     const cookroomId = req.params.cookroomId;
     const userId = req.params.userId; //User which is accepted to join
     Cookroom.update(
-      { _id: cookroomId },
-      { $pull: { requests: { $in: [userId] } }, $addToSet: { members: [userId] } }
+        { _id: cookroomId },
+        { $pull: { requests: { $in: [userId] } }, $addToSet: { members: [userId] } }
     )
-      .exec()
-      .then(result => {
-        res.status(200).json({
-          message: "Cookroom updated",
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/cookrooms/" + cookroomId
-          }
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
         });
-      })
-      .catch(err => {
-        res.status(500).json({
-          error: err
-        });
-      });
     makeAcceptNotification(cookroomId, userId);
-  };
-  
-  async function makeAcceptNotification(cookroomId, userId) {
+};
+
+async function makeAcceptNotification(cookroomId, userId) {
     let hostId;
     let title;
     try {
@@ -264,33 +297,33 @@ exports.cookroom_accept_request = (req, res) => {
         console.log("Following error happened: " + error);
     }
     const notification = new Notification({
-      _id: new mongoose.Types.ObjectId(),
-      userId: userId, //User which is accepted to join
-      cookroomId: cookroomId,
-      memberId: hostId, //Host who accepted the join request
-      date: new Date(),
-      type: "acceptance",
-      text: "Your request to join " + title + " was accepted.",
-      isRead: false,
+        _id: new mongoose.Types.ObjectId(),
+        userId: userId, //User which is accepted to join
+        cookroomId: cookroomId,
+        memberId: hostId, //Host who accepted the join request
+        date: new Date(),
+        type: "acceptance",
+        text: "Your request to join " + title + " was accepted.",
+        isRead: false,
     });
     await User.findOneAndUpdate(
-      { _id: userId },
-      { $addToSet: { joined_cookrooms: [cookroomId] } }
+        { _id: userId },
+        { $addToSet: { joined_cookrooms: [cookroomId] } }
     );
     return notification
-      .save()
-      .then(doc =>
-        User.findOneAndUpdate(
-          { _id: userId },
-          { $addToSet: { notifications: [doc._id] } }
-        )
-      );
-  }
-  /*
- * After the cookroom host rejected the request, removes the user id from
- * cookrooms's requests array and makes a rejection notification for user
- * that was reject to join
- */
+        .save()
+        .then(doc =>
+            User.findOneAndUpdate(
+                { _id: userId },
+                { $addToSet: { notifications: [doc._id] } }
+            )
+        );
+}
+/*
+* After the cookroom host rejected the request, removes the user id from
+* cookrooms's requests array and makes a rejection notification for user
+* that was reject to join
+*/
 exports.cookroom_reject_request = (req, res) => {
     const cookroomId = req.params.cookroomId;
     const userId = req.params.userId;

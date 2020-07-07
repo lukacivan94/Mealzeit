@@ -129,6 +129,41 @@ exports.courses_get_course = (req, res) => {
 };
 
 /** (✓)
+ * This function handles courses GET requests
+ * It finds all course entries in the database of the specified user
+ * and returns them in the response
+ */
+exports.courses_get_courses_of_user = (req, res) => {
+    let userId = req.params.userId
+    Course.find({ userId: userId })
+        .select('_id userId title')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                courses: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        userId: doc.userId,
+                        title: doc.title,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/courses/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+/** (✓)
  * This function handles course PATCH requests
  * It finds course entry in the database with the matching id 
  * and updates the course's properties
