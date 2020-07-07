@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Table from '../Browse/Table'
+import Table from '../Browse/Table';
+import Avatars from '../Browse/Avatars';
+
+
 import {XCircle, CheckCircle} from 'react-bootstrap-icons';
 
 const StyledDiv = styled.div`
@@ -63,9 +66,10 @@ const CardTextInvitee = styled.div`
 
 
 interface Props {
+    id: string;
     imageSource: string;
     text: string;
-    Date: string;
+    Date: Date;
     Cuisine: String;
     EventType: String;
     Location : String;
@@ -73,11 +77,14 @@ interface Props {
     MealType: String;
     Size: Number;
     Setting: string;
-    invitedBy:string;
-    invitee:string;
+    Invited:string;
+    Invitee:string;
     invitedText: string;
     inviteeText: string;
 }
+
+
+
 export const Cards = (props: Props) => (
     <StyledDiv>
         <CardImage src={props.imageSource}/>
@@ -89,12 +96,11 @@ export const Cards = (props: Props) => (
         <CardTickButton>
           <CheckCircle size={60} color = "green"/>
         </CardTickButton>
-        <CardInvited src = {props.invitedBy}/>
-        <CardInvitee src = {props.invitee}/>
-        <CardTextInvited> {props.invitedText}</CardTextInvited>
-        <CardTextInvitee> {props.inviteeText}</CardTextInvitee>
-
-
+        <Avatars imageSource={props.Invited} text = {props.invitedText}/>
+        <Avatars imageSource={props.Invitee} text = {props.inviteeText} />
     </StyledDiv>
 );
+
+
+
 

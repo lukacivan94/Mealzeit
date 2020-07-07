@@ -3,14 +3,10 @@ import Screen from './Screen/Screen';
 import Filters from './Browse/Filters';
 import {Cards} from './Browse/Cards';
 import Burgers from '../assets/images/burger.jpg';
-import Invited from '../assets/images/invited_by.png';
-import Invitee1 from '../assets/images/invitee.jpeg';
-import Invitee from '../assets/images/invitee2.png';
-import Invitee3 from '../assets/images/invitee3.png';
+import SampledEvents from './Browse/sampleEvents';
 
 
-
-class Browse extends Component{
+class Browse extends Component{ 
     render(){
         return(
             <Screen>
@@ -20,10 +16,20 @@ class Browse extends Component{
                     </div>
                     <div className="Browse-text_paragraph">
                         Whether you want to help or simplymeet someone- at Mealzeit you will find an event that fits you best
+                        {console.log("value printing")}
+                        {console.log(SampledEvents[0].Location)}
                     </div>
-                    <Cards imageSource={Burgers} text= "Burgers and fries at my place" Date = " Monday 27th July" Cuisine = "Italian" 
-                    EventType = "Get Together" Location = "StudentenStadt" FoodType = "Vegan" MealType = "Dinner" Size = {6} Setting = "Indoor" 
-                    invitedBy = {Invited} invitee = {Invitee1} invitedText = "Invited By : Ashish" inviteeText = "1 person joined"/>
+                    
+                    <li className = 'cards'>
+                        {
+                            SampledEvents.map(
+                            (val) => <Cards key={val.eventId} id={val.eventId} imageSource={Burgers} text= "Burgers and fries at my place" Date = {val.Date}  Cuisine = {val.Cuisine} 
+                            EventType = {val.EventType} Location = {val.Location} FoodType = {val.FoodType} MealType = {val.MealType} Size = {val.Size} Setting = {val.Setting} 
+                            Invited = {val.Invited} Invitee = {val.Invitee} invitedText = {val.invitedText} inviteeText = {val.inviteeText}/>
+                            )
+                        }
+
+                    </li>
                     
                 </div>
             </Screen>
