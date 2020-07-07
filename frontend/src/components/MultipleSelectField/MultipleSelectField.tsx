@@ -55,7 +55,7 @@ const renderMultiple = ({ input, label, meta: { touched, error }, children, valu
         onChange={handleChange}
         input={<Input />}
         MenuProps={MenuProps}
-        errorText={touched && error}
+        error={touched && error}
         {...input}
         {...custom}
     >
@@ -68,7 +68,6 @@ export const MultipleSelectField = ({ name, inputLabel, items }) => {
     const classes = useStyles();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        console.log('event.target.value: ', event.target.value);
         setArrayValue(event.target.value as string[]);
     };
 

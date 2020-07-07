@@ -1,5 +1,5 @@
-import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import React, { Component } from 'react';
+import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import moment from 'moment';
 import styled from 'styled-components';
 
@@ -95,6 +95,18 @@ const renderCheckbox = ({ input, label }) => (
     </div>
 );
 
+const renderImageField = ({ classesButton, onDropMethod, value, ...custom }) => (
+    <div>
+        <InputLabel>Profile Picture</InputLabel>
+        <input accept='image/*' id='icon-button-file' type='file' onChange={onDropMethod} />
+        <label htmlFor='icon-button-file'>
+            <IconButton color='primary' className={classesButton} component='span'>
+                {/* <PhotoCamera /> */}
+            </IconButton>
+        </label>
+    </div>
+);
+
 const StyledForm = styled.form`
     margin: 0% 30%;
     background-color: lightgrey;
@@ -123,9 +135,31 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const SignUpForm = (props) => {
+interface SignUpProps {
+    handleImage(imageText: string);
+}
+
+const SignUpForm = (props: SignUpProps & InjectedFormProps<{}, SignUpProps>) => {
     const { handleSubmit, pristine, reset, submitting } = props;
     const classes = useStyles();
+
+    const onDrop = (event) => {
+        const acceptedFile = event.target.files[0];
+
+        const reader: FileReader = new FileReader();
+        reader.onload = () => {
+            const fileAsBase64: string = reader && reader.result &&
+                reader.result.toString().substr(reader.result.toString().indexOf(',') + 1) || '';
+            if (fileAsBase64.length > 1) {
+                props.handleImage(fileAsBase64);
+            }
+        };
+
+        reader.onabort = () => console.log('file reading was aborted');
+        reader.onerror = () => console.log('file reading has failed');
+
+        reader.readAsDataURL(acceptedFile);
+    };
 
     return (
         <StyledForm onSubmit={handleSubmit}>
@@ -175,16 +209,16 @@ const SignUpForm = (props) => {
                     name='phoneNumber'
                     component={renderTextField}
                     label='Phone Number'
+                    classesButton={classes.button}
                 />
             </StyledFieldDiv>
             <StyledFieldDiv>
-                <InputLabel>Profile Picture</InputLabel>
-                <input accept='image/*' id='icon-button-file' type='file' />
-                <label htmlFor='icon-button-file'>
-                    <IconButton color='primary' className={classes.button} component='span'>
-                        {/* <PhotoCamera /> */}
-                    </IconButton>
-                </label>
+                <Field
+                    name='image'
+                    component={renderImageField}
+                    label='Image'
+                    onDropMethod={onDrop}
+                />
             </StyledFieldDiv>
             <StyledFieldDiv>
                 <MultipleSelectField
@@ -240,11 +274,12 @@ const SignUpForm = (props) => {
     );
 };
 
-export default reduxForm({
+export default reduxForm<{}, SignUpProps>({
     form: 'signUpForm', // a unique identifier for this form
     validate,
     initialValues: {
         dateOfBirth: moment(new Date()).format('YYYY-MM-DD'),
-        languages: []
+        languages: [],
+        image: ''
     }
 })(SignUpForm);

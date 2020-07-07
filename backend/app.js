@@ -19,20 +19,20 @@ mongoose.connect(
         useCreateIndex: true
     }
 );
- 
+
 // This function is used for inheritance
 // Cookroom and Course models inherit from the Event model using extendSchema
-function extendSchema (Schema, definition, options) {
-  return new mongoose.Schema(
-    Object.assign({}, Schema.obj, definition),
-    options
-  );
+function extendSchema(Schema, definition, options) {
+    return new mongoose.Schema(
+        Object.assign({}, Schema.obj, definition),
+        options
+    );
 }
 module.exports = extendSchema;
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
