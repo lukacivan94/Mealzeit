@@ -9,8 +9,8 @@ import { orange  } from '@material-ui/core/colors';
 
 import EventCarousel from './EventCarousel';
 import { EventCreatedMessage } from './EventCreatedMessage';
-import LeftRightSlider from './LeftRightSlider';
 import JoinPage from './JoinPage';
+import Menu from './Menu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +55,7 @@ function getStepContent(step) {
     case 1:
       return <JoinPage />;
     case 2:
-      return <LeftRightSlider />;
+      return <Menu />;
     case 3:
         return "something is here!";
     default:

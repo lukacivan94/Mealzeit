@@ -15,7 +15,7 @@ const StyledImage = styled.img`
 `;
 
 const Title = styled.div`
-    padding: 35px 20px;
+    padding: 22px 20px;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 30px;
 `;

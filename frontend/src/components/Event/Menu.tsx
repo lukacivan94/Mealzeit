@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Counter from './Counter';
-import RadioSelect from './RadioSelect';
 import LeftRightSlider from './LeftRightSlider';
+
+
+const TextSmallDiv= styled.div`
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 22px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 0px;
+    padding-right: 0px;
+    color: orange;
+`;
 
 const Eventdiv= styled.div`
     padding-top: 10px;
@@ -20,31 +29,24 @@ const StyledDiv = styled.div`
     padding: 0px 20px 70px 80px;
 `;
 
-class EventCarousel extends Component {
+class Menu extends Component {
     render() {
         return (
             <StyledDiv>
                 <Eventdiv>
                     <TextDiv>
-                        Would you like to join?
+                        What's on the Menu?
                     </TextDiv>
+                    <TextSmallDiv>Your Recipes</TextSmallDiv>
                     <LeftRightSlider />
-                </Eventdiv>
-                <Eventdiv>
-                    <TextDiv>
-                        Make your event public?
-                    </TextDiv>
-                    <Counter />
-                </Eventdiv>
-                <Eventdiv>
-                    <TextDiv>
-                        Can people join instantly?
-                    </TextDiv>
-                    <RadioSelect />
+                    <TextSmallDiv>Public Recipes</TextSmallDiv>
+                    <LeftRightSlider />
+                    <TextSmallDiv>Premium Recipes</TextSmallDiv>
+                    <LeftRightSlider />
                 </Eventdiv>
             </StyledDiv>
         );
     }
 }
 
-export default EventCarousel;
+export default Menu;

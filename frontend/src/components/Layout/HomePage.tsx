@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-
+import SearchIcon from '@material-ui/icons/Search';
 import Screen from '../Screen/Screen';
 
 const GlobalStyle = createGlobalStyle`
@@ -63,7 +63,8 @@ class HomePage extends Component {
                     <Wrapper> 
                         <TextDiv big>And who will you meet next? </TextDiv>
                         <TextDiv>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</TextDiv>
-                        <Button primary>Find an event</Button> 
+                        <Button primary><SearchIcon />Find an event</Button> 
+                        <Button primary>Create an event</Button> 
                     </Wrapper>     
                 </StyledDiv>
             </Screen>

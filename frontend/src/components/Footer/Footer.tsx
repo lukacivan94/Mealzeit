@@ -9,19 +9,10 @@ const StyledFooter = styled.div`
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 20px;
+    height: 10px;
     width: 100%;
     box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.5);
 `;
-
-/*const StyledFooterHeader = styled.div`
-    display: block;
-    padding: 20px;
-    height: 10px;
-    width: 100%;
-    box-shadow: 0 4px 2px rgba(50, 50, 50, 0.4);
-`;
-*/
 
 const StyledLink = styled.a`
     margin: 30px;
