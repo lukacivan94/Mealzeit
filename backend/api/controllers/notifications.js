@@ -1,5 +1,10 @@
 const Notification = require('../models/notification');
 
+/** (✓)
+ * This function handles notification GET requests
+ * It finds all notification entries in the database 
+ * and returns them in the response
+ */
 exports.notifications_get_all = (req, res) => {
     Notification.find()
         .select('_id userId eventId date_created type is_read')
@@ -27,6 +32,11 @@ exports.notifications_get_all = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles notification GET requests
+ * It finds notification entry in the database with the matching id 
+ * and returns it in the response
+ */
 exports.notifications_get_notification = (req, res) => {
     const id = req.params.notificationId;
     Notification.findById(id)
@@ -52,6 +62,44 @@ exports.notifications_get_notification = (req, res) => {
                 });
         });
 };
+
+/** (✓)
+ * This function handles notification GET requests
+ * It finds notification entries in the database with the matching user id 
+ * that are not yet read and returns them in the response
+ */
+exports.notifications_get_unread_notifications_of_user = (req, res) => {
+    const userId = req.params.userId;
+    Notification.find({ is_read: false, userId: userId})
+    .select('_id userId eventId memberId date_created type text is_read')
+    .exec()
+    .then(docs => {
+        res.status(200).json({
+            count: docs.length,
+            notifications: docs.map(doc => {
+                return { 
+                    _id: doc._id,
+                    userId: doc.userId,
+                    type: doc.type,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/notifications/' + doc._id
+                    }
+                }
+            })
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+/** (✓)
+ * This function handles notification DELETE requests
+ * It removes the notification entry from the database with the matching id 
+ */
 exports.notifications_delete_notification = (req, res) => {
     const id = req.params.notificationId;
     Notification.remove({ _id: id })
@@ -72,6 +120,10 @@ exports.notifications_delete_notification = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles notification DELETE requests
+ * It removes all the notification entries from the database
+ */
 exports.notifications_delete_all = (req, res) => {
     Notification.deleteMany()
         .exec()
@@ -89,35 +141,4 @@ exports.notifications_delete_all = (req, res) => {
                 error: err
             });
         });
-};
-
-exports.notifications_get_unread_notifications_of_user = (req, res) => {
-    const userId = req.params.userId;
-    Notification.find({ isRead: false, userId: userId})
-    .select('user _id ')
-    .populate('user', 'user _id first_name')
-    .exec()
-    .then(docs => {
-        res.status(200).json({
-            count: docs.length,
-            notifications: docs.map(doc => {
-                return { 
-                    _id: doc._id,
-                    type: doc.type,
-                    userId: doc.userId,
-                    cookroomId: doc.cookroomId,
-                    date: doc.date,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/notifications/' + doc._id
-                    }
-                }
-            })
-        });
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    });
 };
