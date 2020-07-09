@@ -21,15 +21,15 @@ exports.courses_add_course = (req, res) => {
                 });
             }
             const course = new Course({
-                _id: new mongoose.Types.ObjectId(),
-                userId: userId,
-                title: req.body.title,
-                location: req.body.location,
-                date_of_publish: today,
-                description: req.body.description,
+                _id: new mongoose.Types.ObjectId(), 
+                userId: userId, 
+                title: req.body.title, 
+                location: req.body.location, 
+                date_of_publish: today, 
+                description: req.body.description, 
                 members: [],
                 number_of_members: req.body.number_of_members,
-                date_time: req.body.date_time,
+                date_time: req.body.date_time,  
                 list_of_recipes: req.body.list_of_recipes,
                 course_rating: -1,
                 number_of_ratings: 0,

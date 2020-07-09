@@ -4,6 +4,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Notification = require('../models/notification');
 
+/** (✓)
+ * This function handles user POST requests for signup
+ * It first checks if the provided email already exists
+ * then hashes the password, creates a new user object 
+ * and saves it to database 
+ */
 exports.users_signup = (req, res) => {
     User.find({ email: req.body.email })
         .exec()
@@ -60,6 +66,13 @@ exports.users_signup = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles user POST requests for login
+ * It first checks if the provided email exists
+ * then compares the password with the hashed password from database,
+ * if they match, creates a token valid for 1h, updates last_login
+ * and returns token to frontend for session
+ */
 exports.users_login = (req, res) => {
     User.find({ email: req.body.email })
         .exec()
@@ -90,8 +103,6 @@ exports.users_login = (req, res) => {
                         doc.last_login = new Date();
                         doc.save();
                     })
-                    //.then(result => {})
-                    //.catch(err => {});
                     return res.status(200).json({
                         message: 'Login successful',
                         token: token,
@@ -111,6 +122,11 @@ exports.users_login = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles user GET requests
+ * It finds all user entries in the database 
+ * and returns them in the response
+ */
 exports.users_get_all = (req, res) => {
     User.find()
         .select('_id first_name last_name')
@@ -140,7 +156,47 @@ exports.users_get_all = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles user GET requests to return friends of user
+ * It finds all user entries in the database with id from provided friends array
+ * and returns them in the response
+ */
+exports.users_get_friends_of_user = (req, res) => {
+    let friends = req.body.friends;
+    User.find({ '_id': { $in: friends } })
+        .select('_id first_name last_name profile_picture')
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                users: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        first_name: doc.first_name,
+                        last_name: doc.last_name,
+                        profile_picture: doc.profile_picture,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/users/' + doc._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 
+/** (✓)
+ * This function handles user GET requests
+ * It finds user entry in the database with the matching id 
+ * and returns it in the response
+ */
 exports.users_get_user = (req, res) => {
     const id = req.params.userId;
     User.findById(id)
@@ -165,6 +221,11 @@ exports.users_get_user = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles user PATCH requests
+ * It finds user entry in the database with the matching id 
+ * and updates the user's properties
+ */
 exports.users_patch_user = (req, res) => {
     const id = req.params.userId;
     const updateOps = {};
@@ -242,8 +303,8 @@ async function makeNewFriendRequestNotification(userId, friendId) {
         memberId: userId,
         date_created: new Date(),
         type: "newfriendrequest",
-        text: "You have a new request friend request from " + name,
-        isRead: false,
+        text: "You have a new friend request from " + name,
+        is_read: false,
     });
     return notification
         .save()
@@ -392,6 +453,10 @@ async function addToFriends(userId, friendId) {
     }
 }
 
+/** (✓)
+ * This function handles user DELETE requests
+ * It removes the user entry from the database with the matching id 
+ */
 exports.users_delete_user = (req, res) => {
     const id = req.params.userId;
     User.remove({ _id: id })
@@ -412,6 +477,10 @@ exports.users_delete_user = (req, res) => {
         });
 };
 
+/** (✓)
+ * This function handles user DELETE requests
+ * It removes all the user entries from the database
+ */
 exports.users_delete_all = (req, res) => {
     User.deleteMany()
         .exec()
