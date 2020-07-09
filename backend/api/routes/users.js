@@ -7,6 +7,7 @@ router.post('/signup', UsersController.users_signup);
 router.post('/login', UsersController.users_login);
 router.get('/', UsersController.users_get_all);
 router.get('/:userId', UsersController.users_get_user);
+router.get('/friends/:userId', UsersController.users_get_friends_of_user);
 router.patch('/:userId', UsersController.users_patch_user);
 router.patch('/addfriendreq/:userId/:friendId', UsersController.users_add_friend_request);
 router.patch('/acceptfriendreq/:userId/:friendId', UsersController.users_accept_friend_request);

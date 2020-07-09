@@ -99,6 +99,7 @@ exports.cookrooms_get_all = (req, res) => {
             });
         });
 };
+
 /** (✓)
  * This function handles cookroom GET requests
  * It finds all cookroom entries in the database of the specified user
@@ -133,6 +134,7 @@ exports.cookrooms_get_cookrooms_of_user = (req, res) => {
             });
         });
 };
+
 /** (✓)
  * This function handles cookroom GET requests
  * It finds cookroom entry in the database with the matching id 
@@ -252,7 +254,6 @@ async function makeRequestNotification(cookroomId, userId) {
         );
 };
 
-
 /*
  * After the cookroom host accepted the request, removes the user id from 
  * cookroom's requests array and adds it to cookroom's members array, 
@@ -319,6 +320,7 @@ async function makeAcceptNotification(cookroomId, userId) {
             )
         );
 }
+
 /*
 * After the cookroom host rejected the request, removes the user id from
 * cookrooms's requests array and makes a rejection notification for user
