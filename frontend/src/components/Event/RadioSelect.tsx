@@ -20,13 +20,14 @@ const useStyles = makeStyles((theme) => ({
       },
   }));
 
-export default function FormControlLabelPlacement() {
+export default function RadioSelect(props) {
   const classes = useStyles();
+  const {label1, label2} = props;
   return (
     <FormControl component="fieldset" className={classes.root}>
       <RadioGroup row aria-label="position" name="position" defaultValue="top" className={classes.margin}>
-        <FormControlLabel value="yes" control={<Radio color="primary" />} label="Yes, Sure!" />
-        <FormControlLabel value="no" control={<Radio color="primary" />} label="No, I will reply to each request myself." />
+        <FormControlLabel value="yes" control={<Radio color="primary" />} label={label1} />
+        <FormControlLabel value="no" control={<Radio color="primary" />} label={label2} />
       </RadioGroup>
     </FormControl>
   );

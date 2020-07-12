@@ -7,10 +7,10 @@ import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '2px 4px',
+    padding: '2px 2px',
     display: 'flex',
     alignItems: 'center',
-    width: '80%',
+    width: '100%',
     borderRadius: '25px',
     border: '1px solid grey',
   },
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   iconButton: {
-    padding: 10,
+    padding: 8,
   }
 }));
 
@@ -30,7 +30,7 @@ export default function SearchLocationInput() {
     <Paper component="form" className={classes.root}>
       <InputBase
         className={classes.input}
-        placeholder="Search Google Maps"
+        placeholder="Enter your address"
         inputProps={{ 'aria-label': 'search google maps' }}
       />
       <IconButton type="submit" className={classes.iconButton} aria-label="search">

@@ -1,21 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import Background from '../../assets/images/Background.png';
+import { makeStyles } from '@material-ui/core/styles';
 
-const StyledMain = styled.main`
-    background-image: url(${Background});
-    background-repeat: non-repeat;
-    background-size: cover;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    position: absolute;
-    height: 90%;
-    width: 100%;
-`;
+const useStyles = makeStyles((theme) => ({
+    main: {
+        backgroundImage: "url(" + Background + ")",
+        backgroundrRepeat: 'non-repeat',
+        backgroundSize: 'cover',
+        backgroundColor: 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'absolute',
+        height: '90%',
+        width: '100%',
+    },
+}));
 
-export const Layout = (props: any) => (
-    <StyledMain>
-        {props.children}
-    </StyledMain>
-);
+export const Layout = (props: any) => {
+    const classes = useStyles();
+    return (
+        <div className={classes.main}>
+            {props.children}
+        </div>
+    );
+}

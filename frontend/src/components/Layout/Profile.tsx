@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -12,31 +11,21 @@ import LocalDiningIcon from '@material-ui/icons/LocalDining';
 import InboxIcon from '@material-ui/icons/Inbox';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import Avatar from '@material-ui/core/Avatar';
 
-
-const StyledNavProfile = styled.nav`
-    position: relative;
-    background-color: transparent;
-    height: 70%;
-`;
-
-const ProfileImg = styled.img`
-    border: 1px solid red;
-    border-radius: 50%;
-    height: 100%;
-`;
-
-const Badge = styled.span`
-    position: absolute;
-    top: 0px;
-    right: 60px;
-    padding: 3px 9px;
-    border-radius: 50%;
-    background-color: red;
-    color: white;
-    font-weight: bold;
-    align-items: center;
-`;
+const useStyles = makeStyles((theme) => ({
+    root: {
+        position: 'relative',
+        backgroundColor: 'transparent',
+        height: '100%',
+        marginRight: theme.spacing(2),
+    },
+    profile: {
+        border: '1px solid red',
+        width: theme.spacing(8),
+        height: theme.spacing(8),
+    }
+}));
 
 const StyledMenu = withStyles({
     paper: {
@@ -74,7 +63,7 @@ interface Props {
 }
 
 export const Profile = (props: Props) => {
-
+    const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
@@ -85,11 +74,9 @@ export const Profile = (props: Props) => {
         setAnchorEl(null);
     };
     return (
-    <StyledNavProfile>
-            <ProfileImg src={props.imageSource} alt={props.altText} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} />
-            <Badge> 1 </Badge>
-        
-        <StyledMenu
+    <div className={classes.root}>
+        <Avatar className={classes.profile} src={props.imageSource} alt={props.altText} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}/>
+         <StyledMenu
             id="simple-menu"
             anchorEl={anchorEl}
             keepMounted
@@ -132,6 +119,9 @@ export const Profile = (props: Props) => {
             </StyledMenuItem>
 
         </StyledMenu>
-    </StyledNavProfile>
+    </div>
     );
 }
+
+/* <ProfileImg src={props.imageSource} alt={props.altText} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} />
+        */

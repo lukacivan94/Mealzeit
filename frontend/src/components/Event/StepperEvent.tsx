@@ -6,17 +6,36 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { orange  } from '@material-ui/core/colors';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
-import EventCarousel from './EventCarousel';
-import { EventCreatedMessage } from './EventCreatedMessage';
-import JoinPage from './JoinPage';
-import Menu from './Menu';
+import EventLocationTimeInput from './EventLocationTime/EventLocationTimeInput';
+import { EventCreatedMessage } from './EventAdditionalInfo/EventCreatedMessage';
+import JoinPageRoom from './EventMembers/JoinPageRoom';
+import JoinPageCourse from './EventMembers/JoinPageCourse';
+import Menu from './EventRecipesSelection/Menu';
+import MoreInfo from './EventAdditionalInfo/MoreInfo';
+import TabBar from './TabBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '90%',
-    height: '60%',
-    margin: '20px',
+    height: '100%',
+    width: '100%',
+    display: 'inline-block',
+    flexDirection: 'column',
+    backgroundColor: 'transparent',
+    margin: '50px 50px 0 50px',
+    alignItems: 'center',
+
+  },
+  wrapper: {
+    padding: '30px',
+    textAlign: 'center',
+    alignItems: 'center',
+    paddingTop: '50px',
+    margin: '0 auto',
+    fontFamily: 'Source Sans Pro, sans-serif',
   },
   button: {
     marginRight: theme.spacing(4),
@@ -28,11 +47,29 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     width: '100%',
     justifyContent: 'center', 
-    paddingBottom: '50px',
+    paddingBottom: '10px',
     alignItems: "center",
     display: 'flex',
-  }
+  },
+  stepIcon: {
+    color: "pink"
+  },
 }));
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiStepIcon: {
+      root: {
+        '&$completed': {
+        color: 'LightGreen',
+      },
+        '&$active': {
+          color: 'orange',
+        },
+      },
+    },
+  }
+});
 
 const ColorButton = withStyles((theme) => ({
   root: {
@@ -45,19 +82,19 @@ const ColorButton = withStyles((theme) => ({
 }))(Button);
 
 function getSteps() {
-  return ['Select place and time', 'Create invites', 'Select Recipes', 'Additional information'];
+  return ['Select place and time', 'Members', 'Select Recipes', 'Additional information'];
 }
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <EventCarousel />;
+      return <TabBar left={<EventLocationTimeInput course={ false }/>} right={<EventLocationTimeInput course={ true }/>}/>;
     case 1:
-      return <JoinPage />;
+      return <TabBar left={<JoinPageRoom />} right={<JoinPageCourse />}/>;
     case 2:
-      return <Menu />;
+      return <TabBar left={<Menu />} right={<Menu />}/>;
     case 3:
-        return "something is here!";
+        return <TabBar left={<MoreInfo course={ false } />} right={<MoreInfo course={ true } />}/>;
     default:
       return 'Unknown step';
   }
@@ -82,6 +119,8 @@ export default function HorizontalLinearStepper() {
 
   return (
     <div className={classes.root}>
+      <div className={classes.wrapper}>
+      <MuiThemeProvider theme={theme}>
       <Stepper activeStep={activeStep}>
         {steps.map((label) => {
           const stepProps = {};
@@ -97,9 +136,9 @@ export default function HorizontalLinearStepper() {
       <div>
         {activeStep === steps.length ? (
           <div>
-            <Typography className={classes.instructions}>
-                <EventCreatedMessage />
-            </Typography>
+            <Paper className={classes.instructions} elevation={0}>
+              <EventCreatedMessage />
+            </Paper>
             <div className={classes.margin}>
                 <Button onClick={handleReset} variant="contained" className={classes.button}>
                   Reset
@@ -124,6 +163,8 @@ export default function HorizontalLinearStepper() {
             </div>
           </div>
         )}
+      </div>
+      </MuiThemeProvider>
       </div>
     </div>
   );

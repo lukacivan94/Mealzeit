@@ -15,9 +15,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginRight: theme.spacing(1),
     borderRadius: '50%',
-    width: '1px',
+    width: '10%',
     height: '60px',
     border: '1px solid grey',
+    cursor: 'pointer',
   },
   margin: {
     justifyContent: 'center', 
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   middle: {
-      fontSize: '35px',
+      fontSize: '30px',
       '&:hover': {
         boxShadow: 'none',
         backgroundColor: 'transparent',
