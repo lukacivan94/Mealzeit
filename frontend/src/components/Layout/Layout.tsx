@@ -8,16 +8,15 @@ const StyledMain = styled.main`
     background-size: cover;
     background-color: transparent;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
     position: absolute;
-    max-height: 85%;
-    min-height: 42%;
+    min-height: 625px;
     height: auto;
     width: 100%;
-    width: 100%;
-    margin-top: 9%;
-    margin-bottom: 5%;
-    padding: 15% 0%;
+    margin-top: 100px;
+    margin-bottom: 75px;
+    padding: 20px 0;
 `;
 
 export const Layout = (props: any) => (

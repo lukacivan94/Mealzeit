@@ -9,7 +9,7 @@ const StyledFooter = styled.div`
     position: fixed;
     left: 0;
     bottom: 0;
-    height: 2%;
+    height: 35px;
     width: 100%;
     box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.5);
 `;
