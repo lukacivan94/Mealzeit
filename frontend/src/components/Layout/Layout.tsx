@@ -4,16 +4,19 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     main: {
-        backgroundImage: "url(" + Background + ")",
+        backgroundImage: 'url(' + Background + ')',
         backgroundrRepeat: 'non-repeat',
         backgroundSize: 'cover',
         backgroundColor: 'transparent',
         display: 'flex',
         alignItems: 'center',
         position: 'absolute',
-        height: '90%',
+        height: 'auto',
         width: '100%',
-    },
+        margin: '75px 0 30px',
+        paddingBottom: '30px',
+        minHeight: '805px'
+    }
 }));
 
 export const Layout = (props: any) => {
