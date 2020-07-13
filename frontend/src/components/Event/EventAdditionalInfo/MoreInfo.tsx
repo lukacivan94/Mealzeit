@@ -40,6 +40,9 @@ const theme = createMuiTheme({
 const required = value => value ? undefined : 'Required';
 const Range = value => value && (Number(value) < 0 || Number(value)>5000) ? 'Invalid Price, enter from 0 to 5000!': undefined;
 
+interface Props {
+  course: boolean;
+}
 
 const validate = values => {
     const errors = { priceSplit: '' };
@@ -76,7 +79,7 @@ const validate = values => {
     );
   }
 
-const MoreInfo = (props) => {
+const MoreInfo = (props: Props) => {
     const { course } = props;
         return (
             <StyleDiv>
@@ -230,7 +233,7 @@ const renderTitle = ({
   };
 
 
-export default reduxForm({
+export default reduxForm<{}, Props>({
     form: 'MoreInfo',
     validate,
   })(MoreInfo);

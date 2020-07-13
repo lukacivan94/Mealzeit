@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import RecipeForm from './RecipeForm';
 import Screen from '../../components/Screen/Screen';
 import axios from '../../axios';
-import styled from 'styled-components';
 import RecipeShareStep from './RecipeShareStep';
 import { RecipeConfirmationStep } from './RecipeConfirmationStep';
 
@@ -23,7 +22,30 @@ const useStyles = makeStyles((theme: Theme) =>
         instructions: {
             marginTop: theme.spacing(1),
             marginBottom: theme.spacing(1)
-        }
+        },
+        main: {
+            height: '100%',
+            width: '100%',
+            display: 'inline-block',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+            margin: '50px 50px 0 50px',
+        },
+        wrapper: {
+            padding: '30px',
+            textAlign: 'center',
+            alignItems: 'center',
+            paddingTop: '50px',
+            margin: '0 auto',
+            fontFamily: 'Source Sans Pro, sans-serif',
+        },
+        buttondiv: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginRight: '100px',
+        },
     })
 );
 
@@ -66,12 +88,6 @@ const getStepContent = (stepIndex: number) => {
     }
 };
 
-const StyledButtonDiv = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 100px;
-`;
 
 const Recipe = () => {
     const classes = useStyles();
@@ -92,37 +108,41 @@ const Recipe = () => {
 
     return (
         <Screen>
-            <div className={classes.root}>
-                <Stepper activeStep={activeStep} alternativeLabel>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <div>
-                    {activeStep === steps.length ? (
+            <div className={classes.main}>
+                <div className={classes.wrapper}>
+                    <div className={classes.root}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
                         <div>
-                            <RecipeConfirmationStep />
-                            <Button onClick={handleReset}>Reset</Button>
+                            {activeStep === steps.length ? (
+                                <div>
+                                    <RecipeConfirmationStep />
+                                    <Button onClick={handleReset}>Reset</Button>
+                                </div>
+                            ) : (
+                                    <div>
+                                        <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+                                        <div className={classes.buttondiv}>
+                                            <Button
+                                                disabled={activeStep === 0}
+                                                onClick={handleBack}
+                                                className={classes.backButton}
+                                            >
+                                                Back
+                                            </Button>
+                                            <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleNext}>
+                                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
                         </div>
-                    ) : (
-                            <div>
-                                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-                                <StyledButtonDiv>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        className={classes.backButton}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleNext}>
-                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                    </Button>
-                                </StyledButtonDiv>
-                            </div>
-                        )}
+                    </div>
                 </div>
             </div>
         </Screen>

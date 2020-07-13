@@ -21,10 +21,19 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       justifyContent:'space-evenly',
-      paddingBottom: '25px',
-      paddingTop: '25px',
       margin: '20px',
       fontFamily: 'Source Sans Pro, sans-serif',
+      padding: '25px 10px',
+    },
+    details: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent:'space-between',
+      borderRadius:'25px',
+      boxShadow: '1px 9px 32px -2px rgba(0,0,0,0.75)',
+      overflow: 'hidden',
+      border:'2px solid grey',
+      
     },
     title:{
       display:'flex',
@@ -37,19 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
         'font-size':'large',
         flexDirection:'row',
         margin: '5px 5px',
-        //border:'3px solid red',
-
     },
-    details: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent:'space-between',
-      borderRadius:'25px',
-      boxShadow: '1px 9px 32px -2px rgba(0,0,0,0.75)',
-      overflow: 'hidden',
-      border:'2px solid grey',
-      
-    },
+   
     content: {
       //flex: '1 0 auto',
       display: 'flex',

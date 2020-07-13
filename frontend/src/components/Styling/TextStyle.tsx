@@ -4,13 +4,13 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     eventdiv: {
         paddingTop: '10px',
-        paddingBottom: '20px',
+        paddingBottom: '30px',
     },
     textdiv: {
         fontFamily: 'Source Sans Pro, sans-serif',
         fontSize: '30px',
         paddingTop: '5px',
-        paddingBottom: '10px',
+        paddingBottom: '20px',
     },
     stylediv: {
         fontFamily: 'Source Sans Pro, sans-serif',
@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
     textsmalldiv: {
         fontFamily: 'Source Sans Pro, sans-serif',
         fontSize: '20px',
-        paddingTop: '10px',
-        paddingBottom: '10px',
+        paddingTop: '15px',
+        paddingBottom: '15px',
         color: 'orange',
     },
     bigtextdiv: {

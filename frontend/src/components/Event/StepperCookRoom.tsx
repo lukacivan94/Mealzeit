@@ -18,7 +18,6 @@ import Menu from './EventRecipesSelection/Menu';
 import MoreInfo from './EventAdditionalInfo/MoreInfo';
 import TabBar from './TabBar';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
@@ -89,13 +88,13 @@ function getSteps() {
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <TabBar><EventLocationTimeInput course={ false }/></TabBar>;// right={<EventLocationTimeInput course={ true }/>}/>;
+      return <TabBar><EventLocationTimeInput course={ false }/></TabBar>;
     case 1:
-      return <TabBar><JoinPageRoom /></TabBar>;//right={<JoinPageCourse />}/>;
+      return <TabBar><JoinPageRoom /></TabBar>;
     case 2:
-      return <TabBar><Menu /></TabBar>;// right={<Menu />}/>;
+      return <TabBar><Menu /></TabBar>;
     case 3:
-        return <TabBar><MoreInfo course={ false } /></TabBar>;//right={<MoreInfo course={ true } />}/>;
+        return <TabBar><MoreInfo course={ false } /></TabBar>;
     default:
       return 'Unknown step';
   }

@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SignUp from '../screens/SignUp/SignUp';
 import HomePage from '../screens/Home/HomePage';
-import EventPage from '../screens/Event/EventsPages';
+import Course from '../screens/Event/Course';
+import CookRoom from '../screens/Event/CookRoom';
 import Auth from '../screens/Auth/Auth';
 import Recipe from '../screens/Recipe/Recipe';
 import BrowsePage from '../screens/Browse/BrowsePage';
@@ -13,7 +14,8 @@ const Routes = () => (
             <Route exact path='/' component={() => <HomePage />} />
             <Route exact path='/sign-up' component={SignUp} />
             <Route exact path='/sign-in' component={Auth} />
-            <Route path='/event' component={() => <EventPage />} />
+            <Route path='/course' component={() => <Course />} />
+            <Route path='/cookroom' component={() => <CookRoom />} />
             <Route path='/recipe' component={() => <Recipe />} />
             <Route path='/browse' component={() => <BrowsePage />} />
             <Route render={() => <h1>404 Page not found</h1>} />

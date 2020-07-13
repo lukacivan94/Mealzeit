@@ -6,7 +6,6 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { History, LocationState } from 'history';
 import styled from 'styled-components';
-import {ButtonStyle} from '../Styling/TextStyle';
 
 const useStyles = makeStyles((theme) => ({
     main: {
@@ -66,7 +65,7 @@ const Header = (props: Props) => {
                     <StyledButton
                         variant='contained'
                         color='primary'
-                        className={classes.button}
+                        //className={classes.button}
                         onClick={goToLogin}
                     >
                         Log In
@@ -74,7 +73,7 @@ const Header = (props: Props) => {
                     <StyledButton
                         variant='contained'
                         color='primary'
-                        className={classes.button}
+                        //className={classes.button}
                         onClick={goToSignup}
                     >
                         Sign Up

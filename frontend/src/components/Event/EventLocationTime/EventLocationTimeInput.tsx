@@ -60,8 +60,11 @@ const validate = values => {
     });
     return errors;
 };
+interface Props {
+    course: boolean;
+}
 
-const EventLocationTimeInput = props => {
+const EventLocationTimeInput = (props: Props) => {
     const { course } = props;
         return (
             <StyleDiv>
@@ -191,7 +194,7 @@ const renderDateBar = ({
 }
 
 
-export default reduxForm({
+export default reduxForm<{}, Props>({
     form: 'EventLocationTimeInput',
     validate,
   })(EventLocationTimeInput);

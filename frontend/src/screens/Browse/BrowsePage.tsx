@@ -50,26 +50,3 @@ export const Browse = () => {
 }
 
 export default Browse;
-
-// const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-//     new Date(),
-//   );
-//   const [selectedEvent, setSelectedEvent] = React.useState<string | null>( "");
-
-//   const handleDateChange = (date: Date | null) => {
-//     setSelectedDate(date);
-//   };
-//   const handleChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     setSelectedEvent(event.target.value);
-//   }
-//   const [values, setValues] = React.useState<State>({
-//     numberformat: '4',
-//   });
-
-//   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     setValues({
-//       ...values,
-//       [event.target.name]: event.target.value,
-//     });
-    
-//   };
