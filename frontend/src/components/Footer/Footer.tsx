@@ -1,60 +1,58 @@
 import React from 'react';
-import styled from 'styled-components';
 
-const StyledFooter = styled.div`
-    background-color: #F88805;
-    border-top: 1px solid #F88805;
-    text-align: center;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    height: 2%;
-    width: 100%;
-    box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.5);
-`;
+import { makeStyles } from '@material-ui/core/styles';
 
-/*const StyledFooterHeader = styled.div`
-    display: block;
-    padding: 20px;
-    height: 10px;
-    width: 100%;
-    box-shadow: 0 4px 2px rgba(50, 50, 50, 0.4);
-`;
-*/
+const useStyles = makeStyles((theme) => ({
+    main: {
+        backgroundColor: '#F88805',
+        borderTop: '1px solid #F88805',
+        textAlign: 'center',
+        padding: '12px',
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
+        height: '5px',
+        width: '100%',
+        boxShadow: '0px -4px 3px rgba(50, 50, 50, 0.5)',
+        display: 'flex',
+        alignSelf: 'flex-start',
+    },
+    list: {
+        color: 'white',
+        fontFamily: 'Source Sans Pro, sans-serif',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        display: 'flex',
+        alignItems: 'center',    
+        justifyContent: 'flex-start',
+        paddingBottom: '10px',
 
-const StyledLink = styled.a`
-    margin: 30px;
-    padding-bottom: 30px;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-`;
+    },
+    item: {
+        listStyleType: 'none',
+    },
+    link: {
+        margin: '20px',
+        paddingBottom: '20px',
+        color: 'white',
+        textDecoration: 'none',
+        textAlign: 'center',
+    },
+}));
 
-const StyledList = styled.div`
-    color: $white;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-`;
-
-const StyledListItem = styled.nav`
-    list-style-type: none;
-    padding-bottom: 30px;
-`;
-
-const Footer = () => (
+const Footer = () => {
+    const classes = useStyles();
+    return (
     <>
-        <StyledFooter >
-            <StyledList >
-                <StyledListItem><StyledLink href='/'>About Us</StyledLink></StyledListItem>
-                <StyledListItem><StyledLink href='/'>Help and Support</StyledLink></StyledListItem>
-                <StyledListItem><StyledLink href='/'>Partnership</StyledLink></StyledListItem>
-            </StyledList>
-        </StyledFooter>
+        <div className={classes.main}>
+            <div className={classes.list}>
+                <nav className={classes.item}><a className={classes.link} href='/'>About Us</a></nav>
+                <nav className={classes.item}><a className={classes.link} href='/'>Help and Support</a></nav>
+                <nav className={classes.item}><a className={classes.link} href='/'>Partnership</a></nav>
+            </div>
+        </div>
     </>
-);
+    );
+}
 
 export default Footer;
