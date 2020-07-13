@@ -9,6 +9,8 @@ import RecipeForm from './RecipeForm';
 import Screen from '../../components/Screen/Screen';
 import axios from '../../axios';
 import styled from 'styled-components';
+import RecipeShareStep from './RecipeShareStep';
+import { RecipeConfirmationStep } from './RecipeConfirmationStep';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const getSteps = () => {
-    return ['Select master blaster campaign settings', 'Create an ad group', 'Create an ad'];
+    return ['Select master blaster campaign settings', 'Create an ad group'];
 };
 
 const handleSaveRecipe = (values) => {
@@ -58,9 +60,7 @@ const getStepContent = (stepIndex: number) => {
         case 0:
             return (<RecipeForm onSubmit={handleSaveRecipe} />);
         case 1:
-            return 'What is an ad group anyways?';
-        case 2:
-            return 'This is the bit I really care about!';
+            return <RecipeShareStep />;
         default:
             return 'Unknown stepIndex';
     }
@@ -103,7 +103,7 @@ const Recipe = () => {
                 <div>
                     {activeStep === steps.length ? (
                         <div>
-                            <Typography className={classes.instructions}>All steps completed</Typography>
+                            <RecipeConfirmationStep />
                             <Button onClick={handleReset}>Reset</Button>
                         </div>
                     ) : (
