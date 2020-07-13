@@ -23,16 +23,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SearchLocationInput() {
+export default function SearchLocationInput({input, ...custom}) {
   const classes = useStyles();
 
   return (
     <Paper component="form" className={classes.root}>
       <InputBase
-        className={classes.input}
-        placeholder="Enter your address"
-        inputProps={{ 'aria-label': 'search google maps' }}
-      />
+            className={classes.input}
+            placeholder="Enter your address"
+            {...input}
+            {...custom}
+        />
       <IconButton type="submit" className={classes.iconButton} aria-label="search">
         <SearchIcon />
       </IconButton>

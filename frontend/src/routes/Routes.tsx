@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Screen from '../components/Screen/Screen';
-import HomePage from '../components/Layout/HomePage';
-import EventPage from '../components/Event/EventsPages';
-import Auth from '../screens/Auth/Auth';
+import HomePage from '../screens/Home/HomePage';
+import EventPage from '../screens/Event/EventsPages';
+//import Auth from '../screens/Auth/Auth';
 
 const Routes = () => (
     <Router>

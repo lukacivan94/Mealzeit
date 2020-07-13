@@ -1,9 +1,10 @@
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
-import Screen from '../Screen/Screen';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import FastfoodOutlinedIcon from '@material-ui/icons/FastfoodOutlined';
 import { makeStyles } from '@material-ui/core/styles';
+
+import Screen from '../../components/Screen/Screen';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
     },
     wrapper: {
         padding: '30px',
-        //border: 'none',
         textAlign: 'center',
         alignItems: 'center',
         paddingTop: '50px',

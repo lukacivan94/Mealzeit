@@ -1,20 +1,33 @@
-import 'date-fns';
 import React from 'react';
+import { Field, reduxForm } from 'redux-form';
 import Grid from '@material-ui/core/Grid';
+import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDateTimePicker,
-  validate,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from '@material-ui/pickers';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
+import { makeStyles } from '@material-ui/core/styles';
 
 import DatesList from './DatesList';
-import { ButtonStyle } from '../../../Styling/TextStyle';
 
 const dateString : Object[] = [];
+
+const useStyles = makeStyles((theme) => ({
+    button: {
+        background: '#F88805',
+        color: 'white',
+        fontSize: '1.3em',
+        margin: '1.5em',
+        padding: '0.5em 1em',
+        border: '2px solid #F88805',
+        borderRadius: '25px',
+        outline: 'None',
+    },
+    form: {
+      backgroundColor: 'lightgrey',
+    }
+}));
 
 const theme = createMuiTheme({
   palette: {
@@ -23,16 +36,25 @@ const theme = createMuiTheme({
 });
 
 
+const validate = (selectedDate) => {
+  const errors = {};
+  if ((new Date(selectedDate) < new Date())) {
+    // set date error validation true 
+  } else {
+    // null or false date error validation 
+  }
+}
 
-export default function MaterialUIPickers({ multiple }) {
+export const MaterialUIPickers = ({ multiple, input }) => {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [dateArray, setDateArray] = React.useState(dateString);
   const title = multiple ? "Enter multiple dates" : "Enter a date";
+  const classes = useStyles();
+
 
   const [count, setCount] = React.useState(0);
 
   const handleDeleteId = (ids) => {
-    //dateString.splice(dateString.findIndex(e => e.key === ids),1);
     setDateArray((dates) => dates.filter((chip ?: any) => chip.key  !== ids));
 
   }
@@ -71,6 +93,7 @@ export default function MaterialUIPickers({ multiple }) {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="space-around">
           <KeyboardDateTimePicker
+            //{...input}
             clearable
             value={selectedDate}
             onChange={handleDateChange}
@@ -80,8 +103,11 @@ export default function MaterialUIPickers({ multiple }) {
         </Grid>
       </MuiPickersUtilsProvider>
     {multiple ? <DatesList dates={ dateArray } id={handleDeleteId}/> : null}
-    <ButtonStyle onClick={handleReset}>console log dates</ButtonStyle>
+    <button className={classes.button} onClick={handleReset}>console log dates</button>
     </MuiThemeProvider>
     </div>
   );
 }
+
+
+export default MaterialUIPickers;

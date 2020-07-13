@@ -122,6 +122,3 @@ export const Profile = (props: Props) => {
     </div>
     );
 }
-
-/* <ProfileImg src={props.imageSource} alt={props.altText} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} />
-        */

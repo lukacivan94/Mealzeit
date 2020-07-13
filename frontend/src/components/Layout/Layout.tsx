@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import Background from '../../assets/images/Background.png';
 import { makeStyles } from '@material-ui/core/styles';
 

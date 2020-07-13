@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-//import styled from 'styled-components';
-import Screen from '../Screen/Screen';
-import StepperEvent from './StepperEvent';
+import Screen from '../../components/Screen/Screen';
+import StepperEvent from '../../components/Event/StepperEvent';
 
 
 class EventPage extends Component {
