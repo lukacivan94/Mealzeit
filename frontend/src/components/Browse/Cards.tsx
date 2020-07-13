@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Table from '../Browse/Table';
 import Avatars from '../Browse/Avatars';
-
+import GroupAvatars from '../Browse/Avatars';
 
 import {XCircle, CheckCircle} from 'react-bootstrap-icons';
 
@@ -69,7 +69,7 @@ interface Props {
     id: string;
     imageSource: string;
     text: string;
-    Date: Date;
+    Date: string;
     Cuisine: String;
     EventType: String;
     Location : String;
@@ -97,7 +97,7 @@ export const Cards = (props: Props) => (
           <CheckCircle size={60} color = "green"/>
         </CardTickButton>
         <Avatars imageSource={props.Invited} text = {props.invitedText}/>
-        <Avatars imageSource={props.Invitee} text = {props.inviteeText} />
+        <GroupAvatars imageSource={props.Invitee} text = {props.inviteeText} />
     </StyledDiv>
 );
 

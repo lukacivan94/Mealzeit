@@ -1,45 +1,48 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import styled from 'styled-components';
 
+import { Theme,createStyles, makeStyles } from '@material-ui/core/styles';
 
 function importAll(r) {
     return r.keys().map(r);
 };
-const ParentDiv = styled.div`
-    background-color: white;
-    padding: 5px;
-    position:relative
-`;
-const StyledDiv = styled.div`
-    background-color: white;
-    font-color: black;
-    position:absolute
-`;
+const useStyles = makeStyles((theme: Theme) =>
+createStyles({
+    ParentDiv: {
+        display:'flex',
+        flexDirection:'row',
+        justifyContent: 'space-around',
+        padding: '5px',
+        
+      },
+      text:{
+        fontColor: 'black',
+        padding:'10px',
+      },
+    }),
+);
+
 interface Props {
-    imageSource: string;
+    Invited: String;
     text:string;
+    name:string;
 }
 
 export default function  Avatars(props:Props){
-    console.log(props.imageSource);
-    const listOfImages = importAll(require.context('../../assets/images/Invited/', false, /\.(png|jpe?g|svg)$/));
+    const classes = useStyles();
+    //console.log(props.imageSource);
+    // const listOfImages = importAll(require.context('../../assets/images/Invited/', false, /\.(png|jpe?g|svg)$/));
     //console.log(listOfImages)
     return (
-        <div>
-            <ParentDiv> 
-                {
-                    listOfImages.map(
-                    (image, index) => <Avatar key={index} src={image.default}/>
-                    )
-                }
-        </ParentDiv>
-        <StyledDiv>{props.text} </StyledDiv>
+        <div className = {classes.ParentDiv}> 
+                <Avatar alt={props.name} src={props.Invited}/>
+                <div className={classes.text}>{props.text} </div>   
         </div>
-        
+             
         
     );
 }
+
 
 
 

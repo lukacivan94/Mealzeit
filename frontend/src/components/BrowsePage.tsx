@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import Screen from './Screen/Screen';
-import Filters from './Browse/Filters';
-import {Cards} from './Browse/Cards';
-import Burgers from '../assets/images/burger.jpg';
+//import Filters from './Browse/Filters';
+
 import SampledEvents from './Browse/sampleEvents';
-
-
+import MultipleSelect from './Browse/Filters';
+import {FriendCard} from './Browse/CardList';
 class Browse extends Component{ 
     render(){
         return(
@@ -16,20 +15,9 @@ class Browse extends Component{
                     </div>
                     <div className="Browse-text_paragraph">
                         Whether you want to help or simplymeet someone- at Mealzeit you will find an event that fits you best
-                        {console.log("value printing")}
-                        {console.log(SampledEvents[0].Location)}
                     </div>
+                    <MultipleSelect/>
                     
-                    <li className = 'cards'>
-                        {
-                            SampledEvents.map(
-                            (val) => <Cards key={val.eventId} id={val.eventId} imageSource={Burgers} text= "Burgers and fries at my place" Date = {val.Date}  Cuisine = {val.Cuisine} 
-                            EventType = {val.EventType} Location = {val.Location} FoodType = {val.FoodType} MealType = {val.MealType} Size = {val.Size} Setting = {val.Setting} 
-                            Invited = {val.Invited} Invitee = {val.Invitee} invitedText = {val.invitedText} inviteeText = {val.inviteeText}/>
-                            )
-                        }
-
-                    </li>
                     
                 </div>
             </Screen>
@@ -39,3 +27,25 @@ class Browse extends Component{
 
 export default Browse;
 
+// const [selectedDate, setSelectedDate] = React.useState<Date | null>(
+//     new Date(),
+//   );
+//   const [selectedEvent, setSelectedEvent] = React.useState<string | null>( "");
+
+//   const handleDateChange = (date: Date | null) => {
+//     setSelectedDate(date);
+//   };
+//   const handleChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setSelectedEvent(event.target.value);
+//   }
+//   const [values, setValues] = React.useState<State>({
+//     numberformat: '4',
+//   });
+
+//   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setValues({
+//       ...values,
+//       [event.target.name]: event.target.value,
+//     });
+    
+//   };
