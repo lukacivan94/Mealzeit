@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Screen from '../../components/Screen/Screen';
 import LoginForm from './LoginForm';
 import axios from '../../axios';
+import { History, LocationState } from 'history';
+import { connect } from 'react-redux';
+import { login } from '../../store/actions/authActions';
 
 // TODO: (burak) It will be added later
 // import setAuthToken from 'utils/authToken';
@@ -12,7 +15,13 @@ interface AuthState {
     modalText: string;
 }
 
-export default class Auth extends Component<{}, AuthState> {
+interface AuthProps {
+    isLoggedIn: boolean;
+    history: History<LocationState>;
+    login();
+}
+
+class Auth extends Component<AuthProps, AuthState> {
 
     constructor(props) {
         super(props);
@@ -32,6 +41,10 @@ export default class Auth extends Component<{}, AuthState> {
             .then(res => {
                 const { token } = res.data;
                 localStorage.setItem('jwtToken', token);
+
+                this.props.login();
+
+                this.props.history.push('/');
 
                 // TODO: (burak) It will be added later
                 // setAuthToken(token);
@@ -54,3 +67,13 @@ export default class Auth extends Component<{}, AuthState> {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    isLoggedIn: state.auth.isLoggedIn
+});
+
+const mapDispatchToProps = {
+    login
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
