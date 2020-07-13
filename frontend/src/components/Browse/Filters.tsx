@@ -15,10 +15,18 @@ import Burgers from '../../assets/images/burger.jpg';
 import SampledEvents from './sampleEvents';
 import invited from '../../assets/images/Invited/invited_by.png'
 import { NamedModulesPlugin } from 'webpack';
-
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      boxShadow: ' -1px 9px 34px -13px rgba(0,0,0,0.75);',
+    },
+    wrapper: {
+     backgroundColor: 'white', 
+     padding: '10px',
+     margin: '10px',
+    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
@@ -159,7 +167,8 @@ export default function MultipleSelect() {
   console.log(SampledEvents.map((val)=>val.Date ))
   return (
     
-    <div>
+    <div className={classes.root}>
+      <div className={classes.wrapper}>
       <FormControl className={classes.formControl} onChange={handleChangeEvent}>
         <InputLabel htmlFor="native-select">Event Type</InputLabel>
         <Select native defaultValue="" id="EventType" value ={selectedEvent}>
@@ -236,6 +245,8 @@ export default function MultipleSelect() {
           inputComponent: NumberFormatCustom as any,
         }}
       />
+      </div>
+      <Divider variant="middle" />
       <li>
             {
                 filteredData.map(

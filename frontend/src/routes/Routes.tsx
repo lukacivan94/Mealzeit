@@ -5,7 +5,7 @@ import HomePage from '../screens/Home/HomePage';
 import EventPage from '../screens/Event/EventsPages';
 import Auth from '../screens/Auth/Auth';
 import Recipe from '../screens/Recipe/Recipe';
-import BrowsePage from '../components/BrowsePage';
+import BrowsePage from '../screens/Browse/BrowsePage';
 
 const Routes = () => (
     <Router>

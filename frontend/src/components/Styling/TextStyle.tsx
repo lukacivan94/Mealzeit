@@ -26,6 +26,12 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: '10px',
         color: 'orange',
     },
+    bigtextdiv: {
+        fontFamily: 'Source Sans Pro, sans-serif',
+        fontSize: '40px',
+        paddingTop: '50px',
+        paddingBottom: '10px',
+    },
     rowdiv: {
         paddingTop: '1px',
         width: '100%',
@@ -102,5 +108,15 @@ const ButtonStyle = (props: any) => {
     );
 }
 
+const TextBigDiv = (props: any) => {
+    const classes = useStyles();
+    const { children } = props;
+    return (
+        <div className={classes.bigtextdiv}>
+            {children}
+        </div>
+    );
+}
 
-export {EventDiv, TextDiv, StyleDiv, TextSmallDiv, RowDiv, ButtonStyle};
+
+export {EventDiv, TextDiv, StyleDiv, TextSmallDiv, TextBigDiv, RowDiv, ButtonStyle};

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import Screen from './Screen/Screen';
-//import Filters from './Browse/Filters';
-//import {EventDiv, TextDiv, StyleDiv, TextSmallDiv, RowDiv, ButtonStyle} from 'components'
-import SampledEvents from './Browse/sampleEvents';
-import MultipleSelect from './Browse/Filters';
-import {FriendCard} from './Browse/CardList';
+import Screen from '../../components/Screen/Screen';
+import {EventDiv, TextBigDiv, TextSmallDiv} from '../../components/Styling/TextStyle';
+import MultipleSelect from '../../components/Browse/Filters';
 import { makeStyles } from '@material-ui/core/styles';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
@@ -24,39 +22,6 @@ const useStyles = makeStyles((theme) => ({
         margin: '0 auto',
         fontFamily: 'Source Sans Pro, sans-serif',
     },
-    icon: {
-        transform: 'translate(-10px, 5px)',
-        padding: '2px',
-    },
-    buttonRow: {
-        display: 'flex',
-        flexDirection: 'column',
-        justify: 'flex-start',
-        alignItems: 'center',
-    },
-    button: {
-        background: '#F88805',
-        color: 'white',
-        fontSize: '1.2em',
-        margin: '0.6em',
-        padding: '0.2em 1.5em',
-        border: '1px solid #F88805',
-        borderRadius: '25px',
-        outline: 'none',
-    },
-    big: {
-        fontSize: '50px',
-        paddingTop: '30px',
-        paddingBottom: '5px',
-    },
-    small: {
-        fontSize: '18px',
-        paddingTop: '30px',
-        paddingBottom: '30px',
-    },
-    text: {
-        paddingBottom: '4px',
-    },
 }));
 
 export const Browse = () => { 
@@ -66,13 +31,16 @@ export const Browse = () => {
             <Screen>
                 <div className={classes.root}>
                     <div className={classes.wrapper}>
-                        <div className="Browse-text_header">
-                            What are you looking for? 
-                        </div>
-                        <div className="Browse-text_paragraph">
-                            Whether you want to help or simplymeet someone- at Mealzeit you will find an event that fits you best
-                        </div>
-                        <MultipleSelect/>
+                        <EventDiv>
+                            <TextBigDiv>What are you looking for? </TextBigDiv>
+                            <TextSmallDiv>
+                                Whether you want to help or simply meet someone- at Mealzeit you will find an event that fits you the best!
+                             </TextSmallDiv>
+
+                        </EventDiv>
+                        <EventDiv>
+                            <MultipleSelect/>
+                        </EventDiv>
                         
                     </div>
                 </div>
