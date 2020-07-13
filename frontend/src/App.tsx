@@ -6,9 +6,11 @@ import { reducer as formReducer } from 'redux-form';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'redux-logger';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import authReducer from './store/reducers/authReducer';
 
 const reducers = {
-    form: formReducer
+    form: formReducer,
+    auth: authReducer
 };
 const reducer = combineReducers(reducers);
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(logger)));
