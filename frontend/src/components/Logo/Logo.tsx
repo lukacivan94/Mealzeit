@@ -20,10 +20,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 interface Props {
     imageSource: string;
     altText: string;
 }
+
 
 export const Logo = (props: Props) => {
     const classes = useStyles();

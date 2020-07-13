@@ -57,6 +57,7 @@ const StyledMenu = withStyles({
       },
     },
   }))(MenuItem);
+
 interface Props {
     imageSource: string;
     altText: string;

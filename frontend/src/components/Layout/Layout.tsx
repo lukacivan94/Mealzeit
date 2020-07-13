@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
     },
 }));
-
 export const Layout = (props: any) => {
     const classes = useStyles();
     return (
