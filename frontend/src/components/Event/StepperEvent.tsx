@@ -11,11 +11,11 @@ import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 import EventLocationTimeInput from './EventLocationTime/EventLocationTimeInput';
-//import { EventCreatedMessage } from './EventAdditionalInfo/EventCreatedMessage';
-//import JoinPageRoom from './EventMembers/JoinPageRoom';
-//import JoinPageCourse from './EventMembers/JoinPageCourse';
+import { EventCreatedMessage } from './EventAdditionalInfo/EventCreatedMessage';
+import JoinPageRoom from './EventMembers/JoinPageRoom';
+import JoinPageCourse from './EventMembers/JoinPageCourse';
 import Menu from './EventRecipesSelection/Menu';
-//import MoreInfo from './EventAdditionalInfo/MoreInfo';
+import MoreInfo from './EventAdditionalInfo/MoreInfo';
 import TabBar from './TabBar';
 
 const useStyles = makeStyles((theme) => ({
@@ -90,11 +90,11 @@ function getStepContent(step) {
     case 0:
       return <TabBar left={<EventLocationTimeInput course={ false }/>} right={<EventLocationTimeInput course={ true }/>}/>;
     case 1:
-      return "page 2";//<TabBar left={<JoinPageRoom />} right={<JoinPageCourse />}/>;
+      return <TabBar left={<JoinPageRoom />} right={<JoinPageCourse />}/>;
     case 2:
       return <TabBar left={<Menu />} right={<Menu />}/>;
     case 3:
-        return "page 3";//<TabBar left={<MoreInfo course={ false } />} right={<MoreInfo course={ true } />}/>;
+        return <TabBar left={<MoreInfo course={ false } />} right={<MoreInfo course={ true } />}/>;
     default:
       return 'Unknown step';
   }
