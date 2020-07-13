@@ -19,8 +19,9 @@ const userSchema = mongoose.Schema({
     is_premium_user: {type: Boolean},
     is_verified: {type: Boolean},
     notifications: {type: Array},
-    followers: {type: Array},
-    following: {type: Array},
+    sent_friend_requests: {type: Array},
+    received_friend_requests: {type: Array},
+    friends: {type: Array},
     date_joined: {type: Date},
     last_login: {type: Date},
     profile_picture: {type: String}
