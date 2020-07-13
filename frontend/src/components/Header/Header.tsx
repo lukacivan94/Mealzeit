@@ -1,25 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-
 import { Logo } from '../Logo/Logo';
 import mealZeitLogo from '../../assets/images/MealZeit_logo.png';
 import { ProfileBar } from './ProfileBar';
-
-import profilePic from '../../assets/images/Profile_Pic.png';
-import { Search, PlusCircle } from 'react-bootstrap-icons';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { History, LocationState } from 'history';
-
-const StyledDiv = styled.div`
-    height: 100%;
-    width: 45%;
-    display: flex;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 16px;
-    justify-content: flex-end;
-    align-items: center;
-`;
+import styled from 'styled-components';
 
 const useStyles = makeStyles((theme) => ({
     main: {
@@ -52,14 +38,6 @@ const StyledButton = styled(Button)`
     background-color: darkorange;
 `;
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        button: {
-            margin: theme.spacing(1)
-        }
-    })
-);
-
 interface Props {
     isLoggedIn: boolean;
     history: History<LocationState>;
@@ -80,12 +58,8 @@ const Header = (props: Props) => {
         <header className={classes.main}>
             <Logo imageSource={mealZeitLogo} altText='MealZeit' />
             {props.isLoggedIn ?
-                <StyledDiv>
-                    <StyledNav> <Search style={{ 'paddingRight': '5px' }} /> Find an event </StyledNav>
-                    <StyledNav> <PlusCircle style={{ 'paddingRight': '5px' }} /> Create an event </StyledNav>
-                    <Name>John Doe</Name>
-                    <Profile imageSource={profilePic} altText='ProfilePic' />
-                </StyledDiv>
+
+                <ProfileBar />
                 :
                 <StyledButtonDiv>
                     <StyledButton
@@ -106,7 +80,6 @@ const Header = (props: Props) => {
                   </StyledButton>
                 </StyledButtonDiv>
             }
-                    <ProfileBar />
         </header>
     );
 };
