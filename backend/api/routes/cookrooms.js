@@ -3,11 +3,9 @@ const router = express.Router();
 
 const CookroomsController = require('../controllers/cookrooms');
 
-/// cookroom_add_request
-/// cookroom_accept_request
-/// cookroom_reject_request
 router.post('/', CookroomsController.cookrooms_add_cookroom);
 router.get('/', CookroomsController.cookrooms_get_all);
+router.get('/ofuser/:userId', CookroomsController.cookrooms_get_cookrooms_of_user);
 router.get('/:cookroomId', CookroomsController.cookrooms_get_cookroom);
 router.patch('/:cookroomId', CookroomsController.cookrooms_patch_cookroom);
 router.patch('/addreq/:cookroomId/:userId', CookroomsController.cookroom_add_request);

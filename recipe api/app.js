@@ -4,14 +4,10 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const userRoutes = require('./api/routes/users');
-const cookroomRoutes = require('./api/routes/cookrooms');
-const courseRoutes = require('./api/routes/courses');
 const recipeRoutes = require('./api/routes/recipes');
-const notificationRoutes = require('./api/routes/notifications');
 
 mongoose.connect(
-    "mongodb+srv://mealAdmin:mealAdmin@cluster0-zhcek.mongodb.net/test?retryWrites=true&w=majority",
+    "mongodb+srv://recipe-admin:recipe-admin123@recipecluster.gte73.mongodb.net/recipes?retryWrites=true&w=majority",
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -20,19 +16,9 @@ mongoose.connect(
     }
 );
 
-// This function is used for inheritance
-// Cookroom and Course models inherit from the Event model using extendSchema
-function extendSchema(Schema, definition, options) {
-    return new mongoose.Schema(
-        Object.assign({}, Schema.obj, definition),
-        options
-    );
-}
-module.exports = extendSchema;
-
 app.use(morgan('dev'));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -46,11 +32,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use('/users', userRoutes);
-app.use('/cookrooms', cookroomRoutes);
-app.use('/courses', courseRoutes);
 app.use('/recipes', recipeRoutes);
-app.use('/notifications', notificationRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');

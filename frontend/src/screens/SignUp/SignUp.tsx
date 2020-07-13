@@ -19,6 +19,7 @@ const StyledText = styled.p`
 interface SignupState {
     isModalOpen: boolean;
     modalText: string;
+    image: string;
 }
 
 export default class Signup extends Component<{}, SignupState> {
@@ -27,7 +28,8 @@ export default class Signup extends Component<{}, SignupState> {
         super(props);
         this.state = {
             isModalOpen: false,
-            modalText: ''
+            modalText: '',
+            image: ''
         };
     }
 
@@ -44,13 +46,14 @@ export default class Signup extends Component<{}, SignupState> {
             languages: values.languages,
             is_expert_user: !!values.isExpertUser,
             is_premium_user: false,
-            is_verified_user: false
+            is_verified_user: false,
+            profile_picture: this.state.image
         };
 
         axios.post('/users/signup', newUser)
             .then(res => {
                 if (res && res.data) {
-                    this.setState({ isModalOpen: true, modalText: res.data.message });
+                    this.setState({ isModalOpen: true, modalText: res.data.message, image: '' });
                 }
             })
             .catch(error => {
@@ -66,10 +69,14 @@ export default class Signup extends Component<{}, SignupState> {
         this.setState({ isModalOpen: false, modalText: '' });
     }
 
+    handleImage = (base64Image) => {
+        this.setState({ image: base64Image });
+    }
+
     render() {
         return (
             <Screen>
-                <SignUpForm onSubmit={this.handleSignup} />
+                <SignUpForm onSubmit={this.handleSignup} handleImage={this.handleImage} />
                 <Modal
                     open={this.state.isModalOpen}
                     onClose={this.handleModalClose}

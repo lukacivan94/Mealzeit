@@ -12,8 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         formControl: {
             margin: theme.spacing(1),
-            minWidth: 120,
-            maxWidth: 200
+            minWidth: 120
         },
         chips: {
             display: 'flex',
@@ -39,15 +38,6 @@ const MenuProps = {
     }
 };
 
-const getStyles = (name: string, personName: string[], theme: Theme) => {
-    return {
-        fontWeight:
-            personName.indexOf(name) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium
-    };
-};
-
 const renderMultiple = ({ input, label, meta: { touched, error }, children, value, handleChange, ...custom }) => (
     <Select
         multiple
@@ -55,7 +45,8 @@ const renderMultiple = ({ input, label, meta: { touched, error }, children, valu
         onChange={handleChange}
         input={<Input />}
         MenuProps={MenuProps}
-        errorText={touched && error}
+        error={touched && error}
+        fullWidth
         {...input}
         {...custom}
     >
@@ -68,12 +59,11 @@ export const MultipleSelectField = ({ name, inputLabel, items }) => {
     const classes = useStyles();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        console.log('event.target.value: ', event.target.value);
         setArrayValue(event.target.value as string[]);
     };
 
     return (
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formControl} fullWidth>
             <InputLabel>{inputLabel}</InputLabel>
             <Field
                 name={name}
@@ -92,5 +82,4 @@ export const MultipleSelectField = ({ name, inputLabel, items }) => {
             </Field>
         </FormControl>
     );
-    // }
 };
