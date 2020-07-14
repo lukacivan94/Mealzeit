@@ -18,7 +18,7 @@ interface AuthState {
 interface AuthProps {
     isLoggedIn: boolean;
     history: History<LocationState>;
-    login();
+    login(userId);
 }
 
 class Auth extends Component<AuthProps, AuthState> {
@@ -39,10 +39,11 @@ class Auth extends Component<AuthProps, AuthState> {
 
         axios.post('/users/login', loginData)
             .then(res => {
-                const { token } = res.data;
+                const { token, userId } = res.data;
                 localStorage.setItem('jwtToken', token);
+                localStorage.setItem('userId', userId);
 
-                this.props.login();
+                this.props.login(userId);
 
                 this.props.history.push('/');
 
