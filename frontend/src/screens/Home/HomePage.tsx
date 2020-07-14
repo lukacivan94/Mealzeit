@@ -3,8 +3,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import FastfoodOutlinedIcon from '@material-ui/icons/FastfoodOutlined';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { History, LocationState } from 'history';
 import Screen from '../../components/Screen/Screen';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,8 +60,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const HomePage = () => {
+interface Props {
+    history: History<LocationState>;
+    isLoggedIn: boolean;
+}
+
+export const HomePage = (props: Props) => {
     const classes = useStyles();
+
+    const handleButtonClick = (routeName) => {
+        const { history } = props;
+        const token = localStorage.getItem('jwtToken');
+        if (!!token) {
+            history.push('/' + routeName);
+        }
+    };
+
     return (
         <Screen>
             <div className={classes.root}>
@@ -68,14 +83,19 @@ export const HomePage = () => {
                     <div className={classes.big}>And who will you meet next? </div>
                     <div className={classes.small}>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</div>
                     <div className={classes.buttonRow}>
-                        <button className={classes.button}><div className={classes.text}><SearchIcon className={classes.icon} />Find an event</div></button>
-                        <button className={classes.button}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create an event</div> </button>
-                        <button className={classes.button}><div className={classes.text}><FastfoodOutlinedIcon className={classes.icon} />Create a recipe</div> </button>
+                        <button className={classes.button} onClick={() => handleButtonClick('browse')}><div className={classes.text}><SearchIcon className={classes.icon} />Find an event</div></button>
+                        <button className={classes.button} onClick={() => handleButtonClick('course')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a course</div> </button>
+                        <button className={classes.button} onClick={() => handleButtonClick('cookroom')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a cookroom</div> </button>
+                        <button className={classes.button} onClick={() => handleButtonClick('recipe')}><div className={classes.text}><FastfoodOutlinedIcon className={classes.icon} />Create a recipe</div> </button>
                     </div>
                 </div>
             </div>
         </Screen>
     );
-}
+};
 
-export default HomePage;
+const mapStateToProps = (state) => ({
+    isLoggedIn: state.auth.isLoggedIn
+});
+
+export default connect(mapStateToProps)(HomePage);
