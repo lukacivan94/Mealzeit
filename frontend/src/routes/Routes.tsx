@@ -7,6 +7,7 @@ import CookRoom from '../screens/Event/CookRoom';
 import Auth from '../screens/Auth/Auth';
 import Recipe from '../screens/Recipe/Recipe';
 import BrowsePage from '../screens/Browse/BrowsePage';
+import Profile from '../screens/Profile/Profile';
 
 const Routes = () => (
     <Router>
@@ -18,6 +19,7 @@ const Routes = () => (
             <Route path='/cookroom' component={CookRoom} />
             <Route path='/recipe' component={Recipe} />
             <Route path='/browse' component={BrowsePage} />
+            <Route path='/profile' component={Profile} />
             <Route render={() => <h1>404 Page not found</h1>} />
         </Switch>
     </Router>
