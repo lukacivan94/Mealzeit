@@ -14,15 +14,27 @@ import BrowseCard from './Card';
 import Burgers from '../../assets/images/burger.jpg';
 import SampledEvents from './sampleEvents';
 import invited from '../../assets/images/Invited/invited_by.png'
-import { NamedModulesPlugin } from 'webpack';
-
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      boxShadow: ' -1px 9px 34px -13px rgba(0,0,0,0.75);',
+    },
+    wrapper: {
+     backgroundColor: 'white', 
+     padding: '10px',
+     margin: '10px',
+    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
-      maxWidth: 300,
+      maxWidth: 200,
+    },
+    formControlDate:{
+      minWidth: 120,
+      maxWidth: 200,
+      margin: '7.5px 0px',
     },
     chips: {
       display: 'flex',
@@ -159,7 +171,8 @@ export default function MultipleSelect() {
   console.log(SampledEvents.map((val)=>val.Date ))
   return (
     
-    <div>
+    <div className={classes.root}>
+      <div className={classes.wrapper}>
       <FormControl className={classes.formControl} onChange={handleChangeEvent}>
         <InputLabel htmlFor="native-select">Event Type</InputLabel>
         <Select native defaultValue="" id="EventType" value ={selectedEvent}>
@@ -211,8 +224,23 @@ export default function MultipleSelect() {
             <option value={"Pescatarian"}>Pescatarian</option>
         </Select>
       </FormControl>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+     
+        <FormControl className={classes.formControl}>
+        <TextField
+        label="Size of the group"
+        value={values.numberformat}
+        onChange={handleChangeSize}
+        name="numberformat"
+        id="formatted-numberformat-input"
+        InputProps={{
+          inputComponent: NumberFormatCustom as any,
+        }}
+      />
+      </FormControl>
+      <FormControl>
+      <MuiPickersUtilsProvider utils={DateFnsUtils} >
       <KeyboardDatePicker
+      className={classes.formControlDate}
           disableToolbar
           variant="inline"
           format="dd/MM/yyyy"
@@ -226,17 +254,10 @@ export default function MultipleSelect() {
           }}
         />
         </MuiPickersUtilsProvider>
-        <TextField
-        label="Size of the group"
-        value={values.numberformat}
-        onChange={handleChangeSize}
-        name="numberformat"
-        id="formatted-numberformat-input"
-        InputProps={{
-          inputComponent: NumberFormatCustom as any,
-        }}
-      />
-      <li>
+        </FormControl>
+      </div>
+      <Divider variant="middle" />
+      <div>
             {
                 filteredData.map(
                 (val) => <BrowseCard key={val.eventId} id={val.eventId} imageSource={Burgers} title= "Burgers and fries at my place" Date = {val.Date.toDateString()}  Cuisine = {val.Cuisine} 
@@ -245,7 +266,7 @@ export default function MultipleSelect() {
                 )
             }
 
-        </li>
+        </div>
       
     </div>
   );

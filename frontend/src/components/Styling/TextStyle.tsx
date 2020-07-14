@@ -4,13 +4,13 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     eventdiv: {
         paddingTop: '10px',
-        paddingBottom: '20px',
+        paddingBottom: '30px',
     },
     textdiv: {
         fontFamily: 'Source Sans Pro, sans-serif',
         fontSize: '30px',
         paddingTop: '5px',
-        paddingBottom: '10px',
+        paddingBottom: '20px',
     },
     stylediv: {
         fontFamily: 'Source Sans Pro, sans-serif',
@@ -22,9 +22,15 @@ const useStyles = makeStyles((theme) => ({
     textsmalldiv: {
         fontFamily: 'Source Sans Pro, sans-serif',
         fontSize: '20px',
-        paddingTop: '10px',
-        paddingBottom: '10px',
+        paddingTop: '15px',
+        paddingBottom: '15px',
         color: 'orange',
+    },
+    bigtextdiv: {
+        fontFamily: 'Source Sans Pro, sans-serif',
+        fontSize: '40px',
+        paddingTop: '50px',
+        paddingBottom: '10px',
     },
     rowdiv: {
         paddingTop: '1px',
@@ -102,5 +108,15 @@ const ButtonStyle = (props: any) => {
     );
 }
 
+const TextBigDiv = (props: any) => {
+    const classes = useStyles();
+    const { children } = props;
+    return (
+        <div className={classes.bigtextdiv}>
+            {children}
+        </div>
+    );
+}
 
-export {EventDiv, TextDiv, StyleDiv, TextSmallDiv, RowDiv, ButtonStyle};
+
+export {EventDiv, TextDiv, StyleDiv, TextSmallDiv, TextBigDiv, RowDiv, ButtonStyle};

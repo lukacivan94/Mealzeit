@@ -16,6 +16,22 @@ const StyledText = styled.p`
     font-family: cursive;
 `;
 
+const StyledDiv = styled.div`
+    height: 100%;
+    width: 100%;
+    display: block;
+    flex-drection: column;
+    align-items: center;
+    background-color: transparent;
+    margin: 50px 50px 0 50px;
+`;
+
+const WrapperDiv = styled.div`
+    padding-top: 60px;
+    margin: 0 auto;
+    font-family: 'Source Sans Pro', sans-serif;
+`;
+
 interface SignupState {
     isModalOpen: boolean;
     modalText: string;
@@ -76,13 +92,17 @@ export default class Signup extends Component<{}, SignupState> {
     render() {
         return (
             <Screen>
-                <SignUpForm onSubmit={this.handleSignup} handleImage={this.handleImage} />
-                <Modal
-                    open={this.state.isModalOpen}
-                    onClose={this.handleModalClose}
-                >
-                    <StyledText>{this.state.modalText}</StyledText>
-                </Modal>
+                <StyledDiv>
+                    <WrapperDiv>
+                        <SignUpForm onSubmit={this.handleSignup} handleImage={this.handleImage} />
+                        <Modal
+                            open={this.state.isModalOpen}
+                            onClose={this.handleModalClose}
+                        >
+                            <StyledText>{this.state.modalText}</StyledText>
+                        </Modal>
+                    </WrapperDiv>
+                </StyledDiv>
             </Screen >
         );
     }

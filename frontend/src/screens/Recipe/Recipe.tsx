@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -8,9 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import RecipeForm from './RecipeForm';
 import Screen from '../../components/Screen/Screen';
 import axios from '../../axios';
-import styled from 'styled-components';
 import RecipeShareStep from './RecipeShareStep';
 import { RecipeConfirmationStep } from './RecipeConfirmationStep';
+import { connect } from 'react-redux';
+import { History, LocationState } from 'history';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,60 +24,130 @@ const useStyles = makeStyles((theme: Theme) =>
         instructions: {
             marginTop: theme.spacing(1),
             marginBottom: theme.spacing(1)
+        },
+        main: {
+            height: '100%',
+            width: '100%',
+            display: 'inline-block',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+            margin: '50px 50px 0 50px',
+        },
+        wrapper: {
+            padding: '30px',
+            textAlign: 'center',
+            alignItems: 'center',
+            paddingTop: '50px',
+            margin: '0 auto',
+            fontFamily: 'Source Sans Pro, sans-serif',
+        },
+        buttondiv: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginRight: '100px'
+        },
+        confirmButtonDiv: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center'
         }
     })
 );
 
-const getSteps = () => {
-    return ['Select master blaster campaign settings', 'Create an ad group'];
-};
+interface Props {
+    userId: string;
+    history: History<LocationState>;
+}
 
-const handleSaveRecipe = (values) => {
-    const recipeData = {
-        recipe_title: values.recipeTitle,
-        food_type: values.foodType,
-        cuisine_type: values.cuisineType,
-        preparation_time: values.estimatedTime,
-        instructions: values.instructions,
-        calorie_count: '',
-        ingredients: [],
-        number_of_members: values.members,
-        instant_join: values.instantJoin,
-        description: values.description,
-        is_public: values.isPublic
-    };
-
-    axios.post('/recipes/', recipeData)
-        .then(res => {
-            console.log('res: ', res);
-        })
-        .catch(err => {
-            console.error('err: ', err);
-        });
-};
-
-const getStepContent = (stepIndex: number) => {
-    switch (stepIndex) {
-        case 0:
-            return (<RecipeForm onSubmit={handleSaveRecipe} />);
-        case 1:
-            return <RecipeShareStep />;
-        default:
-            return 'Unknown stepIndex';
-    }
-};
-
-const StyledButtonDiv = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 100px;
-`;
-
-const Recipe = () => {
+const Recipe = (props: Props) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const steps = getSteps();
+    const [recipeFirstStepValues, setRecipeFirstStepValues] = React.useState({
+        recipe_title: '',
+        ingredients: '',
+        food_type: '',
+        cuisine_type: '',
+        preparation_time: '',
+        instructions: ''
+    });
+
+    const [recipeSecondStepValues, setRecipeSecondStepValues] = React.useState({
+        isPrivate: false,
+        message: ''
+    });
+
+    const getSteps = () => {
+        return ['Recipe Information', 'Sharing My Recipe'];
+    };
+
+    const handleSaveRecipe = (values) => {
+
+        const recipeData = {
+            recipe_title: values.recipeTitle || '',
+            ingredients: values.ingredients || '',
+            food_type: values.foodType || '',
+            cuisine_type: values.cuisineType || '',
+            preparation_time: values.estimatedTime || '',
+            instructions: values.instructions || ''
+        };
+
+        setRecipeFirstStepValues(recipeData);
+
+        handleNext();
+    };
+
+    const handleSaveRecipeShare = (values) => {
+        const recipeData = {
+            isPrivate: !!values.isPrivate,
+            message: values.message || ''
+        };
+
+        setRecipeSecondStepValues(recipeData);
+
+        const recipeRequest = {
+            recipe_title: recipeFirstStepValues.recipe_title,
+            food_type: recipeFirstStepValues.food_type,
+            cuisine_type: recipeFirstStepValues.cuisine_type,
+            preparation_time: recipeFirstStepValues.preparation_time,
+            instructions: recipeFirstStepValues.instructions,
+            calorie_count: '',
+            ingredients: [],
+            number_of_members: '',
+            instant_join: '',
+            description: values.message || '',
+            is_public: !values.isPrivate,
+            userId: props.userId
+        };
+
+        axios.post('/recipes/', recipeRequest)
+            .then(res => {
+                handleNext();
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+                handleReset();
+            });
+
+    };
+
+    const getStepContent = (stepIndex: number, handleBack) => {
+        switch (stepIndex) {
+            case 0:
+                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} />);
+            case 1:
+                return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} />;
+            default:
+                return 'Unknown stepIndex';
+        }
+    };
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -90,43 +161,48 @@ const Recipe = () => {
         setActiveStep(0);
     };
 
+    const goToHome = () => {
+        props.history.push('/');
+    };
+
+    const steps = getSteps();
+
     return (
         <Screen>
-            <div className={classes.root}>
-                <Stepper activeStep={activeStep} alternativeLabel>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <div>
-                    {activeStep === steps.length ? (
+            <div className={classes.main}>
+                <div className={classes.wrapper}>
+                    <div className={classes.root}>
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
                         <div>
-                            <RecipeConfirmationStep />
-                            <Button onClick={handleReset}>Reset</Button>
+                            {activeStep === steps.length ? (
+                                <div>
+                                    <RecipeConfirmationStep />
+                                    <div className={classes.confirmButtonDiv}>
+                                        <Button onClick={handleReset}>Reset</Button>
+                                        <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                    <div>
+                                        <Typography className={classes.instructions}>{getStepContent(activeStep, handleBack)}</Typography>
+                                    </div>
+                                )}
                         </div>
-                    ) : (
-                            <div>
-                                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-                                <StyledButtonDiv>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        className={classes.backButton}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleNext}>
-                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                    </Button>
-                                </StyledButtonDiv>
-                            </div>
-                        )}
+                    </div>
                 </div>
             </div>
         </Screen>
     );
 };
 
-export default Recipe;
+const mapStateToProps = (state) => ({
+    userId: state.auth.userId
+});
+
+export default connect(mapStateToProps)(Recipe);

@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import Screen from '../../components/Screen/Screen';
-import StepperEvent from '../../components/Event/StepperEvent';
+import StepperCourse from '../../components/Event/StepperCourse';
 
 
-class EventPage extends Component {
+class Course extends Component {
     render() {
         return (
             <Screen>
-                <StepperEvent></StepperEvent>
+                <StepperCourse></StepperCourse>
             </Screen>
         );
     }
 }
 
-export default EventPage;
+export default Course;
