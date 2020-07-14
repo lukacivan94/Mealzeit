@@ -80,10 +80,13 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                 return { 
                     _id: doc._id,
                     userId: doc.userId,
+                    memberId: doc.memberId,
+                    text: doc.text,
                     type: doc.type,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/notifications/' + doc._id
+                        url: 'http://localhost:3000/notifications/' + doc._id,
+                        userUrl: 'http://localhost:3000/users/' + doc.memberId
                     }
                 }
             })
