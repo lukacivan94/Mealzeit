@@ -21,7 +21,7 @@ export const RecipeConfirmationStep = () => {
             <StyledDiv>
                 <StyledImg src={successIcon} />
                 <Typography component='h1' variant='h5'>
-                    Message
+                    Recipe is created
             </Typography>
             </StyledDiv>
         </Container>
