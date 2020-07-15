@@ -20,17 +20,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 interface Props {
     imageSource: string;
     altText: string;
+    onClick(): void;
 }
-
 
 export const Logo = (props: Props) => {
     const classes = useStyles();
-    return(
-        <div className={classes.main}>
+    return (
+        <div className={classes.main} onClick={props.onClick}>
             <img className={classes.image} src={props.imageSource} alt={props.altText} />
             <div className={classes.title}> MealZeit</div>
         </div>

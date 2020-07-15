@@ -81,7 +81,7 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                         _id: doc._id,
                         userId: doc.userId,
                         memberId: doc.memberId,
-                        is_read:doc.is_read,
+                        is_read: doc.is_read,
                         text: doc.text,
                         type: doc.type,
                         is_read: doc.is_read,
