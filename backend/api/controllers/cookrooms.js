@@ -36,7 +36,8 @@ exports.cookrooms_add_cookroom = (req, res) => {
                 requests: [],
                 is_volunteering: req.body.is_volunteering,
                 required_items: req.body.required_items,
-                suggested_price: req.body.suggested_price
+                suggested_price: req.body.suggested_price,
+                is_cancelled: false
             });
             cookroomId = cookroom._id;
             return cookroom
@@ -107,7 +108,7 @@ exports.cookrooms_get_all = (req, res) => {
  */
 exports.cookrooms_get_cookrooms_of_user = (req, res) => {
     let userId = req.params.userId
-    Cookroom.find({ userId: userId })
+    Cookroom.find({ is_cancelled: false, userId: userId })
         .select('_id userId title')
         .exec()
         .then(docs => {
@@ -143,7 +144,7 @@ exports.cookrooms_get_cookrooms_of_user = (req, res) => {
 exports.cookrooms_get_cookroom = (req, res) => {
     const id = req.params.cookroomId;
     Cookroom.findById(id)
-        .select('_id userId title location date_of_publish description members number_of_members date_time recipe invited_friends instant_join requests is_volunteering required_items suggested_price')
+        .select('_id userId title location date_of_publish description members number_of_members date_time recipe invited_friends instant_join requests is_volunteering required_items suggested_price is_cancelled')
         .exec()
         .then(doc => {
             if (doc) {
@@ -241,7 +242,7 @@ async function makeRequestNotification(cookroomId, userId) {
         date_created: new Date(),
         type: "request",
         text: "You have a new request for " + title,
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()
@@ -380,6 +381,65 @@ async function makeRejectionNotification(cookroomId, userId) {
         );
 }
 
+/*
+* After the user leaves the cookroom, removes the user id from cookroom's members array
+* and removes the cookroom id from user's joined_cookrooms array
+*/
+exports.cookroom_leave_cookroom = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    const userId = req.params.userId; //User who is leaving the cookroom
+    Cookroom.update({ _id: cookroomId }, { $pull: { members: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    removeFromJoinedCookrooms(cookroomId, userId);
+};
+
+async function removeFromJoinedCookrooms(cookroomId, userId) {
+    try {
+        return User.update(
+            { _id: userId },
+            { $pull: { joined_cookrooms: { $in: [cookroomId] } } }
+        )
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
+
+/*
+* After the user cancels the cookroom, updates the is_cancelled value of cookroom
+*/
+exports.cookrooms_cancel_cookroom = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    Cookroom.update({ _id: cookroomId }, { $set: { is_cancelled: true } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom cancelled",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 
 /** (✓)
  * This function handles cookroom DELETE requests

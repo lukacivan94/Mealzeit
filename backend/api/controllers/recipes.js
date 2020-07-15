@@ -33,7 +33,8 @@ exports.recipes_add_recipe = (req, res) => {
                 recipe_rating: 0,
                 number_of_ratings: 0,
                 is_public: req.body.is_public,
-                shared_with_friends: [userId]
+                shared_with_friends: [userId],
+                is_cancelled: false
             });
             recipeId = recipe._id;
             return recipe
@@ -51,7 +52,7 @@ exports.recipes_add_recipe = (req, res) => {
                 recipeId: recipeId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/recipes/"
+                    url: "http://localhost:3000/recipes/" + recipeId
                 }
             });
         })
@@ -104,7 +105,7 @@ exports.recipes_get_all = (req, res) => {
 exports.recipes_get_recipe = (req, res) => {
     const id = req.params.recipeId;
     Recipe.findById(id)
-        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating number_of_ratings ingredients is_public shared_with_friends ')
+        .select('_id recipe_title food_type cuisine_type preparation_time instructions calorie_count recipe_rating number_of_ratings ingredients is_public shared_with_friends is_cancelled')
         .exec()
         .then(doc => {
             if (doc) {
@@ -134,7 +135,7 @@ exports.recipes_get_recipe = (req, res) => {
  */
 exports.recipes_get_recipes_of_user = (req, res) => {
     let userId = req.params.userId
-    Recipe.find({ userId: userId })
+    Recipe.find({ is_cancelled: false, userId: userId })
         .select('_id userId recipe_title')
         .exec()
         .then(docs => {
@@ -181,6 +182,30 @@ exports.recipes_edit_recipe = (req, res) => {
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/recipes/' + id
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+/*
+* After the user cancels the recipe, updates the is_cancelled value of recipe
+*/
+exports.recipes_cancel_recipe = (req, res) => {
+    const recipeId = req.params.recipeId;
+    Recipe.update({ _id: recipeId }, { $set: { is_cancelled: true } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Recipe cancelled",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/recipes/" + recipeId
                 }
             });
         })

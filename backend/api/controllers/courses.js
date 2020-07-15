@@ -21,21 +21,22 @@ exports.courses_add_course = (req, res) => {
                 });
             }
             const course = new Course({
-                _id: new mongoose.Types.ObjectId(), 
-                userId: userId, 
-                title: req.body.title, 
-                location: req.body.location, 
-                date_of_publish: today, 
-                description: req.body.description, 
+                _id: new mongoose.Types.ObjectId(),
+                userId: userId,
+                title: req.body.title,
+                location: req.body.location,
+                date_of_publish: today,
+                description: req.body.description,
                 members: [],
                 number_of_members: req.body.number_of_members,
-                date_time: req.body.date_time,  
+                dates: req.body.dates,
                 list_of_recipes: req.body.list_of_recipes,
                 course_rating: -1,
                 number_of_ratings: 0,
                 is_virtual: req.body.is_virtual,
                 price_of_course: req.body.price_of_course,
-                is_included_in_premium: req.body.is_included_in_premium
+                is_included_in_premium: req.body.is_included_in_premium,
+                is_cancelled: false
             });
             courseId = course._id;
             return course
@@ -53,7 +54,7 @@ exports.courses_add_course = (req, res) => {
                 courseId: courseId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/courses/"
+                    url: "http://localhost:3000/courses/" + courseId
                 }
             });
         })
@@ -107,7 +108,7 @@ exports.courses_get_all = (req, res) => {
 exports.courses_get_course = (req, res) => {
     const id = req.params.courseId;
     Course.findById(id)
-        .select('_id userId title location date_of_publish description members number_of_members date_time list_of_recipes course_rating number_of_ratings is_virtual price_of_course is_included_in_premium')
+        .select('_id userId title location date_of_publish description members number_of_members dates list_of_recipes course_rating number_of_ratings is_virtual price_of_course is_included_in_premium is_cancelled')
         .exec()
         .then(doc => {
             if (doc) {
@@ -135,7 +136,7 @@ exports.courses_get_course = (req, res) => {
  */
 exports.courses_get_courses_of_user = (req, res) => {
     let userId = req.params.userId
-    Course.find({ userId: userId })
+    Course.find({ is_cancelled: false, userId: userId })
         .select('_id userId title')
         .exec()
         .then(docs => {
@@ -219,11 +220,11 @@ exports.courses_join_course = (req, res) => {
                 error: err
             });
         });
-        addToJoinedCourses(courseId, userId);
-        makeJoinNotification(courseId, userId);
+    addToJoinedCourses(courseId, userId);
+    makeJoinNotification(courseId, userId);
 }
 
-async function addToJoinedCourses(courseId, userId){
+async function addToJoinedCourses(courseId, userId) {
     try {
         await User.update(
             { _id: userId },
@@ -249,15 +250,15 @@ async function addToJoinedCourses(courseId, userId){
     }
 }
 
-async function makeJoinNotification(courseId, userId){
+async function makeJoinNotification(courseId, userId) {
     let hostId;
     let title;
     try {
         await Course.findById(courseId)
-        .then(function (data){
-            hostId = data.userId,
-            title = data.title
-        })
+            .then(function (data) {
+                hostId = data.userId,
+                    title = data.title
+            })
     } catch (error) {
         console.log("Following error happened: " + error);
     }
@@ -282,7 +283,65 @@ async function makeJoinNotification(courseId, userId){
         );
 }
 
+/*
+* After the user leaves the course, removes the user id from course's members array
+* and removes the course id from user's joined_courses array
+*/
+exports.courses_leave_course = (req, res) => {
+    const courseId = req.params.courseId;
+    const userId = req.params.userId; //User who is leaving the course
+    Course.update({ _id: courseId }, { $pull: { members: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Course updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/courses/" + courseId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    removeFromJoinedCourses(courseId, userId);
+};
 
+async function removeFromJoinedCourses(courseId, userId) {
+    try {
+        return User.update(
+            { _id: userId },
+            { $pull: { joined_courses: { $in: [courseId] } } }
+        )
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
+
+/*
+* After the user cancels the course, updates the is_cancelled value of course
+*/
+exports.courses_cancel_course = (req, res) => {
+    const courseId = req.params.courseId;
+    Course.update({ _id: courseId }, { $set: { is_cancelled: true } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Course cancelled",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/courses/" + courseId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 /** (✓)
  * This function handles course DELETE requests
  * It removes the course entry from the database with the matching id 
