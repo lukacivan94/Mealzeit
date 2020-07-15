@@ -1,6 +1,6 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { TextField, Container, Typography, makeStyles, Select, InputLabel, FormHelperText, FormControl } from '@material-ui/core';
+import { Field, reduxForm, InjectedFormProps } from 'redux-form';
+import { TextField, Container, Typography, makeStyles, Select, InputLabel, FormHelperText, FormControl, Button } from '@material-ui/core';
 import styled from 'styled-components';
 
 const cuisineTypes = [
@@ -21,22 +21,17 @@ const foodTypes = [
 ];
 
 const validate = values => {
-    const errors = { email: '' };
+    const errors = { recipeTitle: '', ingredients: '' };
     const requiredFields = [
-        'email',
-        'password'
+        'recipeTitle',
+        'ingredients'
     ];
     requiredFields.forEach(field => {
         if (!values[field]) {
             errors[field] = 'Required';
         }
     });
-    // if (
-    //     values.email &&
-    //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    // ) {
-    //     errors.email = 'Invalid email address';
-    // }
+
     return errors;
 };
 
@@ -104,6 +99,14 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
         backgroundColor: 'darkorange'
+    },
+    backButton: {
+        marginRight: theme.spacing(1)
+    },
+    buttondiv: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     }
 }));
 
@@ -117,7 +120,11 @@ const StyledFieldDiv = styled.div`
     width: 100%;
 `;
 
-const LoginForm = ({ handleSubmit }) => {
+interface RecipeProps {
+    handleBack();
+}
+
+const RecipeForm = ({ handleSubmit, handleBack }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
     const classes = useStyles();
 
     return (
@@ -129,7 +136,7 @@ const LoginForm = ({ handleSubmit }) => {
                 <form onSubmit={handleSubmit} className={classes.form}>
                     <StyledFieldDiv>
                         <Field
-                            name='recipTitle'
+                            name='recipeTitle'
                             component={renderTextField}
                             label='Recipe Title'
                             fullWidth
@@ -190,12 +197,23 @@ const LoginForm = ({ handleSubmit }) => {
                         </Field>
                     </StyledFieldDiv>
                 </form>
+                <div className={classes.buttondiv}>
+                    <Button
+                        onClick={handleBack}
+                        className={classes.backButton}
+                    >
+                        RETURN
+                    </Button>
+                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                        Next
+                    </Button>
+                </div>
             </StyledDiv>
         </Container>
     );
 };
 
-export default reduxForm({
+export default reduxForm<{}, RecipeProps>({
     form: 'recipeForm',
     validate
-})(LoginForm);
+})(RecipeForm);
