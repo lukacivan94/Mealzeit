@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import CardCookroom from './CardCookroom';
 import CardCourse from './CardCourse';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,7 +27,7 @@ export default function GridList(props) {
         <Grid item xs={4}>
         <CardCourse type={type} joined={joined}/>
         </Grid>
-        <Grid item xs={4}>
+        {/* <Grid item xs={4}>
         <CardCourse type={type} joined={joined}/>
         </Grid>
         <Grid item xs={4}>
@@ -36,7 +35,7 @@ export default function GridList(props) {
         </Grid>
         <Grid item xs={4}>
         <CardCourse type={type} joined={joined}/>
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

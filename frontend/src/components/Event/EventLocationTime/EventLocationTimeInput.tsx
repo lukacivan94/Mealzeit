@@ -1,13 +1,6 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import Divider from '@material-ui/core/Divider';
-
-//import MaterialUIPickers from './DateTime/DateTime';
-import SearchLocationInput from './Location/SearchLocationInput';
-import { StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
-
-
-
 import Grid from '@material-ui/core/Grid';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -16,12 +9,18 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
 
+//import SearchLocationInput from './Location/SearchLocationInput';
+import { StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
 import AlertMessage from '../AlertMessage';
 import DatesList from './DateTime/DatesList';
+import TabBar from '../TabBar';
 
-
-const dateString : Object[] = [];
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -36,6 +35,31 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
       backgroundColor: 'lightgrey',
+    },
+    backButton: {
+        marginRight: theme.spacing(1)
+    },
+    buttondiv: {
+        width: '100%',
+        justifyContent: 'center', 
+        paddingBottom: '10px',
+        alignItems: "center",
+        display: 'flex',
+    },
+    searchroot: {
+        padding: '2px 2px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        borderRadius: '25px',
+        border: '1px solid grey',
+    },
+    searchinput: {
+        marginLeft: theme.spacing(3),
+        flex: 1,
+    },
+    searchiconButton: {
+        padding: 8,
     }
 }));
 
@@ -48,10 +72,10 @@ const theme = createMuiTheme({
 const required = value => value ? undefined : 'Required';
 
 const validate = values => {
-    const errors = { };
+    const errors = { dateOfPublish: '', loaction: ''};
     const requiredFields = [
-        'dateBar',
-        'SearchBar'
+        'dateOfPublish',
+        'location'
     ];
     requiredFields.forEach(field => {
         if (!values[field]) {
@@ -60,43 +84,63 @@ const validate = values => {
     });
     return errors;
 };
-interface Props {
+interface LocationDateProps {
     course: boolean;
-}
+    handleBack();
+};
 
-const EventLocationTimeInput = (props: Props) => {
-    const { course } = props;
+const EventLocationTimeInput = ({ course, handleBack, handleSubmit }: LocationDateProps & InjectedFormProps<{}, LocationDateProps>) => {
+        const classes = useStyles();
         return (
-            <StyleDiv>
-                <EventDiv>
-                    <TextDiv>
-                        Where are you planning your event?
-                    </TextDiv>
-                    <Field
-                        validate={[ required ]}
-                        name='searchBar'
-                        component={renderSearchBar}
-                    />
-                </EventDiv>
-                <Divider variant="middle" />
-                <EventDiv>
-                    <TextDiv>
-                        When are you planning your event?
-                    </TextDiv>
-                    <Field
-                        validate={[ required ]}
-                        name='dateBar'
-                        component={renderDateBar}
-                        props={{
-                            type: Boolean
-                        }}
-                        {...{
-                           multiple: course
-                        }}
-                    />
-                    
-                </EventDiv>
-            </StyleDiv>
+            <div>
+                <TabBar>
+                    <form onSubmit={handleSubmit}>
+                        <StyleDiv>
+                            <EventDiv>
+                                <TextDiv>
+                                    Where are you planning your event?
+                                </TextDiv>
+                                <Field
+                                    validate={[ required ]}
+                                    name='location'
+                                    label='location'
+                                    component={renderSearchBar}
+                                />
+                            </EventDiv>
+                            <Divider variant="middle" />
+                            <EventDiv>
+                                <TextDiv>
+                                    When are you planning your event?
+                                </TextDiv>
+                                <Field
+                                    validate={[ required ]}
+                                    name='dateOfPublish'
+                                    label='date of publish'
+                                    component={renderDateBar}
+                                    props={{
+                                        type: Boolean
+                                    }}
+                                    {...{
+                                    multiple: course
+                                    }}
+                                />
+                                
+                            </EventDiv>
+                        </StyleDiv>
+                    </form>
+                </TabBar>
+                <div className={classes.buttondiv}>
+                    <Button
+                        onClick={handleBack}
+                        className={classes.backButton}
+                    >
+                        RETURN
+                    </Button>
+                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                        Next
+                    </Button>
+                </div>
+            </div>
         );
 };
 
@@ -107,12 +151,20 @@ const renderSearchBar = ({
     type,
     ...custom
 }) => {
+    const classes = useStyles();
     return(
         <div>
-            <SearchLocationInput
-                {...input}
-                {...custom}
-            />
+            <Paper className={classes.searchroot}>
+                <InputBase
+                        className={classes.searchinput}
+                        placeholder="Enter your address"
+                        {...input}
+                        {...custom}
+                    />
+                <IconButton type="submit" className={classes.searchiconButton} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+            </Paper>
             {touched && ((error && <AlertMessage>{error}</AlertMessage>))}
         </div>
     );
@@ -123,10 +175,12 @@ const renderDateBar = ({
     input,
     meta: { touched, invalid, error },
 }) => {
+    const dateString : Object[] = [];
+    const dateListVal : Date[] = [];
     const [dateArray, setDateArray] = React.useState(dateString);
+    const [DateList, setDateList] = React.useState(dateListVal);
     const title = multiple ? "Enter multiple dates" : "Enter a date";
-    const classes = useStyles();
-    var date = input.value;
+
     const [count, setCount] = React.useState(0);
 
     const getDateString = (dateval) => {
@@ -143,32 +197,33 @@ const renderDateBar = ({
 
     const handleDeleteId = (ids) => {
         setDateArray((dates) => dates.filter((chip ?: any) => chip.key  !== ids));
+        setDateList(DateList.splice(ids, 1));
     }
 
     const handleDateChange = (date) => {
-        const currentLabel = getDateString(date);
-        let duplicate = false;
-        dateArray.forEach(
-            (element ?: any) => {
-                if(element.label === currentLabel){
-                    duplicate = true;
+        if(date) {
+            const currentLabel = getDateString(date);
+            let duplicate = false;
+            dateArray.forEach(
+                (element ?: any) => {
+                    if(element.label === currentLabel){
+                        duplicate = true;
+                    }
                 }
-            }
-        );
-        if(!duplicate){
-            if (multiple) {
-            setDateArray([ ...dateArray, {key: count, label: currentLabel, value: date} ]);
-            setCount(count + 1);
-            } else {
-            setDateArray([{key: count, label: currentLabel, value: date} ]);
-            }
+            );
+            if(!duplicate){
+                if (multiple) {
+                    setDateArray([ ...dateArray, {key: count, label: currentLabel, value: date} ]);
+                    setDateList([...DateList, date])
+                    setCount(count + 1);
+                } else {
+                    setDateArray([{key: count, label: currentLabel, value: date} ]);
+                    setDateList([date])
+                }
+            };
         };
       };
 
-
-  const handleReset = () => { 
-      console.log(dateArray);
-  };
     return(
         <div title={title}>
             <MuiThemeProvider theme={theme}>
@@ -176,17 +231,23 @@ const renderDateBar = ({
                 <Grid container justify="space-around">
                 <KeyboardDateTimePicker
                     {...input}
+                    //defaultValue = {''} 
                     onChange={value => {
-                        input.onChange(value);
-                        handleDateChange(value);
+                        if(multiple) {
+                            input.onChange(DateList || '');
+                            handleDateChange(value ||'');
+                        } else {
+                            input.onChange(value || '');
+                            handleDateChange(value ||'');
+                        }
                     }}
                     format="yyyy/MM/dd hh:mm a"
                     minDate={new Date()}
+                    //helperText={''}
                 />
                 </Grid>
             </MuiPickersUtilsProvider>
             {multiple ? <DatesList dates={ dateArray } id={handleDeleteId}/> : null}
-            <button className={classes.button} onClick={handleReset}>console log dates</button>
             </MuiThemeProvider>
             {touched && ((error && <AlertMessage>{error}</AlertMessage>))}
     </div>
@@ -194,7 +255,7 @@ const renderDateBar = ({
 }
 
 
-export default reduxForm<{}, Props>({
+export default reduxForm<{}, LocationDateProps>({
     form: 'EventLocationTimeInput',
     validate,
   })(EventLocationTimeInput);
