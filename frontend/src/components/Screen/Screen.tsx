@@ -8,6 +8,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 interface Props extends RouteComponentProps {
     isLoggedIn: boolean;
+    children: React.ReactChild;
 }
 
 class Screen extends Component<Props> {

@@ -34,7 +34,7 @@ const StyledButtonDiv = styled.div`
 const StyledButton = styled(Button)`
     margin: 20px;
     width: 50%;
-    height: 30%;
+    height: 50%;
     background-color: darkorange;
 `;
 
@@ -54,10 +54,12 @@ const Header = (props: Props) => {
         props.history.push('/sign-up');
     };
 
+    const token = localStorage.getItem('jwtToken');
+
     return (
         <header className={classes.main}>
             <Logo imageSource={mealZeitLogo} altText='MealZeit' />
-            {props.isLoggedIn ?
+            {!!token ?
 
                 <ProfileBar />
                 :
@@ -65,7 +67,7 @@ const Header = (props: Props) => {
                     <StyledButton
                         variant='contained'
                         color='primary'
-                        className={classes.button}
+                        //className={classes.button}
                         onClick={goToLogin}
                     >
                         Log In
@@ -73,7 +75,7 @@ const Header = (props: Props) => {
                     <StyledButton
                         variant='contained'
                         color='primary'
-                        className={classes.button}
+                        //className={classes.button}
                         onClick={goToSignup}
                     >
                         Sign Up

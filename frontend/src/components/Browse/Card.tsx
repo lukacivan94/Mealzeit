@@ -21,13 +21,23 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       justifyContent:'space-evenly',
-      paddingBottom: '25px',
+      margin: '20px',
+      fontFamily: 'Source Sans Pro, sans-serif',
+      padding: '25px 10px',
+    },
+    details: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent:'space-between',
+      borderRadius:'25px',
+      boxShadow: '1px 9px 32px -2px rgba(0,0,0,0.75)',
+      overflow: 'hidden',
+      border:'2px solid grey',
       
     },
     title:{
       display:'flex',
       justifyContent:'center',
-      border:'1px solid grey',
       borderRadius:'25px',
       width:'100%',
     },
@@ -35,30 +45,25 @@ const useStyles = makeStyles((theme: Theme) =>
         display:'flex',
         'font-size':'large',
         flexDirection:'row',
-
+        margin: '5px 5px',
     },
-    details: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent:'space-between',
-      border:'1px solid grey',
-      borderRadius:'25px',
-      
-    },
+   
     content: {
       //flex: '1 0 auto',
       display: 'flex',
       color: 'orange',
       alignItems:'center',
       justifyContent:'center',
-      border:'1px solid grey',
-      borderRadius:'25px',
+      border:'2px solid grey',
+      
+      //borderRadius:'25px',
      
       
     },
     cover: {
       width:'200px',
       height: 'auto',
+      margin: '5px 5px',
     },
     avatarIcons:{
       display: 'flex',
@@ -68,13 +73,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     icons:{
       display:'flex', 
-      alignSelf:'center',     
-
+      alignSelf:'center',
+      margin: '5px 40px',
+      padding: '5px 30px',
     },
     invitedAvatar:{
       display:'flex',
-   
-
+      margin: '0px 50px',
     },
     controls: {
       display: 'flex',
@@ -86,6 +91,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 50,
       width: 50,
       color: 'green',
+      marginRight: '20px',
     },
     
     media:{
@@ -96,6 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height: 50,
         width: 50,
         color: 'red',
+        marginRight: '-20px',
       },
   }),
 );

@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import LeftRightSlider from '../../components/ImageSlider/LeftRightSlider';
 import AvatarImage from '../../components/AvatarProfile/AvatarImage';
 import mealZeitLogo from '../../assets/images/MealZeit_logo.png';
 import styled from 'styled-components';
-import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextField } from '@material-ui/core';
+import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextField, Button, makeStyles } from '@material-ui/core';
 import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
+import axios from '../../axios';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -20,6 +21,34 @@ const StyledCheckboxdDiv = styled(StyledCheckboxFielddDiv)`
     display: flex;
     justify-content: center;
 `;
+
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        boxSizing: 'unset'
+    },
+    form: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+        backgroundColor: 'darkorange'
+    },
+    backButton: {
+        marginRight: theme.spacing(1)
+    },
+    buttondiv: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
+    }
+}));
 
 const renderCheckbox = ({ input, label }) => (
     <StyledCheckboxFielddDiv>
@@ -61,56 +90,83 @@ const renderTextField = ({
 
 interface RecipeShareProps {
     isPrivate: boolean;
+    handleBack();
 }
 
 type Props = InjectedFormProps<{}, RecipeShareProps> & RecipeShareProps;
 
-class RecipeShareStep extends Component<Props> {
-    render() {
-        return (
-            <Container component='main' maxWidth='sm'>
-                <Typography component='h1' variant='h5' style={{ color: 'darkorange' }}>
-                    Sharing My Recipe
+const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
+    const classes = useStyles();
+
+    const getFriends = () => {
+        const userId = localStorage.getItem('userId');
+        axios.get('/friends/' + userId)
+            .then(res => {
+                console.log('res: ', res);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
+
+    return (
+        <Container component='main' maxWidth='sm'>
+            <Typography component='h1' variant='h5' style={{ color: 'darkorange' }}>
+                Sharing My Recipe
                     </Typography>
+            <StyledFieldDiv>
                 <StyledFieldDiv>
+                    <Field
+                        name='isPrivate'
+                        component={renderCheckbox}
+                        label='Private'
+                    />
+                </StyledFieldDiv>
+            </StyledFieldDiv>
+            {!isPrivate &&
+                <>
+                    <StyledFieldDiv>
+                        <LeftRightSlider>
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            <AvatarImage src={mealZeitLogo} key='logo' />
+                        </LeftRightSlider>
+                    </StyledFieldDiv>
                     <StyledFieldDiv>
                         <Field
-                            name='isPrivate'
-                            component={renderCheckbox}
-                            label='Private'
+                            name='message'
+                            component={renderTextField}
+                            label='Your Message'
+                            fullWidth
+                            multiline
+                            rows={2}
+                            rowsMax={4}
                         />
                     </StyledFieldDiv>
-                </StyledFieldDiv>
-                {!this.props.isPrivate &&
-                    <>
-                        <StyledFieldDiv>
-                            <LeftRightSlider>
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                                <AvatarImage src={mealZeitLogo} key='logo' />
-                            </LeftRightSlider>
-                        </StyledFieldDiv>
-                        <StyledFieldDiv>
-                            <Field
-                                name='message'
-                                component={renderTextField}
-                                label='Your Message'
-                                fullWidth
-                                multiline
-                                rows={2}
-                                rowsMax={4}
-                            />
-                        </StyledFieldDiv>
-                    </>
+                </>
 
-                }
-            </Container>
-        );
-    }
-}
+            }
+            <div className={classes.buttondiv}>
+                <Button
+                    onClick={handleBack}
+                    className={classes.backButton}
+                >
+                    Back
+                </Button>
+                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                    Finish
+                    </Button>
+            </div>
+        </Container>
+    );
+};
 
 const selector = formValueSelector('recipeShareForm');
 
@@ -126,7 +182,3 @@ export default connect(
 )(reduxForm<{}, RecipeShareProps>({
     form: 'recipeShareForm'
 })(RecipeShareStep));
-
-// export default reduxForm({
-//     form: 'recipeShareForm'
-// })(RecipeShareStep);

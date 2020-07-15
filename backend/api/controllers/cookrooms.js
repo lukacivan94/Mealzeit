@@ -380,6 +380,42 @@ async function makeRejectionNotification(cookroomId, userId) {
         );
 }
 
+/*
+* After the user leaves the cookroom, removes the user id from cookroom's members array
+* and removes the cookroom id from user's joined_cookrooms array
+*/
+exports.cookroom_leave_cookroom = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    const userId = req.params.userId; //User who is leaving the cookroom
+    Cookroom.update({ _id: cookroomId }, { $pull: { members: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    removeFromJoinedCookrooms(cookroomId, userId);
+};
+
+async function removeFromJoinedCookrooms(cookroomId, userId) {
+    try {
+        return User.update(
+            { _id: userId },
+            { $pull: { joined_cookrooms: { $in: [cookroomId] } } }
+        )
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
 
 /** (✓)
  * This function handles cookroom DELETE requests
