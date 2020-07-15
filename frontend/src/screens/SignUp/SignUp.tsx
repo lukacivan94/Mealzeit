@@ -4,6 +4,7 @@ import SignUpForm from '../SignUp/SignUpForm';
 import axios from '../../axios';
 import Modal from '@material-ui/core/Modal';
 import styled from 'styled-components';
+import { History, LocationState } from 'history';
 
 const StyledText = styled.p`
     margin: 20% 30%;
@@ -38,7 +39,11 @@ interface SignupState {
     image: string;
 }
 
-export default class Signup extends Component<{}, SignupState> {
+interface SignupProps {
+    history: History<LocationState>;
+}
+
+export default class Signup extends Component<SignupProps, SignupState> {
 
     constructor(props) {
         super(props);
@@ -82,7 +87,9 @@ export default class Signup extends Component<{}, SignupState> {
     }
 
     handleModalClose = () => {
-        this.setState({ isModalOpen: false, modalText: '' });
+        this.setState({ isModalOpen: false, modalText: '' }, () => {
+            this.props.history.push('/sign-in');
+        });
     }
 
     handleImage = (base64Image) => {
