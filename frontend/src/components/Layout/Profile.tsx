@@ -98,27 +98,6 @@ const Profile = (props: Props) => {
       >
         <StyledMenuItem>
           <ListItemIcon>
-            <KitchenIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Dashboard' />
-        </StyledMenuItem>
-
-        <StyledMenuItem>
-          <ListItemIcon>
-            <LocalDiningIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Events' />
-        </StyledMenuItem>
-
-        <StyledMenuItem>
-          <ListItemIcon>
-            <InboxIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Inbox' />
-        </StyledMenuItem>
-
-        <StyledMenuItem>
-          <ListItemIcon>
             <AccountCircleIcon fontSize='small' />
           </ListItemIcon>
           <ListItemText primary='Profile' />

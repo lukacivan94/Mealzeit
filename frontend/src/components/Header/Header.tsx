@@ -54,11 +54,15 @@ const Header = (props: Props) => {
         props.history.push('/sign-up');
     };
 
+    const goToHome = () => {
+        props.history.push('/');
+    };
+
     const token = localStorage.getItem('jwtToken');
 
     return (
         <header className={classes.main}>
-            <Logo imageSource={mealZeitLogo} altText='MealZeit' />
+            <Logo imageSource={mealZeitLogo} altText='MealZeit' onClick={goToHome} />
             {!!token ?
 
                 <ProfileBar />
