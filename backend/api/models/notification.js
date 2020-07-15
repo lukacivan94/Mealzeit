@@ -7,15 +7,15 @@ const notificationSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    eventId: {type: mongoose.Schema.Types.ObjectId},
-    memberId: {type: mongoose.Schema.Types.ObjectId}, //the user which causes notification - trigger
-    date_created:  {type:Date},
-    type: {type: String},
-    text: {type:String},
-    is_read: {type: Boolean}
+    eventId: { type: mongoose.Schema.Types.ObjectId },
+    memberId: { type: mongoose.Schema.Types.ObjectId }, //the user which causes notification - trigger
+    date_created: { type: Date },
+    type: { type: String },
+    text: { type: String },
+    is_read: { type: Boolean }
 });
 
 module.exports = mongoose.model('Notification', notificationSchema);
-// we export the model which we give the name - Notification 
+// we export the model which we give the name - Notification
 // and choose the schema which the model will use as a blueprint - notificationSchema
 // in the mongoose.model function

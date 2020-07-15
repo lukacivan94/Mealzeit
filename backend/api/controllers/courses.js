@@ -21,15 +21,15 @@ exports.courses_add_course = (req, res) => {
                 });
             }
             const course = new Course({
-                _id: new mongoose.Types.ObjectId(), 
-                userId: userId, 
-                title: req.body.title, 
-                location: req.body.location, 
-                date_of_publish: today, 
-                description: req.body.description, 
+                _id: new mongoose.Types.ObjectId(),
+                userId: userId,
+                title: req.body.title,
+                location: req.body.location,
+                date_of_publish: today,
+                description: req.body.description,
                 members: [],
                 number_of_members: req.body.number_of_members,
-                date_time: req.body.date_time,  
+                date_time: req.body.date_time,
                 list_of_recipes: req.body.list_of_recipes,
                 course_rating: -1,
                 number_of_ratings: 0,
@@ -219,11 +219,11 @@ exports.courses_join_course = (req, res) => {
                 error: err
             });
         });
-        addToJoinedCourses(courseId, userId);
-        makeJoinNotification(courseId, userId);
+    addToJoinedCourses(courseId, userId);
+    makeJoinNotification(courseId, userId);
 }
 
-async function addToJoinedCourses(courseId, userId){
+async function addToJoinedCourses(courseId, userId) {
     try {
         await User.update(
             { _id: userId },
@@ -249,15 +249,15 @@ async function addToJoinedCourses(courseId, userId){
     }
 }
 
-async function makeJoinNotification(courseId, userId){
+async function makeJoinNotification(courseId, userId) {
     let hostId;
     let title;
     try {
         await Course.findById(courseId)
-        .then(function (data){
-            hostId = data.userId,
-            title = data.title
-        })
+            .then(function (data) {
+                hostId = data.userId,
+                    title = data.title
+            })
     } catch (error) {
         console.log("Following error happened: " + error);
     }
@@ -282,6 +282,42 @@ async function makeJoinNotification(courseId, userId){
         );
 }
 
+/*
+* After the user leaves the course, removes the user id from course's members array
+* and removes the course id from user's joined_courses array
+*/
+exports.courses_leave_course = (req, res) => {
+    const courseId = req.params.courseId;
+    const userId = req.params.userId; //User who is leaving the course
+    Course.update({ _id: courseId }, { $pull: { members: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Course updated",
+                request: {
+                    type: "GET",
+                    url: "http://localhost:3000/courses/" + courseId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    removeFromJoinedCourses(courseId, userId);
+};
+
+async function removeFromJoinedCourses(courseId, userId) {
+    try {
+        return User.update(
+            { _id: userId },
+            { $pull: { joined_courses: { $in: [courseId] } } }
+        )
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
 
 /** (✓)
  * This function handles course DELETE requests
