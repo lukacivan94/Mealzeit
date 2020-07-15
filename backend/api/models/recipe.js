@@ -20,6 +20,7 @@ const recipeSchema = Schema({
     ingredients: { type: Array },
     is_public: { type: Boolean },
     shared_with_friends: { type: Array },
+    is_cancelled: { type: Boolean }
 });
 
 module.exports = mongoose.model('Recipe', recipeSchema);

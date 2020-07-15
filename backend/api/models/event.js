@@ -13,6 +13,7 @@ const eventSchema = mongoose.Schema({
     description: { type: String },
     members: { type: Array },
     number_of_members: { type: Number },
+    is_cancelled: { type: Boolean }
 });
 
 module.exports = mongoose.model('Event', eventSchema);
