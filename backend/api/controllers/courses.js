@@ -29,7 +29,7 @@ exports.courses_add_course = (req, res) => {
                 description: req.body.description,
                 members: [],
                 number_of_members: req.body.number_of_members,
-                date_time: req.body.date_time,
+                dates: req.body.dates,
                 list_of_recipes: req.body.list_of_recipes,
                 course_rating: -1,
                 number_of_ratings: 0,
@@ -108,7 +108,7 @@ exports.courses_get_all = (req, res) => {
 exports.courses_get_course = (req, res) => {
     const id = req.params.courseId;
     Course.findById(id)
-        .select('_id userId title location date_of_publish description members number_of_members date_time list_of_recipes course_rating number_of_ratings is_virtual price_of_course is_included_in_premium is_cancelled')
+        .select('_id userId title location date_of_publish description members number_of_members dates list_of_recipes course_rating number_of_ratings is_virtual price_of_course is_included_in_premium is_cancelled')
         .exec()
         .then(doc => {
             if (doc) {
