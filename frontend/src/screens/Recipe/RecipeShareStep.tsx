@@ -156,6 +156,21 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
     });
 
 
+    const getFriends = () => {
+        const userId = localStorage.getItem('userId');
+        axios.get('/friends/' + userId)
+            .then(res => {
+                console.log('res: ', res);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
+
     return (
         <Container component='main' maxWidth='sm'>
             <Typography component='h1' variant='h5' style={{ color: 'darkorange' }}>
