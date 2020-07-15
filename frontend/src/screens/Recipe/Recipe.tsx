@@ -113,8 +113,6 @@ const Recipe = (props: Props) => {
         
         setRecipeSecondStepValues(recipeData);
 
-        const userId = localStorage.getItem('userId');
-
         const recipeRequest = {
             recipe_title: recipeFirstStepValues.recipe_title,
             food_type: recipeFirstStepValues.food_type,
