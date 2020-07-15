@@ -39,16 +39,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const Profile = () => {
     const classes = useStyles();
-    const [user, setUser] = useState({});
+    // const [user, setUser] = useState({});
 
-    const userId = localStorage.getItem('userId');
+    // const userId = localStorage.getItem('userId');
 
-    useEffect(() => {
-        axios.get("/user"+userId).then(response => {
-            setUser(response["data"]);
-            console.log(response);
-        })
-      },[]);
+    // useEffect(() => {
+    //     axios.get("/users/"+userId).then(response => {
+    //         setUser(response["data"]);
+    //     })
+    //   },[]);
 
 
     return (

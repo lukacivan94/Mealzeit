@@ -9,14 +9,18 @@ import { orange  } from '@material-ui/core/colors';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { History, LocationState } from 'history';
+import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import EventLocationTimeInput from './EventLocationTime/EventLocationTimeInput';
 import { EventCreatedMessage } from './EventAdditionalInfo/EventCreatedMessage';
-import JoinPageRoom from './EventMembers/JoinPageRoom';
 import JoinPageCourse from './EventMembers/JoinPageCourse';
 import Menu from './EventRecipesSelection/Menu';
 import MoreInfo from './EventAdditionalInfo/MoreInfo';
-import TabBar from './TabBar';
+import axios from '../../axios';
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,29 +85,135 @@ const ColorButton = withStyles((theme) => ({
   },
 }))(Button);
 
-function getSteps() {
-  return ['Select place and time', 'Members', 'Select Recipes', 'Additional information'];
+
+interface Props extends RouteComponentProps {
+  userId: string;
+  history: History<LocationState>;
 }
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <TabBar><EventLocationTimeInput course={ true }/></TabBar>;
-    case 1:
-      return <TabBar><JoinPageCourse /></TabBar>;
-    case 2:
-      return <TabBar><Menu /></TabBar>;
-    case 3:
-        return <TabBar><MoreInfo course={ true } /></TabBar>;
-    default:
-      return 'Unknown step';
-  }
-}
 
-export default function HorizontalLinearStepper() {
+
+const HorizontalLinearStepper=  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
+
+
+  const [courseFirstStepValues, setCourseFirstStepValues] = React.useState({
+    location: String(),
+    dates: []
+  });
+
+  const [courseSecondStepValues, setCourseSecondStepValues] = React.useState({
+    price_of_course: Number(),
+    number_of_members: Number(),
+    is_included_in_premium: Boolean(),
+    is_virtual: Boolean()
+  });
+
+  const [courseThirdStepValues, setCourseThirdStepValues] = React.useState({
+    list_of_recipes: []
+  });
+
+  const [courseFinalStepValues, setCourseFinalStepValues] = React.useState({
+    title:  String(),
+    description:  String(),
+    is_volunteering: Boolean(),
+    required_items:  String(),
+    suggested_price: Number()
+  });
+
+  const handleLocationDateSave = (values) => {
+    const LocationDate = {
+        location: values.location || '',
+        dates: values.dateOfPublish || [],
+    };
+    setCourseFirstStepValues(LocationDate);
+    handleNext();
+  };
+
+  const handleJoinMembers = (values) => {
+    const JoinData = {
+        price_of_course: values.priceOfCourse || -1,
+        number_of_members: values.numberOfMembers || -1,
+        is_included_in_premium: values.isIncludedInPremium || undefined,
+        is_virtual: values.isVirtual || undefined
+    };
+    setCourseSecondStepValues(JoinData);
+    handleNext();
+  };
+
+  const handleRecipeAdd = (values) => {
+    const RecipeData = {
+      list_of_recipes: values.recipe || []
+    };
+    setCourseThirdStepValues(RecipeData);
+    handleNext();
+  };
+
+  const handleMoreInfo = (values) => {
+
+    const userId = localStorage.getItem('userId');
+
+    const MoreInfo = {
+        title: values.title || '',
+        description: values.description || '',
+        is_volunteering: values.isVolunteering || undefined,
+        required_items: values.requiredItems || '',
+        suggested_price: values.suggestedPrice || -1,
+    };
+
+    setCourseFinalStepValues(MoreInfo);
+
+    const courseRequest = {
+        location: courseFirstStepValues.location,
+        dates: courseFirstStepValues.dates,
+        price_of_course: courseSecondStepValues.price_of_course,
+        number_of_members: courseSecondStepValues.number_of_members,
+        is_included_in_premium: courseSecondStepValues.is_included_in_premium,
+        is_virtual: courseSecondStepValues.is_virtual,
+        list_of_recipes: courseThirdStepValues.list_of_recipes,
+        title: values.title,
+        description: values.description,
+        is_volunteering: values.isVolunteering,
+        required_items: values.requiredItems,
+        suggested_price: values.suggestedPrice,
+        userId: userId
+    };
+    
+    axios.post('/courses/', courseRequest)
+        .then(res => {
+            handleNext();
+        })
+        .catch(error => {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            }
+            handleReset();
+     });
+  };
+
+
+  const getSteps = () => {
+    return ['Select place and time', 'Members', 'Select Recipes', 'Additional information'];
+  }
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} course={ true }/>;
+      case 1:
+        return <JoinPageCourse onSubmit={handleJoinMembers} handleBack={handleBack}/>;
+      case 2:
+        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack}/>;
+      case 3:
+          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} course={ true } />;
+      default:
+        return 'Unknown step';
+    }
+  }
+  
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -116,6 +226,12 @@ export default function HorizontalLinearStepper() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const goToHome = () => {
+    props.history.push('/');
+  };
+
+  const steps = getSteps();
 
   return (
     <div className={classes.root}>
@@ -169,3 +285,9 @@ export default function HorizontalLinearStepper() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  userId: state.auth.userId
+});
+
+export default connect(mapStateToProps)(withRouter(HorizontalLinearStepper));

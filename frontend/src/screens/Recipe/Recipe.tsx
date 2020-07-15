@@ -59,8 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    userId: string;
+    userId?: string;
     history: History<LocationState>;
+    modal?: boolean;
+    handleDialogClose?: any;
+    handleSetRecipeId?: any;
 }
 
 const Recipe = (props: Props) => {
@@ -105,7 +108,9 @@ const Recipe = (props: Props) => {
             isPrivate: !!values.isPrivate,
             message: values.message || ''
         };
-
+        
+        const userId = localStorage.getItem('userId');
+        
         setRecipeSecondStepValues(recipeData);
 
         const recipeRequest = {
@@ -120,11 +125,14 @@ const Recipe = (props: Props) => {
             instant_join: '',
             description: values.message || '',
             is_public: !values.isPrivate,
-            userId: props.userId
+            userId: userId
         };
 
         axios.post('/recipes/', recipeRequest)
             .then(res => {
+                if(props.modal) {
+                    props.handleSetRecipeId(res.recipeId);
+                }   
                 handleNext();
             })
             .catch(error => {
@@ -133,9 +141,9 @@ const Recipe = (props: Props) => {
                     console.log(error.response.status);
                     console.log(error.response.headers);
                 }
+
                 handleReset();
             });
-
     };
 
     const getStepContent = (stepIndex: number, handleBack) => {
@@ -185,7 +193,14 @@ const Recipe = (props: Props) => {
                                     <RecipeConfirmationStep />
                                     <div className={classes.confirmButtonDiv}>
                                         <Button onClick={handleReset}>Reset</Button>
-                                        <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                        {
+                                            props.modal
+                                            ?
+                                            <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={props.handleDialogClose}>Close</Button>
+                                            :
+                                            <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                        }
+                                        
                                     </div>
                                 </div>
                             ) : (
