@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         height: '85px',
         margin: '10px',
         border: '1px solid grey',
-        overflow:'hidden',
+        overflow: 'hidden',
     },
     overlay: {
         position: 'absolute',
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     darkborder: {
         border: '2px solid green',
     },
-   
+
     text: {
         color: 'black',
         fontSize: '16px',
@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
         transform: 'translate(-50%, -50%)',
         textAlign: 'center',
     },
-    
-  }));
+
+}));
 
 
-export default function AvatarImage(props){
-    const {key, src} = props;
+export default function AvatarImage(props) {
+    const { key, src, onClick } = props;
     const [hovered, setHovered] = React.useState(false);
     const classes = useStyles();
 
@@ -59,9 +59,9 @@ export default function AvatarImage(props){
 
 
     return (
-        <div className={classes.container} key={key} onMouseOver={handleOver} onMouseOut={handleOut}>
-            <Avatar className={classes.boxstyle} src={src}/>
-            <div className={classes.overlay} style={{transform: `${hovered ? 'translate(9px, 0px) scale(1)': 'translate(9px, 0px) scale(0) '}`}}>
+        <div className={classes.container} key={key} onMouseOver={handleOver} onMouseOut={handleOut} onClick={onClick}>
+            <Avatar className={classes.boxstyle} src={src} />
+            <div className={classes.overlay} style={{ transform: `${hovered ? 'translate(9px, 0px) scale(1)' : 'translate(9px, 0px) scale(0) '}` }}>
                 <div className={classes.text}>Click to add</div>
             </div>
         </div>

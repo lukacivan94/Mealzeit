@@ -48,6 +48,29 @@ const validate = values => {
     return errors;
 };
 
+const validatePhoneNumber = value =>
+    value && !/^(0|[1-9][0-9]{9})$/i.test(value)
+        ? 'Invalid phone number, must be 10 digits'
+        : undefined;
+
+
+const normalizePhone = value => {
+    if (!value) {
+        return value
+    }
+
+    const onlyNums = value.replace(/[^\d]/g, '')
+    if (onlyNums.length <= 3) {
+        return onlyNums
+    }
+    if (onlyNums.length <= 7) {
+        return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3)}`
+    }
+    return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3, 6)}-${onlyNums.slice(
+        6,
+        10
+    )}`
+}
 const renderTextField = ({
     label,
     input,
@@ -234,6 +257,8 @@ const SignUpForm = (props: SignUpProps & InjectedFormProps<{}, SignUpProps>) => 
                             component={renderTextField}
                             label='Phone Number'
                             classesButton={classes.button}
+                            validate={validatePhoneNumber}
+                            normalize={normalizePhone}
                         />
                     </StyledFieldDiv>
                     <StyledFieldDiv>
