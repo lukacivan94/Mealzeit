@@ -7,15 +7,16 @@ const eventSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    title: {type: String},
-    location: {type: String},
-    date_of_publish: {type: Date},
-    description: {type: String},
-    members: {type: Array},
+    title: { type: String },
+    location: { type: String },
+    date_of_publish: { type: Date },
+    description: { type: String },
+    members: { type: Array },
     number_of_members: { type: Number },
+    is_cancelled: { type: Boolean }
 });
 
 module.exports = mongoose.model('Event', eventSchema);
-// we export the model which we give the name - Event 
+// we export the model which we give the name - Event
 // and choose the schema which the model will use as a blueprint - eventSchema
 // in the mongoose.model function
