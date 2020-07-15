@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 });
 
 
-const SimpleTable = (props) => {
+const PublicTable = (props) => {
   const classes = useStyles();
 
   return (
@@ -40,7 +40,34 @@ const SimpleTable = (props) => {
               <TableCell align="center">{props.MealType}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell align="center">{props.Size}</TableCell>
+              <TableCell align="center">Size: {props.Size}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
+  );
+}
+export const CourseTable = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Paper className = {classes.paper}>
+      <TableContainer>
+        <Table className={classes.table} aria-label="simple table">
+        <TableBody>
+            <TableRow>
+              <TableCell align="center">{props.Date}</TableCell>
+              <TableCell align="center">{props.EventType}</TableCell>
+              <TableCell align="center">{props.Price}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">{props.Location}</TableCell>
+              <TableCell align="center">{props.IncludedInPremium}</TableCell>
+              <TableCell align="center">{props.Rating}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">Size:{props.Size}</TableCell>
               <TableCell align="center">{props.Setting}</TableCell>
             </TableRow>
           </TableBody>
@@ -49,4 +76,5 @@ const SimpleTable = (props) => {
     </Paper>
   );
 }
-export default SimpleTable;
+
+export default PublicTable;

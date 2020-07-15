@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Screen from '../../components/Screen/Screen';
 import {EventDiv, TextBigDiv, TextSmallDiv} from '../../components/Styling/TextStyle';
 import MultipleSelect from '../../components/Browse/Filters';
 import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+
+    
+const getCookrooms = () => (
+    axios.get("http://localhost:3000/cookrooms/").then(response => {
+    const sampleCookRooms = response["data"]["cookrooms"]
+    })
+);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +34,44 @@ const useStyles = makeStyles((theme) => ({
 
 export const Browse = () => { 
     const classes = useStyles();
+    const initials: Object[] =[] ;
     
+    const[coursesObject, setCoursesObject] = useState([]);
+    const[cookroomsObject, setCookroomsObject] = useState([]);
+    const[courses, setCourses] = useState(initials);
+    const[cookrooms, setCookrooms] = useState(initials);
+
+
+    useEffect(()=>{
+        axios.get("http://localhost:3000/courses/").then(response => {
+        setCoursesObject(response["data"]["courses"])       
+    }); 
+        axios.get("http://localhost:3000/courses/").then(response => {
+        setCookroomsObject(response["data"]["cookroom"])       
+        });
+        coursesObject.map(
+            val => {
+                axios.get(val["request"]["url"]).then(response=> {
+                    setCourses([...courses, response["data"]])
+                    console.log(courses)
+                    
+                })}
+        
+            );
+        cookroomsObject.map(
+            val => {
+                axios.get(val["request"]["url"]).then(response=> {
+                    setCourses([...cookrooms, response["data"]])
+
+                    console.log(cookrooms)
+                })}
+        
+            );
+    
+    
+    },[]);
+   
+
         return(
             <Screen>
                 <div className={classes.root}>
@@ -39,7 +84,7 @@ export const Browse = () => {
 
                         </EventDiv>
                         <EventDiv>
-                            <MultipleSelect/>
+                            <MultipleSelect Courses= {courses} Cookrooms = {cookrooms}/>
                         </EventDiv>
                         
                     </div>

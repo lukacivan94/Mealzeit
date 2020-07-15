@@ -16,6 +16,12 @@ import SampledEvents from './sampleEvents';
 import invited from '../../assets/images/Invited/invited_by.png'
 import Divider from '@material-ui/core/Divider';
 
+
+
+interface Props{
+  Courses:Object[];
+  Cookrooms:Object[];
+}
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -72,7 +78,7 @@ function getDates(date:Date|null){
     return  string_date
   }
 }
-console.log(getDates(tday))
+
 const today = new Date()
 
 function getStyles(name: string, personName: string[], theme: Theme) {
@@ -115,7 +121,7 @@ interface State {
   
   numberformat: string;
 }
-export default function MultipleSelect() {
+export default function MultipleSelect(props:Props) {
   const classes = useStyles();
   const theme = useTheme();
   const [selectedDate, setSelectedDate] = React.useState<Date|null>(today);
@@ -167,8 +173,10 @@ export default function MultipleSelect() {
   const filterSize = ftype =>((ftype.Size == values.numberformat) || (values.numberformat == ""));
   const filterDate = ftype =>((ftype.Date.toString() == getDates(selectedDate)) || (getDates(selectedDate) == getDates(today)));
   const filters = [filterFoodType,filterEventType,filterSetting,filterMealType,filterCuisine,filterSize,filterDate];
-  const filteredData = filters.reduce((d, f) => d.filter(f) , SampledEvents)
-  console.log(SampledEvents.map((val)=>val.Date ))
+  const filteredCourses = filters.reduce((d, f) => d.filter(f) , props.Courses)
+  const filteredCookrooms = filters.reduce((d, f) => d.filter(f) , props.Cookrooms)
+
+  
   return (
     
     <div className={classes.root}>

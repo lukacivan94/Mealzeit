@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme, createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+import { Theme, createStyles, makeStyles,withStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -8,9 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
-import Table from '../Browse/Table';
+import Table, {CourseTable} from '../Browse/Table';
+import { orange  } from '@material-ui/core/colors';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
+import Button from '@material-ui/core/Button';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Avatars from '../Browse/Avatars';
 import GroupAvatars from '../Browse/GroupAvatar';
@@ -40,6 +41,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent:'center',
       borderRadius:'25px',
       width:'100%',
+    },
+    button: {
+      marginRight: theme.spacing(4),
+      padding: '14px 60px', 
+      fontColor: 'white',
     },
     TabImage:{
         display:'flex',
@@ -73,9 +79,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     icons:{
       display:'flex', 
-      alignSelf:'center',
-      margin: '5px 40px',
-      padding: '5px 30px',
+      flexDirection: 'row',
+      justifyContent:'flex-end',
+      alignSelf:'right',
+      padding: '5px',
     },
     invitedAvatar:{
       display:'flex',
@@ -106,10 +113,20 @@ const useStyles = makeStyles((theme: Theme) =>
       },
   }),
 );
+const ColorButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(orange[500]),
+    backgroundColor: orange[500],
+    '&:hover': {
+      backgroundColor: orange[700],
+    },
+  },
+}))(Button);
+const handleJoin=() => (alert('Congratulations you are in!!!'));
 interface Props {
-    title: string;
-    id: string;
-    imageSource: string; 
+    Title: string;
+    Id: string;
+    ImageSource: string; 
     Date: string;
     Cuisine: String;
     EventType: String;
@@ -117,14 +134,15 @@ interface Props {
     FoodType: String;
     MealType: String;
     Size: Number;
-    invited:String;
     Setting: string;
-    invitedText: string;
-    inviteeText: string;
+    PreparationTime: string; 
+    Price: Number;
+    Rating: Number;
+    IncludedInPremium:Number;
     name:string;
 };
 
-export default function BrowseCard(props:Props) {
+export default function PublicCard(props:Props) {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -134,7 +152,7 @@ export default function BrowseCard(props:Props) {
 
         <CardContent className={classes.content}>
           <Typography component="h5" variant="h5"  >
-            {props.title}
+            {props.Title}
           </Typography>
         </CardContent>
         
@@ -143,24 +161,56 @@ export default function BrowseCard(props:Props) {
           <Table Date = {props.Date}  Cuisine = {props.Cuisine} EventType = {props.EventType} Location = {props.Location} FoodType = {props.FoodType} MealType = {props.MealType} Size = {props.Size} Setting = {props.Setting}/>
           <CardMedia
           className={classes.cover}
-          image={props.imageSource}
+          image={props.ImageSource}
           />
         </div>
-        <div className= {classes.avatarIcons}>
-            <div className = {classes.invitedAvatar}>
-              <Avatars Invited ={props.invited} name={props.name} text = {props.invitedText}/>
+        <div className = {classes.icons}>
+            <ColorButton
+                  variant="contained"
+                  color="primary"
+                  onClick={handleJoin}
+                  className={classes.button}
+                >
+                      Join    
+                </ColorButton>
             </div>
-            <div className = {classes.icons}>
-              <CheckCircleIcon className= {classes.acceptIcon} />
-              <CancelIcon className= {classes.rejectIcon} />
-            </div>
-            
-        </div>
-        <div className={classes.controls}>
-           
-            <GroupAvatars inviteeText={props.inviteeText}/>
-        </div>       
+      </div>
+    </Card>
+  );
+}
 
+export  function CourseCard(props:Props) {
+  const classes = useStyles();
+  const theme = useTheme();
+
+  return (
+    <Card className={classes.root}>
+      <div className={classes.details}>
+
+        <CardContent className={classes.content}>
+          <Typography component="h5" variant="h5"  >
+            {props.Title}
+          </Typography>
+        </CardContent>
+        
+        <Divider variant="middle" />
+        <div className={classes.TabImage}>
+          <CourseTable Date = {props.Date}  Cuisine = {props.Cuisine} EventType = {props.EventType} Location = {props.Location} FoodType = {props.FoodType} MealType = {props.MealType} Size = {props.Size} Setting = {props.Setting} IncludedInPremium={props.IncludedInPremium}/>
+          <CardMedia
+          className={classes.cover}
+          image={props.ImageSource}
+          />
+        </div>
+        <div className = {classes.icons}>
+            <ColorButton
+                  variant="contained"
+                  color="primary"
+                  onClick={handleJoin}
+                  className={classes.button}
+                >
+                      Join    
+                </ColorButton>
+            </div>
       </div>
     </Card>
   );
