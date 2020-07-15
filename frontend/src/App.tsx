@@ -13,7 +13,7 @@ const reducers = {
     auth: authReducer
 };
 const reducer = combineReducers(reducers);
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(logger)));
+const store = createStore(reducer, composeWithDevTools(applyMiddleware()));
 
 const theme = createMuiTheme();
 

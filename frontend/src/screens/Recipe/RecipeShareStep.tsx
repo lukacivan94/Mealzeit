@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
 import LeftRightSlider from '../../components/ImageSlider/LeftRightSlider';
 import AvatarImage from '../../components/AvatarProfile/AvatarImage';
 import mealZeitLogo from '../../assets/images/MealZeit_logo.png';
@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextField, Button, makeStyles } from '@material-ui/core';
 import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
+import axios from '../../axios';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -87,15 +88,73 @@ const renderTextField = ({
         />
     );
 
+const StyledFriendDiv = styled.div`
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
 interface RecipeShareProps {
+    setSelectedFriends: Dispatch<SetStateAction<string[]>>;
+    selectedFriends: string[];
     isPrivate: boolean;
     handleBack();
 }
 
 type Props = InjectedFormProps<{}, RecipeShareProps> & RecipeShareProps;
 
-const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
+const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends, setSelectedFriends }: Props) => {
     const classes = useStyles();
+    const [userFriends, setUserFriends] = React.useState<Object[]>([]);
+    // const [selectedFriends, setSelectedFriends] = React.useState<string[]>([]);
+
+    useEffect(() => getFriends(), []);
+
+    const getFriends = () => {
+        const userId = localStorage.getItem('userId');
+        axios.get('/users/' + userId)
+            .then(res => {
+
+                const frineds = res.data && res.data.user && res.data.user.friends.map((friend) => {
+
+                    axios.get('/users/' + friend)
+                        .then(res => {
+                            console.log('res friend: ', res);
+                            const friendInfo = res.data.user;
+                            setUserFriends(userFriends => [...userFriends, friendInfo]);
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                console.log(error.response.data);
+                                console.log(error.response.status);
+                                console.log(error.response.headers);
+                            }
+                        });
+                });
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
+
+    const handleSelectedFriends = (index) => {
+        setSelectedFriends(selectedFriends => [...selectedFriends, userFriends[index]._id]);
+    };
+
+    useEffect(() => {
+        console.log('user friends', userFriends);
+    });
+
+    useEffect(() => {
+        console.log('selected friends', selectedFriends);
+    });
+
 
     return (
         <Container component='main' maxWidth='sm'>
@@ -115,24 +174,19 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
                 <>
                     <StyledFieldDiv>
                         <LeftRightSlider>
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            {userFriends && userFriends.map((friend, index) => {
+                                console.log('friend ', index, ' ', friend);
+
+                                return (
+                                    <StyledFriendDiv>
+                                        <AvatarImage src={mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
+                                        <p>{friend.first_name + ' ' + friend.last_name}</p>
+                                    </StyledFriendDiv>
+                                );
+                            })
+
+                            }
                         </LeftRightSlider>
-                    </StyledFieldDiv>
-                    <StyledFieldDiv>
-                        <Field
-                            name='message'
-                            component={renderTextField}
-                            label='Your Message'
-                            fullWidth
-                            multiline
-                            rows={2}
-                            rowsMax={4}
-                        />
                     </StyledFieldDiv>
                 </>
 

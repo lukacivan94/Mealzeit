@@ -75,9 +75,10 @@ const Recipe = (props: Props) => {
         instructions: ''
     });
 
+    const [selectedFriends, setSelectedFriends] = React.useState<string[]>([]);
+
     const [recipeSecondStepValues, setRecipeSecondStepValues] = React.useState({
-        isPrivate: false,
-        message: ''
+        isPrivate: false
     });
 
     const getSteps = () => {
@@ -102,11 +103,12 @@ const Recipe = (props: Props) => {
 
     const handleSaveRecipeShare = (values) => {
         const recipeData = {
-            isPrivate: !!values.isPrivate,
-            message: values.message || ''
+            isPrivate: !!values.isPrivate
         };
 
         setRecipeSecondStepValues(recipeData);
+
+        const userId = localStorage.getItem('userId');
 
         const recipeRequest = {
             recipe_title: recipeFirstStepValues.recipe_title,
@@ -118,10 +120,13 @@ const Recipe = (props: Props) => {
             ingredients: [],
             number_of_members: '',
             instant_join: '',
-            description: values.message || '',
+            description: '',
             is_public: !values.isPrivate,
-            userId: props.userId
+            userId: userId,
+            shared_with_friends: selectedFriends
         };
+
+        console.log('recipeRequest', recipeRequest);
 
         axios.post('/recipes/', recipeRequest)
             .then(res => {
@@ -143,7 +148,7 @@ const Recipe = (props: Props) => {
             case 0:
                 return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} />);
             case 1:
-                return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} />;
+                return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />;
             default:
                 return 'Unknown stepIndex';
         }
