@@ -11,6 +11,7 @@ const Notification = require('../models/notification');
  * and saves it to database 
  */
 exports.users_signup = (req, res) => {
+    let userId;
     User.find({ email: req.body.email })
         .exec()
         .then(user => {
@@ -47,11 +48,16 @@ exports.users_signup = (req, res) => {
                             date_joined: new Date(),
                             profile_picture: req.body.profile_picture
                         });
+                        userId = user._id;
                         user.save()
                             .then(result => {
                                 console.log(result);
                                 res.status(201).json({
-                                    message: 'User created'
+                                    message: 'User created',
+                                    request: {
+                                        type: 'GET',
+                                        url: 'https://mealzeit.herokuapp.com/users/' + userId
+                                    }
                                 });
                             })
                             .catch(err => {
@@ -141,7 +147,7 @@ exports.users_get_all = (req, res) => {
                         last_name: doc.last_name,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/users/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/users/' + doc._id
                         }
                     }
                 })
@@ -177,7 +183,7 @@ exports.users_get_friends_of_user = (req, res) => {
                         profile_picture: doc.profile_picture,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/users/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/users/' + doc._id
                         }
                     }
                 })
@@ -208,7 +214,7 @@ exports.users_get_user = (req, res) => {
                     user: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/users/'
+                        url: 'https://mealzeit.herokuapp.com/users/'
                     }
                 });
             } else {
@@ -239,7 +245,7 @@ exports.users_patch_user = (req, res) => {
                 message: 'User updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/users/' + id
+                    url: 'https://mealzeit.herokuapp.com/users/' + id
                 }
             });
         })
@@ -266,7 +272,7 @@ exports.users_add_friend_request = (req, res) => {
         message: "User updated",
         request: {
             type: "GET",
-            url: "http://localhost:3000/users/" + userId
+            url: "https://mealzeit.herokuapp.com/users/" + userId
         }
     });
 };
@@ -336,7 +342,7 @@ exports.users_accept_friend_request = (req, res) => {
         message: "User updated",
         request: {
             type: "GET",
-            url: "http://localhost:3000/users/" + userId
+            url: "https://mealzeit.herokuapp.com/users/" + userId
         }
     });
 };
@@ -390,7 +396,7 @@ exports.users_reject_friend_request = (req, res) => {
         message: "User updated",
         request: {
             type: "GET",
-            url: "http://localhost:3000/users/" + userId
+            url: "https://mealzeit.herokuapp.com/users/" + userId
         }
     });
 };
@@ -466,7 +472,7 @@ exports.users_delete_user = (req, res) => {
                 message: 'User deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/users/',
+                    url: 'https://mealzeit.herokuapp.com/users/',
                 }
             })
         })
@@ -489,7 +495,7 @@ exports.users_delete_all = (req, res) => {
                 message: 'All users deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/users/',
+                    url: 'https://mealzeit.herokuapp.com/users/',
                 }
             })
         })
