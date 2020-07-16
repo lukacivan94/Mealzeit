@@ -5,7 +5,7 @@ const notificationSchema = mongoose.Schema({
     userId: { //the user for which the notification is created - receiver
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: [true, 'User is required']
     },
     eventId: { type: mongoose.Schema.Types.ObjectId },
     memberId: { type: mongoose.Schema.Types.ObjectId }, //the user which causes notification - trigger

@@ -5,14 +5,27 @@ const eventSchema = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: [true, 'User is required.']
     },
-    title: { type: String },
+    title: { 
+        type: String,
+        validate: {
+            validator: function (v) {
+                let lettersRegex = /[a-zA-Z]/;
+                return lettersRegex.test(v);
+            },
+            message: `Title cannot only be a number.`
+        } },
     location: { type: String },
     date_of_publish: { type: Date },
     description: { type: String },
     members: { type: Array },
-    number_of_members: { type: Number },
+    number_of_members: { 
+        type: Number,
+        min: [0, "Minimum number of members is 0."], 
+        max: [100, "Maximum number of members is 100 due to Corona restrictions."], 
+        default: 0
+    },
     is_cancelled: { type: Boolean }
 });
 

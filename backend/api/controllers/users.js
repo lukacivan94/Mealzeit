@@ -11,6 +11,7 @@ const Notification = require('../models/notification');
  * and saves it to database 
  */
 exports.users_signup = (req, res) => {
+    let userId;
     User.find({ email: req.body.email })
         .exec()
         .then(user => {
@@ -47,11 +48,17 @@ exports.users_signup = (req, res) => {
                             date_joined: new Date(),
                             profile_picture: req.body.profile_picture
                         });
+                        userId = user._id;
                         user.save()
                             .then(result => {
                                 console.log(result);
                                 res.status(201).json({
-                                    message: 'User created'
+                                    message: 'User created',
+                                    userId: userId,
+                                    request: {
+                                        type: "GET",
+                                        url: "http://localhost:3000/users/" + userId
+                                    }
                                 });
                             })
                             .catch(err => {
