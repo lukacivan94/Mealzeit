@@ -49,14 +49,13 @@ class Auth extends Component<AuthProps, AuthState> {
                         console.log('res: ', res);
                         if (res.data && res.data.user) {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
+                            this.props.history.push('/');
                         }
 
                     })
                     .catch(err => {
                         console.error('err: ', err);
                     });
-
-                this.props.history.push('/');
 
                 // TODO: (burak) It will be added later
                 // setAuthToken(token);

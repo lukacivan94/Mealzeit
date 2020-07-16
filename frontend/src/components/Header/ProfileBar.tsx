@@ -4,6 +4,7 @@ import Profile from '../Layout/Profile';
 import profilePic from '../../assets/images/Profile_Pic.png';
 import { makeStyles } from '@material-ui/core/styles';
 import Notifications from '../Notification/Notifications';
+import { base64ToImage } from '../../utils/imageUtils';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,11 +26,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const ProfileBar = () => {
+export const ProfileBar = ({ user }) => {
     const classes = useStyles();
-
-    const userJson = localStorage.getItem('user') || '';
-    const user = JSON.parse(userJson);
 
     return (
         <div className={classes.root}>

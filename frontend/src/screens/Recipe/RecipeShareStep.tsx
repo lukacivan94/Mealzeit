@@ -7,6 +7,7 @@ import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextFiel
 import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import axios from '../../axios';
+import { base64ToImage } from '../../utils/imageUtils';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -179,7 +180,7 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
 
                                 return (
                                     <StyledFriendDiv>
-                                        <AvatarImage src={mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
+                                        <AvatarImage src={friend.profile_picture ? base64ToImage(friend.profile_picture) : mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
                                         <p>{friend.first_name + ' ' + friend.last_name}</p>
                                     </StyledFriendDiv>
                                 );
