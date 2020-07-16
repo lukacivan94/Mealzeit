@@ -52,7 +52,7 @@ exports.recipes_add_recipe = (req, res) => {
                 recipeId: recipeId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/recipes/" + recipeId
+                    url: "https://mealzeit.herokuapp.com/recipes/" + recipeId
                 }
             });
         })
@@ -82,7 +82,7 @@ exports.recipes_get_all = (req, res) => {
                         _id: doc._id,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/recipes/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/recipes/' + doc._id
                         }
                     }
                 })
@@ -113,7 +113,7 @@ exports.recipes_get_recipe = (req, res) => {
                     recipe: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/recipes/'
+                        url: 'https://mealzeit.herokuapp.com/recipes/'
                     }
                 });
             } else {
@@ -148,7 +148,7 @@ exports.recipes_get_recipes_of_user = (req, res) => {
                         title: doc.recipe_title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/recipes/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/recipes/' + doc._id
                         }
                     }
                 })
@@ -181,7 +181,7 @@ exports.recipes_edit_recipe = (req, res) => {
                 message: 'Recipe is updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/recipes/' + id
+                    url: 'https://mealzeit.herokuapp.com/recipes/' + id
                 }
             });
         })
@@ -205,7 +205,7 @@ exports.recipes_cancel_recipe = (req, res) => {
                 message: "Recipe cancelled",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/recipes/" + recipeId
+                    url: "https://mealzeit.herokuapp.com/recipes/" + recipeId
                 }
             });
         })
@@ -229,7 +229,7 @@ exports.recipes_delete_recipe = (req, res) => {
                 message: 'Recipe is deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/recipes/',
+                    url: 'https://mealzeit.herokuapp.com/recipes/',
                 }
             })
         })
@@ -252,7 +252,7 @@ exports.recipes_delete_all = (req, res) => {
                 message: 'All recipes are deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/recipes/',
+                    url: 'https://mealzeit.herokuapp.com/recipes/',
                 }
             })
         })

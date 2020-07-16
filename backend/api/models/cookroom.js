@@ -8,14 +8,19 @@ const cookroomSchema = extendSchema(Event.schema, {
     recipe: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Recipe',
-        required: true
+        required: [true, 'Recipe is required.']
     },
     invited_friends: { type: Array },
     instant_join: { type: Boolean },
     requests: { type: Array }, // Array of users who requested to join the cookroom
     is_volunteering: { type: Boolean },
     required_items: { type: Array },
-    suggested_price: { type: Number }
+    suggested_price: { 
+        type: Number,
+        min: [0, "Minimum price is 0."], 
+        max: [200, "Maximum price is 200. You shouldn't be making money on this."], 
+        default: 0
+    }
 });
 
 module.exports = mongoose.model('Cookroom', cookroomSchema);

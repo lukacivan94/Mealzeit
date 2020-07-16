@@ -11,6 +11,7 @@ const Notification = require('../models/notification');
  */
 exports.courses_add_course = (req, res) => {
     const userId = req.body.userId;
+    console.log(req.body.title);
     let courseId;
     const today = new Date();
     User.findById(userId)
@@ -54,7 +55,7 @@ exports.courses_add_course = (req, res) => {
                 courseId: courseId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/courses/" + courseId
+                    url: "https://mealzeit.herokuapp.com/courses/" + courseId
                 }
             });
         })
@@ -85,7 +86,7 @@ exports.courses_get_all = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/courses/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/courses/' + doc._id
                         }
                     }
                 })
@@ -116,7 +117,7 @@ exports.courses_get_course = (req, res) => {
                     course: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/courses/'
+                        url: 'https://mealzeit.herokuapp.com/courses/'
                     }
                 });
             } else {
@@ -149,7 +150,7 @@ exports.courses_get_courses_of_user = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/courses/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/courses/' + doc._id
                         }
                     }
                 })
@@ -182,7 +183,7 @@ exports.courses_patch_course = (req, res) => {
                 message: 'Course updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/courses/' + id
+                    url: 'https://mealzeit.herokuapp.com/courses/' + id
                 }
             });
         })
@@ -211,7 +212,7 @@ exports.courses_join_course = (req, res) => {
                 message: "Course updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/courses/" + courseId
+                    url: "https://mealzeit.herokuapp.com/courses/" + courseId
                 }
             });
         })
@@ -236,7 +237,7 @@ async function addToJoinedCourses(courseId, userId) {
                     message: "User updated",
                     request: {
                         type: "GET",
-                        url: "http://localhost:3000/users/" + userId
+                        url: "https://mealzeit.herokuapp.com/courses/" + userId
                     }
                 });
             })
@@ -270,7 +271,7 @@ async function makeJoinNotification(courseId, userId) {
         date_created: new Date(),
         type: "join",
         text: "New user joined your " + title + " course",
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()
@@ -297,7 +298,7 @@ exports.courses_leave_course = (req, res) => {
                 message: "Course updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/courses/" + courseId
+                    url: "https://mealzeit.herokuapp.com/courses/" + courseId
                 }
             });
         })
@@ -332,7 +333,7 @@ exports.courses_cancel_course = (req, res) => {
                 message: "Course cancelled",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/courses/" + courseId
+                    url: "https://mealzeit.herokuapp.com/courses/" + courseId
                 }
             });
         })
@@ -355,7 +356,7 @@ exports.courses_delete_course = (req, res) => {
                 message: 'Course deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/courses/',
+                    url: 'https://mealzeit.herokuapp.com/courses/',
                 }
             })
         })
@@ -378,7 +379,7 @@ exports.courses_delete_all = (req, res) => {
                 message: 'All courses deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/courses/',
+                    url: 'https://mealzeit.herokuapp.com/courses/',
                 }
             })
         })
