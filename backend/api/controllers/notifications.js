@@ -17,7 +17,7 @@ exports.notifications_get_all = (req, res) => {
                         notification: doc,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/notifications/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id
                         }
                     }
                 })
@@ -48,7 +48,7 @@ exports.notifications_get_notification = (req, res) => {
                     notification: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/notifications/'
+                        url: 'https://mealzeit.herokuapp.com/notifications/'
                     }
                 });
             } else {
@@ -85,8 +85,8 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                         type: doc.type,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/notifications/' + doc._id,
-                            userUrl: 'http://localhost:3000/users/' + doc.memberId
+                            url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id,
+                            userUrl: 'https://mealzeit.herokuapp.com/users/' + doc.memberId
                         }
                     }
                 })
@@ -112,7 +112,7 @@ exports.notifications_delete_notification = (req, res) => {
                 message: 'Notification deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/notifications/',
+                    url: 'https://mealzeit.herokuapp.com/notifications/',
                 }
             })
         })
@@ -135,7 +135,7 @@ exports.notifications_delete_all = (req, res) => {
                 message: 'All Notifications deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/notifications/',
+                    url: 'https://mealzeit.herokuapp.com/notifications/',
                 }
             })
         })
