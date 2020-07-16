@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import axios from '../../axios';
 
 import Screen from '../../components/Screen/Screen';
 import CustomizedTabs from './CustomizedTabs';
@@ -36,9 +37,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 export const Profile = () => {
     const classes = useStyles();
+    // const [user, setUser] = useState({});
+
+    // const userId = localStorage.getItem('userId');
+
+    // useEffect(() => {
+    //     axios.get("/users/"+userId).then(response => {
+    //         setUser(response["data"]);
+    //     })
+    //   },[]);
+
+
     return (
         <Screen>
             <div className={classes.root}>

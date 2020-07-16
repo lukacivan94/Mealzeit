@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { History, LocationState } from 'history';
 import Screen from '../../components/Screen/Screen';
 import { connect } from 'react-redux';
+import { Modal } from '@material-ui/core';
+import styled from 'styled-components';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,6 +62,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const StyledText = styled.p`
+    margin: 20% 30%;
+    background-color: white;
+    padding: 10% 15%;
+    text-align: center;
+    color: darkorange;
+    text-transform: capitalize;
+    font-size: x-large;
+    font-family: cursive;
+`;
+
 interface Props {
     history: History<LocationState>;
     isLoggedIn: boolean;
@@ -67,13 +80,20 @@ interface Props {
 
 export const HomePage = (props: Props) => {
     const classes = useStyles();
+    const [isModalOpen, setModal] = React.useState(false);
 
     const handleButtonClick = (routeName) => {
         const { history } = props;
         const token = localStorage.getItem('jwtToken');
         if (!!token) {
             history.push('/' + routeName);
+        } else {
+            setModal(true);
         }
+    };
+
+    const handleModalClose = () => {
+        setModal(false);
     };
 
     return (
@@ -90,6 +110,12 @@ export const HomePage = (props: Props) => {
                     </div>
                 </div>
             </div>
+            <Modal
+                open={isModalOpen}
+                onClose={handleModalClose}
+            >
+                <StyledText>You must be signed in</StyledText>
+            </Modal>
         </Screen>
     );
 };

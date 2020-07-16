@@ -1,10 +1,9 @@
 import React from 'react';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Profile from '../Layout/Profile';
 import profilePic from '../../assets/images/Profile_Pic.png';
 import { makeStyles } from '@material-ui/core/styles';
+import Notifications from '../Notification/Notifications';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,12 +30,10 @@ export const ProfileBar = () => {
     return (
         <div className={classes.root}>
             <IconButton className={classes.icon} aria-label='show n new notifications' color='inherit'>
-                <Badge badgeContent={17} color='secondary'>
-                    <NotificationsIcon />
-                </Badge>
+                <Notifications />
             </IconButton>
             <div className={classes.name}>John Doreath</div>
             <Profile imageSource={profilePic} altText='ProfilePic' />
         </div>
     );
-}
+};

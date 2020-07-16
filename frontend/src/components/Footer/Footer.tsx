@@ -41,17 +41,18 @@ const useStyles = makeStyles((theme) => ({
 
 const Footer = () => {
     const classes = useStyles();
+
     return (
     <>
         <div className={classes.main}>
             <div className={classes.list}>
-                <nav className={classes.item}><a className={classes.link} href='/'>About Us</a></nav>
-                <nav className={classes.item}><a className={classes.link} href='/'>Help and Support</a></nav>
-                <nav className={classes.item}><a className={classes.link} href='/'>Partnership</a></nav>
+                <nav className={classes.item}><a className={classes.link} href='about'>Team</a></nav>
+                <nav className={classes.item}><a className={classes.link} href='mission'>Mission and Vision</a></nav>
             </div>
         </div>
     </>
     );
 }
+
 
 export default Footer;

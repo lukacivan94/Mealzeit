@@ -81,9 +81,11 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                         _id: doc._id,
                         userId: doc.userId,
                         memberId: doc.memberId,
+                        is_read: doc.is_read,
                         text: doc.text,
                         type: doc.type,
                         eventId: doc.eventId,
+                        is_read: doc.is_read,
                         request: {
                             type: 'GET',
                             url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id,
