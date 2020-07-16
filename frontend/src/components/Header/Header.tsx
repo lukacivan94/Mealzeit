@@ -59,13 +59,15 @@ const Header = (props: Props) => {
     };
 
     const token = localStorage.getItem('jwtToken');
+    const userJson = localStorage.getItem('user');
+    const user = JSON.parse(userJson);
 
     return (
         <header className={classes.main}>
             <Logo imageSource={mealZeitLogo} altText='MealZeit' onClick={goToHome} />
-            {!!token ?
+            {!!token && !!user ?
 
-                <ProfileBar />
+                <ProfileBar user={user} />
                 :
                 <StyledButtonDiv>
                     <StyledButton

@@ -83,6 +83,7 @@ const Profile = (props: Props) => {
     props.logout();
     localStorage.removeItem('userId');
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('user');
     props.history.push('/');
   };
 
