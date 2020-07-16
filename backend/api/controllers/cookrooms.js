@@ -242,7 +242,7 @@ async function makeRequestNotification(cookroomId, userId) {
         date_created: new Date(),
         type: "request",
         text: "You have a new request for " + title,
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()
@@ -306,7 +306,7 @@ async function makeAcceptNotification(cookroomId, userId) {
         date: new Date(),
         type: "acceptance",
         text: "Your request to join " + title + " was accepted.",
-        isRead: false,
+        is_read: false,
     });
     await User.findOneAndUpdate(
         { _id: userId },
@@ -369,7 +369,7 @@ async function makeRejectionNotification(cookroomId, userId) {
         type: "rejection",
         text:
             "Your request to join " + title + " was rejected.",
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()

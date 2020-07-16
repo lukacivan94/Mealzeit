@@ -11,6 +11,7 @@ const Notification = require('../models/notification');
  */
 exports.courses_add_course = (req, res) => {
     const userId = req.body.userId;
+    console.log(req.body.title);
     let courseId;
     const today = new Date();
     User.findById(userId)
@@ -270,7 +271,7 @@ async function makeJoinNotification(courseId, userId) {
         date_created: new Date(),
         type: "join",
         text: "New user joined your " + title + " course",
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()

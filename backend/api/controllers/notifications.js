@@ -83,6 +83,7 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                         memberId: doc.memberId,
                         text: doc.text,
                         type: doc.type,
+                        eventId: doc.eventId,
                         request: {
                             type: 'GET',
                             url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id,
@@ -98,6 +99,38 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
             });
         });
 };
+
+
+/** (✓)
+ * This function handles notification PATCH requests
+ * It finds notification entry in the database with the matching id 
+ * and updates the notification's properties
+ */
+exports.notifications_edit_notification = (req, res) => {
+    console.log(req);
+    const id = req.params.notificationId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value
+    };
+    Notification.update({ _id: id }, { $set: updateOps })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'Notification is updated',
+                request: {
+                    type: 'GET',
+                    url: 'https://mealzeit.herokuapp.com/notifications/' + id
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
 
 /** (✓)
  * This function handles notification DELETE requests
