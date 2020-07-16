@@ -87,11 +87,11 @@ const RadioSelect = ({ input, ...rest }) => {
 };
 
 interface MoreInfoProps {
-  course: boolean;
+  isCourse: boolean;
   handleBack();
 }
 
-const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & InjectedFormProps<{}, MoreInfoProps>) => {
+const MoreInfo = ({ isCourse, handleBack, handleSubmit }: MoreInfoProps & InjectedFormProps<{}, MoreInfoProps>) => {
       const classes = useStyles();      
       return (
           <div>
@@ -121,7 +121,7 @@ const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & Injected
                   </EventDiv>
                   <Divider variant="middle" />
                   {
-                      !course
+                      !isCourse
                       ? 
                       <div>
                       <EventDiv>

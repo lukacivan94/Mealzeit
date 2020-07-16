@@ -93,11 +93,28 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface Props {
+    type: String;
+    joined:Number;
+    member: any;
+    date: any;
+  }
+
+
 export default function MediaControlCard(props) {
     // type: cookroom, course, recipe
   const classes = useStyles();
   const theme = useTheme();
-  const { type, joined } = props;
+  const { type, joined, member, date } = props;
+//   const [CourseDate, setCourseDate ] = React.useState(dates);
+
+//   if(type === "course"){
+//     props.data.map(
+//         val => {
+//             setCourseDate(val['dates']);
+//         }
+//     )
+//   }
 
   return (
     <Card className={classes.root}>
@@ -108,13 +125,26 @@ export default function MediaControlCard(props) {
                         Burger Day!
                     </Typography>
                     {
-                        (type === "cookroom" || type === "course")
+                        (type === "cookroom")
                         ?
                         <Collapsible heading="Date">
                             <ul>
                                 <li>2021/23/22</li>
                                 <li>2021/23/22</li>
                                 <li>2021/23/22</li>
+                            </ul>
+                        </Collapsible>
+                        :
+                        null
+                    }
+                    {
+                        (type === "course")
+                        ?
+                        <Collapsible heading="Date">
+                            <ul>
+                                {
+                                date.map((value, index) => (<li key={index}> {value} </li>))
+                                }
                             </ul>
                         </Collapsible>
                         :

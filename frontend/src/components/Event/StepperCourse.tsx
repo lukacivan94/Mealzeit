@@ -100,7 +100,7 @@ const HorizontalLinearStepper=  (props: Props) => {
 
   const [courseFirstStepValues, setCourseFirstStepValues] = React.useState({
     location: String(),
-    dates: []
+    dates: Array()
   });
 
   const [courseSecondStepValues, setCourseSecondStepValues] = React.useState({
@@ -111,7 +111,7 @@ const HorizontalLinearStepper=  (props: Props) => {
   });
 
   const [courseThirdStepValues, setCourseThirdStepValues] = React.useState({
-    list_of_recipes: []
+    list_of_recipes: Array()
   });
 
   const [courseFinalStepValues, setCourseFinalStepValues] = React.useState({
@@ -123,15 +123,20 @@ const HorizontalLinearStepper=  (props: Props) => {
   });
 
   const handleLocationDateSave = (values) => {
+    let newDate = [];
+    if(values.dateOfPublish){
+      newDate = values.dateOfPublish.map(val => val.toISOString());
+    }
     const LocationDate = {
         location: values.location || '',
-        dates: values.dateOfPublish || [],
+        dates: newDate || [],
     };
     setCourseFirstStepValues(LocationDate);
     handleNext();
   };
 
   const handleJoinMembers = (values) => {
+    console.log(courseFirstStepValues);
     const JoinData = {
         price_of_course: values.priceOfCourse || -1,
         number_of_members: values.numberOfMembers || -1,
@@ -202,13 +207,13 @@ const HorizontalLinearStepper=  (props: Props) => {
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} course={ true }/>;
+        return <EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} isCourse={ true }/>;
       case 1:
         return <JoinPageCourse onSubmit={handleJoinMembers} handleBack={handleBack}/>;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack}/>;
+        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} isCourse={ true }/>;
       case 3:
-          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} course={ true } />;
+          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ true } />;
       default:
         return 'Unknown step';
     }

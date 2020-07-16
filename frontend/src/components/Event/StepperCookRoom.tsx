@@ -129,7 +129,7 @@ const HorizontalLinearStepper =  (props: Props) => {
   const handleLocationDateSave = (values) => {
     const LocationDate = {
         location: values.location || '',
-        date_time: values.dateOfPublish || '',
+        date_time: values.dateOfPublish.toISOString() || '',
     };
     setCookroomFirstStepValues(LocationDate);
     handleNext();
@@ -206,13 +206,13 @@ const HorizontalLinearStepper =  (props: Props) => {
   const getStepContent = (step: number, handleBack) => {
     switch (step) {
       case 0:
-        return (<EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} course={ false }/>);
+        return (<EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} isCourse={ false }/>);
       case 1:
         return <JoinPageRoom onSubmit={handleJoinMembers} handleBack={handleBack} />;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} />;
+        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} isCourse={ false }/>;
       case 3:
-          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} course={ false } />;
+          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ false } />;
       default:
         return 'Unknown step';
     }

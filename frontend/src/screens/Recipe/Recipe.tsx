@@ -64,11 +64,13 @@ interface Props {
     modal?: boolean;
     handleDialogClose?: any;
     handleSetRecipeId?: any;
+    input?: any;
 }
 
 const Recipe = (props: Props) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+
     const [recipeFirstStepValues, setRecipeFirstStepValues] = React.useState({
         recipe_title: '',
         ingredients: '',
@@ -113,8 +115,6 @@ const Recipe = (props: Props) => {
         
         setRecipeSecondStepValues(recipeData);
 
-        const userId = localStorage.getItem('userId');
-
         const recipeRequest = {
             recipe_title: recipeFirstStepValues.recipe_title,
             food_type: recipeFirstStepValues.food_type,
@@ -130,22 +130,24 @@ const Recipe = (props: Props) => {
             userId: userId
         };
 
-        axios.post('/recipes/', recipeRequest)
-            .then(res => {
-                if(props.modal) {
-                    props.handleSetRecipeId(res.recipeId);
-                }   
-                handleNext();
-            })
-            .catch(error => {
-                if (error.response) {
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                }
+        // axios.post('/recipes/', recipeRequest)
+        //     .then(res => {
+        //         if(props.modal) {
+        //             props.handleSetRecipeId(res.recipeId);
+        //         }   
+        //         handleNext();
+        //     })
+        //     .catch(error => {
+        //         if (error.response) {
+        //             console.log(error.response.data);
+        //             console.log(error.response.status);
+        //             console.log(error.response.headers);
+        //         }
 
-                handleReset();
-            });
+        //         handleReset();
+        //     });
+        props.handleSetRecipeId("3774747uufjffjjfjfjj");
+        handleNext();
     };
 
     const getStepContent = (stepIndex: number, handleBack) => {

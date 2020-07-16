@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
+import { Field, reduxForm, FieldArray, InjectedFormProps, formValueSelector } from 'redux-form';
 import Divider from '@material-ui/core/Divider';
 import { Button } from '@material-ui/core';
 
@@ -17,10 +17,19 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Fab from '@material-ui/core/Fab';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,12 +58,32 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'darkorange',
         marginBottom: '10px',
       },
-      toolbar: {
+    toolbar: {
         minHeight: 80,
       },
+    demo: {
+        backgroundColor: theme.palette.background.paper,
+    },
+    iconReject: {
+        fill: 'red',
+    },
+    extendedIcon: {
+        marginRight: '3px',
+    },
+    margin: {
+        marginBottom: theme.spacing(2),
+    },
 }));
 
+// const theme = createMuiTheme({
+//     palette: {
+//       primary: orange,
+//     },
+//   });
+  
+// const required = value => value ? undefined : 'Required';
 
+  
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & { children?: React.ReactElement },
     ref: React.Ref<unknown>,
@@ -64,14 +93,21 @@ const Transition = React.forwardRef(function Transition(
 
 let history: History<LocationState>;
 interface MenuProps {
+    isCourse: boolean,
     handleBack();
 }
 
-const Menu = ({ handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, MenuProps>) => {
+let recipesArrList : String[] = [];
+
+const Menu = ({ isCourse, handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, MenuProps>) => {
         const classes = useStyles();
 
+        const recipesArr : String[] = [];
+
         const [open, setOpen] = React.useState(false);
+        const [recipiIdList, setRecipiIdList] = React.useState(recipesArr);
         const [recipiId, setRecipiId] = React.useState('');
+        
 
         const handleClickOpen = () => {
             setOpen(true);
@@ -82,7 +118,14 @@ const Menu = ({ handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, Me
         };
 
         const handleSetRecipeId = (id) => {
-            setRecipiId(id);
+            if(isCourse) {
+                setRecipiIdList([...recipiIdList, id]);
+                recipesArrList = recipiIdList;
+            } else {
+                setRecipiId(id);
+                recipesArrList.push(id);
+            }
+            console.log(id);
         };
 
 
@@ -140,7 +183,7 @@ const Menu = ({ handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, Me
                                     </IconButton>
                                 </Toolbar>
                                 </AppBar>
-                                <Field
+                                {/* <Field
                                     name='recipe'
                                     component={renderRecipe}
                                     label='recipe'
@@ -148,8 +191,35 @@ const Menu = ({ handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, Me
                                         handleClose: handleClose,
                                         handleSetRecipeId: handleSetRecipeId
                                     }}
-                                />
-                            </Dialog>            
+                                /> */}
+                                <Recipe history={history} modal={true} handleDialogClose={handleClose} handleSetRecipeId={handleSetRecipeId}/>
+                            
+                                {/* {
+                                    isCourse
+                                    ?
+                                    <FieldArray 
+                                        name='recipe' 
+                                        label='recipe'
+                                        component={renderListOfRecipes} 
+                                        />        
+                                    :
+                                    <Field
+                                        name='recipe'
+                                        label='recipe'
+                                        component={renderRecipe}
+                                    />
+                                    
+                                } */}
+                            
+                            </Dialog>    
+                            <Field 
+                                name="recipe" 
+                                component={renderField}
+                                {...{
+                                    recipesArrList: recipesArrList,
+                                    isCourse: isCourse
+                                }}
+                            />
                         </EventDiv>
                     </StyleDiv>
                 </TabBar>
@@ -168,26 +238,134 @@ const Menu = ({ handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, Me
         );
 };
 
-const renderRecipe = ({
+const renderField = ({
     label,
     input,
     meta: { touched, invalid, error },
     type,
-    handleClose,
-    handleSetRecipeId,
+    recipesArrList,
+    isCourse,
     ...custom
-}) => (
-        <Recipe 
-            history={history} 
-            modal={true} 
-            handleDialogClose={handleClose} 
-            handleSetRecipeId={handleSetRecipeId}
-            {...input}
-            {...custom}
-        />
+}) => {
+    if(isCourse) {
+        input.value = recipesArrList;
+    } else {
+        input.value = recipesArrList[0];
+    }
+    
+    return (
+        <div>
+            {
+                isCourse
+                ?
+                <ul>
+                    {
+                        recipesArrList.map(
+                        (value, index) => <li key={index}>{value} </li>
+                        )
+                        
+                    }
+                </ul>
+                :
+                <span>
+                    {recipesArrList[0]}
+                </span>
+            }
+        </div>
     );
+};
+
+// const renderRecipe = ({
+//     label,
+//     input,
+//     meta: { touched, invalid, error },
+//     type,
+//     handleClose,
+//     handleSetRecipeId,
+//     ...custom
+// }) => (
+//         <Recipe 
+//             {...input}
+//             history={history} 
+//             modal={true} 
+//             handleDialogClose={handleClose} 
+//             handleSetRecipeId={handleSetRecipeId}
+//         />
+//     );
+
+
+// const renderRecipeInfo = ({
+//         label,
+//         input,
+//         meta: { touched, invalid, error },
+//         type,
+//         handleClose,
+//         handleSetRecipeId,
+//         ...custom
+//     }) => {
+//     const classes = useStyles();
+        
+//     return (
+//         <div className={classes.demo}>
+//             <Divider variant="middle" />
+//             <List dense>
+//                 <ListItem>
+//                   <ListItemText
+//                     primary={props.name}
+//                   />
+//                   <ListItemSecondaryAction>
+//                     <IconButton edge="end" aria-label="check">
+//                       <CancelIcon className={classes.iconReject} />
+//                     </IconButton>
+//                   </ListItemSecondaryAction>
+//                 </ListItem>
+//             </List>
+//         </div>
+//         );
+//     };
+
+
+// const renderListOfRecipes = ({ fields, meta: { error } }) => {
+    
+//     const classes = useStyles();
+//     return (
+//     <div>
+//         <MuiThemeProvider theme={theme}>
+//         <Fab className={classes.margin} color='primary'  variant="extended" onClick={() => fields.push()}>
+//             <AddIcon className={classes.extendedIcon} />
+//             Add Date
+//         </Fab>
+//       </MuiThemeProvider>
+//       {fields.map((date, index) => (
+
+//         <div className={classes.demo}  key={index}>
+//             <Divider variant="middle" />
+//             <List dense>
+//                 <ListItem>
+//                     <Field
+//                         validate={[ required ]}
+//                         name={date}
+//                         type="text"
+//                         component={renderRecipe}
+//                         label={`date #${index + 1}`}
+//                     />
+//                 <ListItemSecondaryAction>
+//                     <IconButton edge="end" aria-label="check"  onClick={() => fields.remove(index)}>
+//                         <DeleteIcon className={classes.iconReject} />
+//                     </IconButton>
+//                 </ListItemSecondaryAction>
+//                 </ListItem>
+//             </List>
+//         </div>
+//       ))}
+//       <Divider variant="middle" />
+//       {(error && <AlertMessage>{error}</AlertMessage>)}
+//     </div>
+//   );
+// };
 
 
 export default reduxForm<{}, MenuProps>({
     form: 'Menu',
 })(Menu);
+
