@@ -26,7 +26,7 @@ const dates : String[] = [];
 export default function GridList(props: Props) {
   const classes = useStyles();
   const { type, joined, data } = props;
-  console.log(data);
+ 
   //const [CourseDate, setCourseDate ] = React.useState(dates);
   return (
     <div className={classes.root}>
@@ -35,8 +35,6 @@ export default function GridList(props: Props) {
               (type === "course" && !joined)
               ?
               data.map((object, index) => {
-                console.log(object);
-
                 return(
                       <Grid item xs={4} key={index}>
                           <CardCourse type={type} joined={joined} member={object.members} date={object.dates}/>
@@ -44,9 +42,6 @@ export default function GridList(props: Props) {
                   )})
               :
               null
-              // <Grid item xs={4}>
-              //     <CardCourse type={type} joined={joined} />
-              // </Grid>
         }
       </Grid>
     </div>

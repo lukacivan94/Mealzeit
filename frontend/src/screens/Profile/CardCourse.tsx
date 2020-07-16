@@ -106,6 +106,7 @@ export default function MediaControlCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const { type, joined, member, date } = props;
+  console.log(member);
 //   const [CourseDate, setCourseDate ] = React.useState(dates);
 
 //   if(type === "course"){
@@ -121,9 +122,9 @@ export default function MediaControlCard(props) {
         <div className={classes.info} >
             <div className={classes.details} >
                 <div className={classes.content}>
-                    <Typography className={classes.title} component="h6" variant="h6">
-                        Burger Day!
-                    </Typography>
+                        <Typography className={classes.title} component="h6" variant="h6">
+                            Burger Day!
+                        </Typography>
                     {
                         (type === "cookroom")
                         ?
@@ -140,13 +141,31 @@ export default function MediaControlCard(props) {
                     {
                         (type === "course")
                         ?
-                        <Collapsible heading="Date">
-                            <ul>
-                                {
-                                date.map((value, index) => (<li key={index}> {value} </li>))
-                                }
-                            </ul>
-                        </Collapsible>
+                        <>
+                            <Collapsible heading="Date">
+                                <ul>
+                                    {
+                                    date.map((value, index) => (<li key={index}> {value} </li>))
+                                    }
+                                </ul>
+                            </Collapsible>
+                            {
+                                (member === undefined || member.length == 0)
+                                 
+                                ?
+                                null
+                                :
+                                <Collapsible heading="Members">
+                                    <ul>
+                                        {
+                                        member.map((value, index) => (<li key={index}> {value} </li>))
+                                        }
+                                    </ul>
+                                </Collapsible>
+                            }
+                           
+                        </>
+                        
                         :
                         null
                     }

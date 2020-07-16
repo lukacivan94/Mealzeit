@@ -39,28 +39,69 @@ const useStyles = makeStyles((theme) => ({
 
 export const Profile = () => {
 
-    const courses : Object[] = [];
-    const coursesId : String[] = [];
+    const obj : Object[] = [];
+    // const coursesId : String[] = [];
 
     const classes = useStyles();
     const [user, setUser] = useState({});
-    const [createdCoursesIdList, setCreatedCoursesIdList] = useState(coursesId);
-    const [createdCoursesObjectList, setCreatedCoursesObjectList] = useState(courses);
+    // const [createdCoursesIdList, setCreatedCoursesIdList] = useState(coursesId);
+    const [createdCoursesObjectList, setCreatedCoursesObjectList] = useState(obj);
+    const [joinedCoursesObjectList, setJoinedCoursesObjectList] = useState(obj);
+    const [createdCookroomObjectList, setCreatedCookroomObjectList] = useState(obj);
+    const [joinedCookroomObjectList, setJoinedCookroomObjectList] = useState(obj);
+    const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(obj);
+    // const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(obj);
 
     const userId = localStorage.getItem('userId');
 
     useEffect(() => {
         axios.get("/users/"+userId).then(response => {
             setUser(response["data"]['user']);
-            setCreatedCoursesIdList(response["data"]['user']['created_courses']);
+            // setCreatedCoursesIdList(response["data"]['user']['created_courses']);
             response["data"]['user']['created_courses'].map(
                 val => {
                     axios.get("/courses/"+val).then(response=> {
                         setCreatedCoursesObjectList(createdCoursesObjectList => [...createdCoursesObjectList,response["data"]['course']] );
-                        console.log(response["data"]['course']);
+                        //console.log(response["data"]['course']);
                     })}
-        
-                );
+            );
+            response["data"]['user']['joined_courses'].map(
+                val => {
+                    axios.get("/courses/"+val).then(response=> {
+                        setJoinedCoursesObjectList(joinedCoursesObjectList => [...joinedCoursesObjectList,response["data"]['course']] );
+                        //console.log(response["data"]['course']);
+                    })}
+            );
+            response["data"]['user']['created_cookrooms'].map(
+                val => {
+                    axios.get("/cookrooms/"+val).then(response=> {
+                        setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookrooms']] );
+                        //console.log(response["data"]['course']);
+                    })}
+            );
+            response["data"]['user']['joined_cookrooms'].map(
+                val => {
+                    axios.get("/cookrooms/"+val).then(response=> {
+                        setJoinedCookroomObjectList(joinedCookroomObjectList => [...joinedCookroomObjectList,response["data"]['cookrooms']] );
+                        //console.log(response["data"]['course']);
+                    })}
+            );
+            response["data"]['user']['created_recipes'].map(
+                val => {
+                    axios.get("/recipes/"+val).then(response=> {
+                        setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipes']] );
+                        //console.log(response["data"]['course']);
+                    })}
+            );
+            // response["data"]['user']['created_courses'].map(
+            //     val => {
+            //         axios.get("/courses/"+val).then(response=> {
+            //             setSharedRecipeObjectList(sharedRecipeObjectList => [...sharedRecipeObjectList,response["data"]['course']] );
+            //         })}
+            // );
+        }),
+        axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(response => {
+            console.log(response);
         })
       },[]);
 
