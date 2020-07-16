@@ -27,13 +27,24 @@ const useStyles = makeStyles((theme) => ({
 
 export const ProfileBar = () => {
     const classes = useStyles();
+
+    const userJson = localStorage.getItem('user') || '';
+    const user = JSON.parse(userJson);
+
     return (
         <div className={classes.root}>
             <IconButton className={classes.icon} aria-label='show n new notifications' color='inherit'>
                 <Notifications />
             </IconButton>
-            <div className={classes.name}>John Doreath</div>
-            <Profile imageSource={profilePic} altText='ProfilePic' />
+            {user &&
+                <div className={classes.name}>{user.first_name + ' ' + user.last_name}</div>
+
+            }
+            {user && user.profile_picture ?
+                <Profile imageSource={`data:image/jpeg;base64,${user.profile_picture}`} altText='ProfilePic' />
+                :
+                <Profile imageSource={profilePic} altText='ProfilePic' />
+            }
         </div>
     );
 };
