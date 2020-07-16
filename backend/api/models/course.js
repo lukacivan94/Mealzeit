@@ -7,7 +7,7 @@ const courseSchema = extendSchema(Event.schema, {
     list_of_recipes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Recipe',
-        required: true
+        required: [true, 'Recipe is required']
     }],
     course_rating: { type: Number },
     number_of_ratings: { type: Number },
