@@ -55,7 +55,7 @@ exports.cookrooms_add_cookroom = (req, res) => {
                 cookroomId: cookroomId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -86,7 +86,7 @@ exports.cookrooms_get_all = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/cookrooms/' + doc._id
                         }
                     }
                 })
@@ -121,7 +121,7 @@ exports.cookrooms_get_cookrooms_of_user = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/cookrooms/' + doc._id
                         }
                     }
                 })
@@ -152,7 +152,7 @@ exports.cookrooms_get_cookroom = (req, res) => {
                     cookroom: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/cookrooms/'
+                        url: 'https://mealzeit.herokuapp.com/cookrooms/'
                     }
                 });
             } else {
@@ -183,7 +183,7 @@ exports.cookrooms_patch_cookroom = (req, res) => {
                 message: 'Cookroom updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/cookrooms/' + id
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/' + id
                 }
             });
         })
@@ -206,7 +206,7 @@ exports.cookroom_add_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -273,7 +273,7 @@ exports.cookroom_accept_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -337,7 +337,7 @@ exports.cookroom_reject_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -395,7 +395,7 @@ exports.cookroom_leave_cookroom = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -430,7 +430,7 @@ exports.cookrooms_cancel_cookroom = (req, res) => {
                 message: "Cookroom cancelled",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -454,7 +454,7 @@ exports.cookrooms_delete_cookroom = (req, res) => {
                 message: 'Cookroom deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/cookrooms/',
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/',
                 }
             })
         })
@@ -477,7 +477,7 @@ exports.cookrooms_delete_all = (req, res) => {
                 message: 'All cookrooms deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/cookrooms/',
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/',
                 }
             })
         })
