@@ -5,14 +5,22 @@ import axios from '../../axios';
 import { History, LocationState } from 'history';
 import { connect } from 'react-redux';
 import { login } from '../../store/actions/authActions';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+// import { Alert } from '@material-ui/lab';
 
 // TODO: (burak) It will be added later
 // import setAuthToken from 'utils/authToken';
 // import jwt_decode from 'jwt-decode';
 
+const Alert = (props: AlertProps) => {
+    return <MuiAlert elevation={6} variant='filled' {...props} />;
+};
+
 interface AuthState {
     isModalOpen: boolean;
     modalText: string;
+    isWarningModalOpen: boolean;
 }
 
 interface AuthProps {
@@ -27,7 +35,8 @@ class Auth extends Component<AuthProps, AuthState> {
         super(props);
         this.state = {
             isModalOpen: false,
-            modalText: ''
+            modalText: '',
+            isWarningModalOpen: false
         };
     }
 
@@ -63,6 +72,7 @@ class Auth extends Component<AuthProps, AuthState> {
             })
             .catch(err => {
                 console.error('err: ', err);
+                this.setState({ isWarningModalOpen: true });
             });
     }
 
@@ -70,10 +80,20 @@ class Auth extends Component<AuthProps, AuthState> {
         this.setState({ isModalOpen: false, modalText: '' });
     }
 
+    handleWarningModalClose = () => {
+        this.setState({ isWarningModalOpen: false });
+    }
+
     render() {
         return (
             <Screen>
-                <LoginForm onSubmit={this.handleLogin} />
+                <>
+                    <LoginForm onSubmit={this.handleLogin} />
+                    <Snackbar open={this.state.isWarningModalOpen} autoHideDuration={6000} onClose={this.handleWarningModalClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    >
+                        <Alert severity='error'>The email or password is incorrect! </Alert>
+                    </Snackbar>
+                </>
             </Screen >
         );
     }
