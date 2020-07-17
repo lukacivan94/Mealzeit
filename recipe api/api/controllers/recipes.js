@@ -36,7 +36,7 @@ exports.recipes_add_recipe = (req, res, next) => {
 
 exports.recipes_get_all = (req, res) => {
     Recipe.find()
-        .select('recipe_title _id')
+        .select('recipe_title _id food_type cuisine_type recipe_rating preparation_time')
         .exec()
         .then(docs => {
             const response = {
@@ -45,6 +45,10 @@ exports.recipes_get_all = (req, res) => {
                     return {
                         recipe_title: doc.recipe_title,
                         _id: doc._id,
+                        food_type: doc.food_type,
+                        cuisine_type: doc.cuisine_type,
+                        recipe_rating: doc.recipe_rating,
+                        preparation_time: doc.preparation_time,
                         request: {
                             type: 'GET',
                             url: 'https://mealzeit-recipe-api.herokuapp.com/recipes/' + doc._id
