@@ -122,7 +122,6 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
 
                     axios.get('/users/' + friend)
                         .then(res => {
-                            console.log('res friend: ', res);
                             const friendInfo = res.data.user;
                             setUserFriends(userFriends => [...userFriends, friendInfo]);
                         })
@@ -148,15 +147,6 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
         setSelectedFriends(selectedFriends => [...selectedFriends, userFriends[index]._id]);
     };
 
-    useEffect(() => {
-        console.log('user friends', userFriends);
-    });
-
-    useEffect(() => {
-        console.log('selected friends', selectedFriends);
-    });
-
-
     return (
         <Container component='main' maxWidth='sm'>
             <Typography component='h1' variant='h5' style={{ color: 'darkorange' }}>
@@ -176,8 +166,6 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
                     <StyledFieldDiv>
                         <LeftRightSlider>
                             {userFriends && userFriends.map((friend, index) => {
-                                console.log('friend ', index, ' ', friend);
-
                                 return (
                                     <StyledFriendDiv>
                                         <AvatarImage src={friend.profile_picture ? base64ToImage(friend.profile_picture) : mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />

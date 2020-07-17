@@ -1,14 +1,17 @@
-import React from 'react';
-import { Field, reduxForm, InjectedFormProps } from 'redux-form';
-import { TextField, Container, Typography, makeStyles, Select, InputLabel, FormHelperText, FormControl, Button } from '@material-ui/core';
+import React, { Dispatch, SetStateAction } from 'react';
+import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
+import { TextField, Container, Typography, makeStyles, Select, InputLabel, FormHelperText, FormControl, Button, Snackbar } from '@material-ui/core';
 import styled from 'styled-components';
+import DatesList from '../../components/Event/EventLocationTime/DateTime/DatesList';
+import { connect } from 'react-redux';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 const cuisineTypes = [
     { value: '', text: '' },
+    { value: 'american', text: 'American' },
+    { value: 'european', text: 'European' },
     { value: 'asian', text: 'Asian' },
-    { value: 'indian', text: 'Indian' },
-    { value: 'italian', text: 'Italian' },
-    { value: 'mexican', text: 'Mexican' }
+    { value: 'african', text: 'African' }
 ];
 
 const foodTypes = [
@@ -35,11 +38,21 @@ const validate = values => {
     return errors;
 };
 
+const validateIngredient = (value) => {
+    return !value ? 'Required to add ingredient' : '';
+
+};
+
+const Alert = (props: AlertProps) => {
+    return <MuiAlert elevation={6} variant='filled' {...props} />;
+};
+
 const renderTextField = ({
     label,
     input,
     meta: { touched, invalid, error },
     type,
+    style,
     ...custom
 }) => (
         <TextField
@@ -48,6 +61,7 @@ const renderTextField = ({
             placeholder={label}
             error={touched && invalid}
             helperText={touched && error}
+            style={style}
             {...input}
             {...custom}
         />
@@ -66,13 +80,11 @@ const renderSelectField = ({
     label,
     meta: { touched, error },
     children,
-    // fullWidth,
     ...custom
 }) => (
         <FormControl style={{ width: '100%' }} error={touched && error}>
             <InputLabel>{label}</InputLabel>
             <Select
-                // native
                 {...input}
                 {...custom}
             >
@@ -120,12 +132,40 @@ const StyledFieldDiv = styled.div`
     width: 100%;
 `;
 
+const StyledIngredientDiv = styled(StyledFieldDiv)`
+    display: flex;
+`;
+
 interface RecipeProps {
+    food: string;
+    serving: string;
+    ingredients: Object[];
+    setIngredients: Dispatch<SetStateAction<Object[]>>;
     handleBack();
 }
 
-const RecipeForm = ({ handleSubmit, handleBack }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
+const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngredients, ingredients }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
     const classes = useStyles();
+
+    const [isWarningModalOpen, setWarningModal] = React.useState(false);
+
+    const handleDeleteId = (ids) => {
+        setIngredients((ingredients) => ingredients.filter((chip?: any) => chip.key !== ids));
+    };
+
+    const handleIngredientAdd = () => {
+        if (food && serving) {
+            setIngredients((ingredients) => [...ingredients, { key: ingredients.length, label: food + ', ' + serving }]);
+            change('food', null);
+            change('serving', null);
+        } else {
+            setWarningModal(true);
+        }
+    };
+
+    const handleWarningModalClose = () => {
+        setWarningModal(false);
+    };
 
     return (
         <Container component='main' maxWidth='xs'>
@@ -142,13 +182,29 @@ const RecipeForm = ({ handleSubmit, handleBack }: RecipeProps & InjectedFormProp
                             fullWidth
                         />
                     </StyledFieldDiv>
-                    <StyledFieldDiv>
+                    <StyledIngredientDiv>
                         <Field
-                            name='ingredients'
+                            name='food'
                             component={renderTextField}
-                            label='Ingredients'
-                            fullWidth
+                            label='Food'
+                            style={{ marginRight: '10px' }}
                         />
+                        <Field
+                            name='serving'
+                            component={renderTextField}
+                            label='Servings'
+                            style={{ marginRight: '10px' }}
+                        />
+                        <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white', height: '50%', marginTop: '30px' }} onClick={handleIngredientAdd}>
+                            ADD
+                        </Button>
+                        <Snackbar open={isWarningModalOpen} autoHideDuration={6000} onClose={handleWarningModalClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        >
+                            <Alert severity='error'>Food and Servings must be filled to add ingredient !</Alert>
+                        </Snackbar>
+                    </StyledIngredientDiv>
+                    <StyledFieldDiv>
+                        <DatesList dates={ingredients} id={handleDeleteId} />
                     </StyledFieldDiv>
                     <StyledFieldDiv>
                         <Field
@@ -213,7 +269,15 @@ const RecipeForm = ({ handleSubmit, handleBack }: RecipeProps & InjectedFormProp
     );
 };
 
-export default reduxForm<{}, RecipeProps>({
-    form: 'recipeForm',
-    validate
-})(RecipeForm);
+const selector = formValueSelector('recipeForm');
+
+const mapStateToProps = (state) => ({
+    food: selector(state, 'food'),
+    serving: selector(state, 'serving')
+});
+
+export default connect(mapStateToProps)(
+    reduxForm<{}, RecipeProps>({
+        form: 'recipeForm',
+        validate
+    })(RecipeForm));

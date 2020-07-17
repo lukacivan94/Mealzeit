@@ -84,6 +84,8 @@ const Recipe = (props: Props) => {
         isPrivate: false
     });
 
+    const [ingredients, setIngredients] = React.useState<Object[]>([]);
+
     const getSteps = () => {
         return ['Recipe Information', 'Sharing My Recipe'];
     };
@@ -108,9 +110,9 @@ const Recipe = (props: Props) => {
         const recipeData = {
             isPrivate: !!values.isPrivate
         };
-        
+
         const userId = localStorage.getItem('userId');
-        
+
         setRecipeSecondStepValues(recipeData);
 
         const recipeRequest = {
@@ -120,10 +122,8 @@ const Recipe = (props: Props) => {
             preparation_time: recipeFirstStepValues.preparation_time,
             instructions: recipeFirstStepValues.instructions,
             calorie_count: '',
-            ingredients: [],
+            ingredients: ingredients,
             number_of_members: '',
-            instant_join: '',
-            description: '',
             is_public: !values.isPrivate,
             userId: userId,
             shared_with_friends: selectedFriends
@@ -133,9 +133,9 @@ const Recipe = (props: Props) => {
 
         axios.post('/recipes/', recipeRequest)
             .then(res => {
-                if(props.modal) {
+                if (props.modal) {
                     props.handleSetRecipeId(res.recipeId);
-                }   
+                }
                 handleNext();
             })
             .catch(error => {
@@ -152,7 +152,7 @@ const Recipe = (props: Props) => {
     const getStepContent = (stepIndex: number, handleBack) => {
         switch (stepIndex) {
             case 0:
-                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} />);
+                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} ingredients={ingredients} setIngredients={setIngredients} />);
             case 1:
                 return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />;
             default:
@@ -198,12 +198,12 @@ const Recipe = (props: Props) => {
                                         <Button onClick={handleReset}>Reset</Button>
                                         {
                                             props.modal
-                                            ?
-                                            <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={props.handleDialogClose}>Close</Button>
-                                            :
-                                            <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                                ?
+                                                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={props.handleDialogClose}>Close</Button>
+                                                :
+                                                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
                                         }
-                                        
+
                                     </div>
                                 </div>
                             ) : (
