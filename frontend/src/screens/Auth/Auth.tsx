@@ -7,11 +7,7 @@ import { connect } from 'react-redux';
 import { login } from '../../store/actions/authActions';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-// import { Alert } from '@material-ui/lab';
-
-// TODO: (burak) It will be added later
-// import setAuthToken from 'utils/authToken';
-// import jwt_decode from 'jwt-decode';
+import setAuthToken from '../../utils/authToken';
 
 const Alert = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -53,6 +49,9 @@ class Auth extends Component<AuthProps, AuthState> {
                 localStorage.setItem('userId', userId);
 
                 this.props.login(userId);
+
+                setAuthToken(token);
+
                 axios.get('/users/' + userId)
                     .then(res => {
                         console.log('res: ', res);
@@ -60,15 +59,10 @@ class Auth extends Component<AuthProps, AuthState> {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
                             this.props.history.push('/');
                         }
-
                     })
                     .catch(err => {
                         console.error('err: ', err);
                     });
-
-                // TODO: (burak) It will be added later
-                // setAuthToken(token);
-                // const decoded = jwt_decode(token);
             })
             .catch(err => {
                 console.error('err: ', err);
