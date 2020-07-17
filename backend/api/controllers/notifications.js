@@ -17,7 +17,7 @@ exports.notifications_get_all = (req, res) => {
                         notification: doc,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/notifications/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id
                         }
                     }
                 })
@@ -48,7 +48,7 @@ exports.notifications_get_notification = (req, res) => {
                     notification: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/notifications/'
+                        url: 'https://mealzeit.herokuapp.com/notifications/'
                     }
                 });
             } else {
@@ -84,11 +84,12 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
                         is_read: doc.is_read,
                         text: doc.text,
                         type: doc.type,
+                        eventId: doc.eventId,
                         is_read: doc.is_read,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/notifications/' + doc._id,
-                            userUrl: 'http://localhost:3000/users/' + doc.memberId
+                            url: 'https://mealzeit.herokuapp.com/notifications/' + doc._id,
+                            userUrl: 'https://mealzeit.herokuapp.com/users/' + doc.memberId
                         }
                     }
                 })
@@ -100,6 +101,38 @@ exports.notifications_get_unread_notifications_of_user = (req, res) => {
             });
         });
 };
+
+
+/** (✓)
+ * This function handles notification PATCH requests
+ * It finds notification entry in the database with the matching id 
+ * and updates the notification's properties
+ */
+exports.notifications_edit_notification = (req, res) => {
+    console.log(req);
+    const id = req.params.notificationId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value
+    };
+    Notification.update({ _id: id }, { $set: updateOps })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'Notification is updated',
+                request: {
+                    type: 'GET',
+                    url: 'https://mealzeit.herokuapp.com/notifications/' + id
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
 
 /** (✓)
  * This function handles notification DELETE requests
@@ -114,7 +147,7 @@ exports.notifications_delete_notification = (req, res) => {
                 message: 'Notification deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/notifications/',
+                    url: 'https://mealzeit.herokuapp.com/notifications/',
                 }
             })
         })
@@ -137,7 +170,7 @@ exports.notifications_delete_all = (req, res) => {
                 message: 'All Notifications deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/notifications/',
+                    url: 'https://mealzeit.herokuapp.com/notifications/',
                 }
             })
         })
