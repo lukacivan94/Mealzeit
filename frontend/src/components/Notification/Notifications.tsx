@@ -94,6 +94,21 @@ const Notifications = () => {
         axios.patch('/cookrooms/accreq/' + eventId + '/' + memberId)
             .then((res) => {
                 setNotifications(notifications.filter((item) => item._id !== notId));
+                updateNotification(notId);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
+
+    const updateNotification = (notId) => {
+        axios.patch('/notifications/' + notId, [{ 'propName': 'is_read', 'value': true }])
+            .then((res) => {
+
             })
             .catch(error => {
                 if (error.response) {
@@ -113,6 +128,7 @@ const Notifications = () => {
         axios.patch('/cookrooms/rejectreq/' + eventId + '/' + memberId)
             .then((res) => {
                 setNotifications(notifications.filter((item) => item._id !== notId));
+                updateNotification(notId);
             })
             .catch(error => {
                 if (error.response) {
