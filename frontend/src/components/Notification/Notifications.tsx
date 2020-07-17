@@ -11,7 +11,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import CheckIcon from '@material-ui/icons/Check';
 import MailIcon from '@material-ui/icons/Mail';
 import axios from '../../axios';
-import { Divider, Badge } from '@material-ui/core';
+import { Divider, Badge, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -93,6 +93,20 @@ const Notifications = () => {
 
         axios.patch('/cookrooms/accreq/' + eventId + '/' + memberId)
             .then((res) => {
+                updateNotification(notId);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
+
+    const updateNotification = (notId) => {
+        axios.patch('/notifications/' + notId, [{ 'propName': 'is_read', 'value': true }])
+            .then((res) => {
                 setNotifications(notifications.filter((item) => item._id !== notId));
             })
             .catch(error => {
@@ -112,7 +126,7 @@ const Notifications = () => {
 
         axios.patch('/cookrooms/rejectreq/' + eventId + '/' + memberId)
             .then((res) => {
-                setNotifications(notifications.filter((item) => item._id !== notId));
+                updateNotification(notId);
             })
             .catch(error => {
                 if (error.response) {
@@ -143,11 +157,13 @@ const Notifications = () => {
                                     <MailIcon fontSize='small' />
                                 </ListItemIcon>
                                 <ListItemText primary={notificationItem.text} />
-                                {notificationItem.type && notificationItem.type === 'request' &&
+                                {notificationItem.type && notificationItem.type === 'request' ?
                                     <>
                                         <CheckIcon onClick={() => handleAccept(index)} style={{ color: 'green', margin: '10px' }} />
                                         <ClearIcon onClick={() => handleReject(index)} style={{ color: 'red', margin: '10px' }} />
                                     </>
+                                    :
+                                    <Button variant='text' style={{ color: 'darkorange' }} onClick={() => updateNotification(notificationItem._id)}>Mark as Read</Button>
                                 }
                             </StyledMenuItem>
                             <Divider variant='inset' component='li' />
