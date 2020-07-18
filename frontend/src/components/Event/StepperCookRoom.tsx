@@ -102,11 +102,13 @@ interface Props extends RouteComponentProps {
 const HorizontalLinearStepper =  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-
+  const [friendList, setfriendList] = React.useState([]);
+  
   const [cookroomFirstStepValues, setCookroomFirstStepValues] = React.useState({
     location: String(),
     date_time: Date()
   });
+
 
   const [cookroomSecondStepValues, setCookroomSecondStepValues] = React.useState({
     invited_friends: [],
@@ -129,17 +131,22 @@ const HorizontalLinearStepper =  (props: Props) => {
   const handleLocationDateSave = (values) => {
     const LocationDate = {
         location: values.location || '',
-        date_time: values.dateOfPublish || '',
+        date_time: values.dateOfPublish.toISOString() || '',
     };
     setCookroomFirstStepValues(LocationDate);
     handleNext();
   };
 
+
+
   const handleJoinMembers = (values) => {
+    console.log(values);
+    console.log(typeof(values.instantJoin));
+    let join = Boolean(values.instantJoin == 'yes') ;
     const JoinData = {
-        invited_friends: values.invitedFriends || [],
+        invited_friends: values.friendIdList || [],
         number_of_members: values.numberOfMembers || -1,
-        instant_join: values.instantJoin || undefined,
+        instant_join: join,
     };
     console.log(cookroomFirstStepValues);
     setCookroomSecondStepValues(JoinData);
@@ -148,9 +155,9 @@ const HorizontalLinearStepper =  (props: Props) => {
 
   const handleRecipeAdd = (values) => {
     const RecipeData = {
-        recipe: values.recipe || '',
+        recipe: values[0] || '',
     };
-
+    console.log(cookroomSecondStepValues);
     setCookroomThirdStepValues(RecipeData);
     handleNext();
   };
@@ -183,6 +190,7 @@ const HorizontalLinearStepper =  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
+    console.log(cookroomRequest);
     
     axios.post('/cookrooms/', cookroomRequest)
         .then(res => {
@@ -206,13 +214,13 @@ const HorizontalLinearStepper =  (props: Props) => {
   const getStepContent = (step: number, handleBack) => {
     switch (step) {
       case 0:
-        return (<EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} course={ false }/>);
+        return (<EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} isCourse={ false }/>);
       case 1:
-        return <JoinPageRoom onSubmit={handleJoinMembers} handleBack={handleBack} />;
+        return <JoinPageRoom handleSubmitValues={handleJoinMembers} handleBack={handleBack} />;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} />;
+        return <Menu handleBack={handleBack} isCourse={ false } handleSetRecipeIdList={handleRecipeAdd}/>;
       case 3:
-          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} course={ false } />;
+          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ false } />;
       default:
         return 'Unknown step';
     }
@@ -266,19 +274,6 @@ const HorizontalLinearStepper =  (props: Props) => {
             ) : (
               <div style={{paddingBottom: '50px'}}>
                   <Typography className={classes.instructions}  component={'div'} variant={'body2'}>{getStepContent(activeStep, handleBack)}</Typography>
-                  <div className={classes.margin}>
-                      <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className={classes.button}>
-                        Back
-                      </Button>
-                      <ColorButton
-                        variant="contained"
-                        color="primary"
-                        onClick={handleNext}
-                        className={classes.button}
-                      >
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                      </ColorButton>
-                  </div>
               </div>
             )}
           </div>

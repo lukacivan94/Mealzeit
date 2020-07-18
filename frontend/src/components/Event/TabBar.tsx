@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     flexGrow: 1,
     width: '100%',
-    maxWidth: 700,
+    maxWidth: 950,
     borderRadius: '25px',
     backgroundColor: theme.palette.background.paper,
     boxShadow: '0px 0px 21px 0px rgba(145,142,145,1)',

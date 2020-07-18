@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: 0,
         margin: 0,
         fontSize: '14px',
+        border: '1px solid rgba(0, 0, 0, .125)',
     }
   }),
 );

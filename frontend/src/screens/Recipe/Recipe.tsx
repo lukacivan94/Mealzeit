@@ -64,11 +64,14 @@ interface Props {
     modal?: boolean;
     handleDialogClose?: any;
     handleSetRecipeId?: any;
+    input?: any;
+    handleRecipeInfo?: any;
 }
 
 const Recipe = (props: Props) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+
     const [recipeFirstStepValues, setRecipeFirstStepValues] = React.useState({
         recipe_title: '',
         ingredients: '',
@@ -134,7 +137,8 @@ const Recipe = (props: Props) => {
         axios.post('/recipes/', recipeRequest)
             .then(res => {
                 if(props.modal) {
-                    props.handleSetRecipeId(res.recipeId);
+                    props.handleSetRecipeId(res.data.recipeId);
+                    props.handleRecipeInfo(res.config.data);
                 }   
                 handleNext();
             })
@@ -144,9 +148,15 @@ const Recipe = (props: Props) => {
                     console.log(error.response.status);
                     console.log(error.response.headers);
                 }
-
                 handleReset();
             });
+        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
+        // handleNext();
+        // const result ='{"recipe_title":"chips chilly","food_type":"dinner","cuisine_type":"asian","preparation_time":"2 hr","instructions":"fry properly","calorie_count":"","ingredients":[],"number_of_members":"","instant_join":"","description":"","is_public":false,"userId":"5f10da4431e7ad2822c58833"}';
+        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
+        // props.handleRecipeInfo(result);
+        // handleNext();
+        
     };
 
     const getStepContent = (stepIndex: number, handleBack) => {
