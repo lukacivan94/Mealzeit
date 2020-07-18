@@ -101,15 +101,15 @@ interface RecipeShareProps {
     setSelectedFriends: Dispatch<SetStateAction<string[]>>;
     selectedFriends: string[];
     isPrivate: boolean;
+    searchText: string;
     handleBack();
 }
 
 type Props = InjectedFormProps<{}, RecipeShareProps> & RecipeShareProps;
 
-const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends, setSelectedFriends }: Props) => {
+const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends, setSelectedFriends, searchText }: Props) => {
     const classes = useStyles();
     const [userFriends, setUserFriends] = React.useState<Object[]>([]);
-    // const [selectedFriends, setSelectedFriends] = React.useState<string[]>([]);
 
     useEffect(() => getFriends(), []);
 
@@ -147,6 +147,21 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
         setSelectedFriends(selectedFriends => [...selectedFriends, userFriends[index]._id]);
     };
 
+    const getFilteredFriends = () => {
+
+        return !searchText || searchText.length < 2
+            ? userFriends
+            : userFriends.filter(({ first_name, last_name }) =>
+                [first_name, last_name].some(
+                    (value) =>
+                        !!value &&
+                        value.toLowerCase().includes(searchText.toLowerCase())
+                )
+            );
+    };
+
+    const filteredFriends = getFilteredFriends();
+
     return (
         <Container component='main' maxWidth='sm'>
             <Typography component='h1' variant='h5' style={{ color: 'darkorange' }}>
@@ -161,11 +176,21 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
                     />
                 </StyledFieldDiv>
             </StyledFieldDiv>
+            <StyledFieldDiv>
+                <Typography component='h6' variant='h6' style={{ color: 'darkorange' }}>
+                    Your Friends
+                    </Typography>
+                <Field
+                    name='searchText'
+                    component={renderTextField}
+                    label='Search'
+                />
+            </StyledFieldDiv>
             {!isPrivate &&
                 <>
                     <StyledFieldDiv>
                         <LeftRightSlider>
-                            {userFriends && userFriends.map((friend, index) => {
+                            {filteredFriends && filteredFriends.map((friend, index) => {
                                 return (
                                     <StyledFriendDiv>
                                         <AvatarImage src={friend.profile_picture ? base64ToImage(friend.profile_picture) : mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
@@ -198,7 +223,8 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
 const selector = formValueSelector('recipeShareForm');
 
 const mapStateToProps = (state) => ({
-    isPrivate: selector(state, 'isPrivate')
+    isPrivate: selector(state, 'isPrivate'),
+    searchText: selector(state, 'searchText')
 });
 
 const mapDispatchToProps = {};
