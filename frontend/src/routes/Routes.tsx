@@ -22,7 +22,7 @@ const Routes = () => (
             <PrivateRoute path='/course' component={Course} />
             <PrivateRoute path='/cookroom' component={CookRoom} />
             <PrivateRoute path='/recipe' component={Recipe} />
-            <PrivateRoute path='/browse' component={BrowsePage} />
+            <Route path='/browse' component={BrowsePage} />
             <PrivateRoute path='/profile' component={Profile} />
             <Route path='/about' component={About} />
             <Route path='/mission' component={MissionVision} />

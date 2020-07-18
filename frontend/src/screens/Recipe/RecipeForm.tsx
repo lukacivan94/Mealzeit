@@ -16,11 +16,9 @@ const cuisineTypes = [
 
 const foodTypes = [
     { value: '', text: '' },
-    { value: 'breakfast', text: 'Breakfast & Brunch' },
-    { value: 'dinner', text: 'Dinner' },
-    { value: 'dessert', text: 'Desserts' },
-    { value: 'snack', text: 'Appetizers & Snacks' },
-    { value: 'drink', text: 'Drinks' }
+    { value: 'vegan', text: 'Vegan' },
+    { value: 'vegetarian', text: 'Vegetarian' },
+    { value: 'meat based', text: 'Meat based' }
 ];
 
 const validate = values => {

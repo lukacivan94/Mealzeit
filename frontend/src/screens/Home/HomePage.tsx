@@ -85,7 +85,7 @@ export const HomePage = (props: Props) => {
     const handleButtonClick = (routeName) => {
         const { history } = props;
         const token = localStorage.getItem('jwtToken');
-        if (!!token) {
+        if (!!token || routeName === 'browse') {
             history.push('/' + routeName);
         } else {
             setModal(true);
