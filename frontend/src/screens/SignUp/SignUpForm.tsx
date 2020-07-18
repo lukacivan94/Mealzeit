@@ -49,10 +49,9 @@ const validate = values => {
 };
 
 const validatePhoneNumber = value =>
-    value && !/^(0|[1-9][0-9]{9})$/i.test(value)
+    value && !/^(0|[1-9]{3}[-][0-9]{3}[-][0-9]{4})$/i.test(value)
         ? 'Invalid phone number, must be 10 digits'
         : undefined;
-
 
 const normalizePhone = value => {
     if (!value) {

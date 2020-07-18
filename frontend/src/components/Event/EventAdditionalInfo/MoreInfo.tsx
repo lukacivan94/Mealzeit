@@ -45,6 +45,7 @@ const theme = createMuiTheme({
           paddingBottom: '10px',
           alignItems: "center",
           display: 'flex',
+          marginTop: '30px',
         },
   }));
 
@@ -52,13 +53,13 @@ const required = value => value ? undefined : 'Required';
 const Range = value => value && (Number(value) < 0 || Number(value)>5000) ? 'Invalid Price, enter from 0 to 5000!': undefined;
 
 const validate = values => {
-    const errors = { priceSplit: '' };
+    const errors = { suggestedPrice: '' };
     const requiredFields = [
-        'titleEvent',
+        'title',
         'description',
-        'volunteeringEvent',
-        'bringBox',
-        'priceSplit'
+        'isVolunteering',
+        'requiredItems',
+        'suggestedPrice'
     ];
     requiredFields.forEach(field => {
         if (!values[field]) {
@@ -66,9 +67,9 @@ const validate = values => {
         }
     });
 
-    if(+values.priceSplit){
-      if(+values.priceSplit>5000 || +values.priceSplit<0) {
-        errors.priceSplit = 'Invalid price entered';
+    if(+values.suggestedPrice){
+      if(+values.suggestedPrice>5000 || +values.suggestedPrice<0) {
+        errors.suggestedPrice = 'Invalid price entered';
       }
   }
     return errors;
@@ -87,11 +88,11 @@ const RadioSelect = ({ input, ...rest }) => {
 };
 
 interface MoreInfoProps {
-  course: boolean;
+  isCourse: boolean;
   handleBack();
 }
 
-const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & InjectedFormProps<{}, MoreInfoProps>) => {
+const MoreInfo = ({ isCourse, handleBack, handleSubmit }: MoreInfoProps & InjectedFormProps<{}, MoreInfoProps>) => {
       const classes = useStyles();      
       return (
           <div>
@@ -106,7 +107,7 @@ const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & Injected
                       <TextSmallDiv>Give your Event a title</TextSmallDiv>
                       <Field
                           validate={[ required ]}
-                          name='titleEvent'
+                          name='title'
                           component={renderTitle}
                       />
                   </EventDiv>
@@ -121,14 +122,14 @@ const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & Injected
                   </EventDiv>
                   <Divider variant="middle" />
                   {
-                      !course
+                      !isCourse
                       ? 
                       <div>
                       <EventDiv>
                           <TextSmallDiv>Is this a volunteering event?</TextSmallDiv>
                           <Field
                               validate={[ required ]}
-                              name='volunteeringEvent'
+                              name='isVolunteering'
                               component={RadioSelect}
                           />
                       </EventDiv>
@@ -137,7 +138,7 @@ const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & Injected
                           <TextSmallDiv>What should people bring?</TextSmallDiv>
                           <Field
                               validate={[ required ]}
-                              name='bringBox'
+                              name='requiredItems'
                               component={renderBringBox}
                           />
                       </EventDiv>
@@ -146,7 +147,7 @@ const MoreInfo = ({ course, handleBack, handleSubmit }: MoreInfoProps & Injected
                       <TextSmallDiv>...or suggest price split?</TextSmallDiv>
                       <Field
                           validate={[ required, Range ]}
-                          name='priceSplit'
+                          name='suggestedPrice'
                           component={renderSplitPrice}
                       />
                       </EventDiv>

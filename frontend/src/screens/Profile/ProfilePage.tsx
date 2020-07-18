@@ -38,43 +38,43 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const Profile = () => {
+
     const classes = useStyles();
-    // const [user, setUser] = useState({});
-
-    // const userId = localStorage.getItem('userId');
-
-    // useEffect(() => {
-    //     axios.get("/users/"+userId).then(response => {
-    //         setUser(response["data"]);
-    //     })
-    //   },[]);
+    const userId = localStorage.getItem('userId');
+    const [userName, setUserName] = useState('');
 
 
+  useEffect(() => {
+    axios.get("/users/"+userId).then(response => {
+        setUserName(response["data"]['user']['first_name']);
+      })
+
+    },[]);
     return (
         <Screen>
             <div className={classes.root}>
                 <div className={classes.wrapper}>
-                    <div className={classes.big}>Ivan's Profile </div>
+                    <div className={classes.big}>{userName}'s Profile </div>
                     <div className={classes.eventdiv}>
                         <CustomizedTabs 
                             label1="Created Cookrooms" 
                             label2="Joined Cookrooms" 
-                            left={<GridList type="cookroom" joined={0}/>} 
-                            right={<GridList type="cookroom" joined={1}/>}/>
+                            left={<GridList type="cookrooms" joined={0}/>} 
+                            right={<GridList type="cookrooms" joined={1}/>}/>
                     </div>
                     <div className={classes.eventdiv}>
                         <CustomizedTabs 
                                 label1="Created Courses" 
                                 label2="Joined Courses" 
-                                left={<GridList type="course" joined={0}/>} 
-                                right={<GridList type="course" joined={1}/>} />
+                                left={<GridList type="courses" joined={0}/>} 
+                                right={<GridList type="courses" joined={1}/>} />
                     </div>
                     <div className={classes.eventdiv}>
                         <CustomizedTabs 
                                 label1="Created Recipes" 
                                 label2="Shared With You" 
-                                left={<GridList type="recipe" joined={0}/>} 
-                                right={<GridList type="recipe" joined={1}/>} />
+                                left={<GridList type="recipes" joined={0}/>} 
+                                right={<GridList type="recipes" joined={1}/>} />
                     </div>
                 </div>
             </div>
