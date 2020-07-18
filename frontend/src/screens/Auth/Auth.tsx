@@ -49,8 +49,19 @@ class Auth extends Component<AuthProps, AuthState> {
                 localStorage.setItem('userId', userId);
 
                 this.props.login(userId);
-
+          
                 setAuthToken(token);
+
+                axios.get('/users/' + userId)
+                    .then(res => {
+                        if (res.data && res.data.user) {
+                            localStorage.setItem('user', JSON.stringify(res.data.user));
+                            this.props.history.push('/');
+                        }                  
+                    })
+                    .catch(err => {
+                        console.error('err: ', err);
+                    });
 
                 axios.get('/users/' + userId)
                     .then(res => {
