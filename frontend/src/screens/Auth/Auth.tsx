@@ -54,7 +54,6 @@ class Auth extends Component<AuthProps, AuthState> {
 
                 axios.get('/users/' + userId)
                     .then(res => {
-                        console.log('res: ', res);
                         if (res.data && res.data.user) {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
                             this.props.history.push('/');
