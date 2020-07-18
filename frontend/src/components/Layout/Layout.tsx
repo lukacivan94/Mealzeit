@@ -11,11 +11,11 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         position: 'absolute',
-        height: '90%',
+        height: 'auto',
         width: '100%',
         margin: '75px 0 30px',
         paddingBottom: '30px',
-        minHeight: '400px'
+        minHeight: '90%'
     }
 }));
 

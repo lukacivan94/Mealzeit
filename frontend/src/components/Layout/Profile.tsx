@@ -101,18 +101,18 @@ const Profile = (props: Props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem>
+        <StyledMenuItem onClick={handleProfile}>
           <ListItemIcon>
             <AccountCircleIcon fontSize='small' />
           </ListItemIcon>
-          <ListItemText primary='Profile' onClick={handleProfile} />
+          <ListItemText primary='Profile' />
         </StyledMenuItem>
 
-        <StyledMenuItem>
+        <StyledMenuItem onClick={handleLogout}>
           <ListItemIcon>
             <CancelIcon fontSize='small' />
           </ListItemIcon>
-          <ListItemText primary='Logout' onClick={handleLogout} />
+          <ListItemText primary='Logout' />
         </StyledMenuItem>
       </StyledMenu>
     </div>
