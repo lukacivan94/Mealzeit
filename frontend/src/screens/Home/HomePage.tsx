@@ -85,7 +85,7 @@ export const HomePage = (props: Props) => {
     const handleButtonClick = (routeName) => {
         const { history } = props;
         const token = localStorage.getItem('jwtToken');
-        if (!!token) {
+        if (!!token || routeName === 'browse') {
             history.push('/' + routeName);
         } else {
             setModal(true);
@@ -107,7 +107,7 @@ export const HomePage = (props: Props) => {
                     <div className={classes.small}>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</div>
                     <div className={classes.buttonRow}>
                         <button className={classes.button} onClick={() => handleButtonClick('browse')}><div className={classes.text}><SearchIcon className={classes.icon} />Find an event</div></button>
-                        {((userInfo && !userInfo.is_expert_user) || !userInfo) &&
+                        {((userInfo && userInfo.is_expert_user) || !userInfo) &&
                             <button className={classes.button} onClick={() => handleButtonClick('course')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a course</div> </button>
                         }
                         <button className={classes.button} onClick={() => handleButtonClick('cookroom')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a cookroom</div> </button>
