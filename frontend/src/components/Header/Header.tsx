@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         top: 0,
         left: 0,
         backgroundColor: 'white',
-        boxSizing: 'border-box',
+        borderStyle: 'none',
         zIndex: 90,
         boxShadow: '0 4px 2px rgba(50, 50, 50, 0.4)',
         display: 'flex',
@@ -54,14 +54,20 @@ const Header = (props: Props) => {
         props.history.push('/sign-up');
     };
 
+    const goToHome = () => {
+        props.history.push('/');
+    };
+
     const token = localStorage.getItem('jwtToken');
+    const userJson = localStorage.getItem('user');
+    const user = JSON.parse(userJson);
 
     return (
         <header className={classes.main}>
-            <Logo imageSource={mealZeitLogo} altText='MealZeit' />
-            {!!token ?
+            <Logo imageSource={mealZeitLogo} altText='MealZeit' onClick={goToHome} />
+            {!!token && !!user ?
 
-                <ProfileBar />
+                <ProfileBar user={user} />
                 :
                 <StyledButtonDiv>
                     <StyledButton

@@ -1,13 +1,6 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, FieldArray, reduxForm, InjectedFormProps, formValueSelector, change as changeFieldValue } from 'redux-form';
 import Divider from '@material-ui/core/Divider';
-
-//import MaterialUIPickers from './DateTime/DateTime';
-import SearchLocationInput from './Location/SearchLocationInput';
-import { StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
-
-
-
 import Grid from '@material-ui/core/Grid';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -16,12 +9,25 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
 
+import moment from 'moment';
+import { StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
 import AlertMessage from '../AlertMessage';
-import DatesList from './DateTime/DatesList';
+import TabBar from '../TabBar';
 
 
-const dateString : Object[] = [];
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Fab from '@material-ui/core/Fab';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -36,7 +42,45 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
       backgroundColor: 'lightgrey',
-    }
+    },
+    backButton: {
+        marginRight: theme.spacing(1)
+    },
+    buttondiv: {
+        width: '100%',
+        justifyContent: 'center', 
+        paddingBottom: '10px',
+        marginTop: '30px',
+        alignItems: "center",
+        display: 'flex',
+    },
+    searchroot: {
+        padding: '2px 2px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        borderRadius: '25px',
+        border: '1px solid grey',
+    },
+    searchinput: {
+        marginLeft: theme.spacing(3),
+        flex: 1,
+    },
+    searchiconButton: {
+        padding: 8,
+    },
+    demo: {
+        backgroundColor: theme.palette.background.paper,
+    },
+    iconReject: {
+        fill: 'red',
+    },
+    extendedIcon: {
+        marginRight: '3px',
+    },
+    margin: {
+        marginBottom: theme.spacing(2),
+    },
 }));
 
 const theme = createMuiTheme({
@@ -48,10 +92,10 @@ const theme = createMuiTheme({
 const required = value => value ? undefined : 'Required';
 
 const validate = values => {
-    const errors = { };
+    const errors = { dateOfPublish: '', location: ''};
     const requiredFields = [
-        'dateBar',
-        'SearchBar'
+        'dateOfPublish',
+        'location'
     ];
     requiredFields.forEach(field => {
         if (!values[field]) {
@@ -60,45 +104,8 @@ const validate = values => {
     });
     return errors;
 };
-interface Props {
-    course: boolean;
-}
 
-const EventLocationTimeInput = (props: Props) => {
-    const { course } = props;
-        return (
-            <StyleDiv>
-                <EventDiv>
-                    <TextDiv>
-                        Where are you planning your event?
-                    </TextDiv>
-                    <Field
-                        validate={[ required ]}
-                        name='searchBar'
-                        component={renderSearchBar}
-                    />
-                </EventDiv>
-                <Divider variant="middle" />
-                <EventDiv>
-                    <TextDiv>
-                        When are you planning your event?
-                    </TextDiv>
-                    <Field
-                        validate={[ required ]}
-                        name='dateBar'
-                        component={renderDateBar}
-                        props={{
-                            type: Boolean
-                        }}
-                        {...{
-                           multiple: course
-                        }}
-                    />
-                    
-                </EventDiv>
-            </StyleDiv>
-        );
-};
+
 
 const renderSearchBar = ({
     label,
@@ -107,94 +114,171 @@ const renderSearchBar = ({
     type,
     ...custom
 }) => {
+    const classes = useStyles();
     return(
         <div>
-            <SearchLocationInput
-                {...input}
-                {...custom}
-            />
+            <Paper className={classes.searchroot}>
+                <InputBase
+                        className={classes.searchinput}
+                        placeholder="Enter your address"
+                        {...input}
+                        {...custom}
+                    />
+                <IconButton type="submit" className={classes.searchiconButton} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+            </Paper>
             {touched && ((error && <AlertMessage>{error}</AlertMessage>))}
         </div>
     );
 };
 
-const renderDateBar = ({
-    multiple,
+
+
+const renderListOfDates = ({ fields, meta: { error } }) => {
+    
+    const classes = useStyles();
+    return (
+    <div>
+        <MuiThemeProvider theme={theme}>
+        <Fab className={classes.margin} color='primary'  variant="extended" onClick={() => fields.push()}>
+            <AddIcon className={classes.extendedIcon} />
+            Add Date
+      </Fab>
+      </MuiThemeProvider>
+      {fields.map((date, index) => (
+
+        <div className={classes.demo}  key={index}>
+            <Divider variant="middle" />
+            <List dense>
+                <ListItem>
+                    <Field
+                        validate={[ required ]}
+                        name={date}
+                        type="text"
+                        component={renderDateTime}
+                        label={`date #${index + 1}`}
+                    />
+                <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="check"  onClick={() => fields.remove(index)}>
+                        <DeleteIcon className={classes.iconReject} />
+                    </IconButton>
+                </ListItemSecondaryAction>
+                </ListItem>
+            </List>
+        </div>
+      ))}
+      <Divider variant="middle" />
+      {(error && <AlertMessage>{error}</AlertMessage>)}
+    </div>
+  );
+};
+
+const renderDateTime = ({
+    label,
     input,
     meta: { touched, invalid, error },
+    type,
+    ...custom
 }) => {
-    const [dateArray, setDateArray] = React.useState(dateString);
-    const title = multiple ? "Enter multiple dates" : "Enter a date";
-    const classes = useStyles();
-    var date = input.value;
-    const [count, setCount] = React.useState(0);
-
-    const getDateString = (dateval) => {
-        var month = dateval.getUTCMonth() + 1; 
-        var day = dateval.getUTCDate();
-        var year = dateval.getUTCFullYear();
-        var hour = dateval.getHours();
-        var addon = dateval.getMinutes() < 10 ? '0' : '';
-        var minute = addon + dateval.getMinutes();
-        var result = month+'/'+day+'/'+year+'  '+hour+':' + minute;
-        return result;
-    }
-    
-
-    const handleDeleteId = (ids) => {
-        setDateArray((dates) => dates.filter((chip ?: any) => chip.key  !== ids));
-    }
-
-    const handleDateChange = (date) => {
-        const currentLabel = getDateString(date);
-        let duplicate = false;
-        dateArray.forEach(
-            (element ?: any) => {
-                if(element.label === currentLabel){
-                    duplicate = true;
-                }
-            }
-        );
-        if(!duplicate){
-            if (multiple) {
-            setDateArray([ ...dateArray, {key: count, label: currentLabel, value: date} ]);
-            setCount(count + 1);
-            } else {
-            setDateArray([{key: count, label: currentLabel, value: date} ]);
-            }
-        };
-      };
-
-
-  const handleReset = () => { 
-      console.log(dateArray);
-  };
-    return(
-        <div title={title}>
-            <MuiThemeProvider theme={theme}>
+  return (
+        <div title="Enter a date">
+        <MuiThemeProvider theme={theme}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container justify="space-around">
+            <Grid container justify="space-around">
                 <KeyboardDateTimePicker
-                    {...input}
-                    onChange={value => {
-                        input.onChange(value);
-                        handleDateChange(value);
-                    }}
-                    format="yyyy/MM/dd hh:mm a"
-                    minDate={new Date()}
+                {...input}
+                format="yyyy/MM/dd hh:mm a"
+                minDate={new Date()}
+                helperText={''} 
                 />
-                </Grid>
-            </MuiPickersUtilsProvider>
-            {multiple ? <DatesList dates={ dateArray } id={handleDeleteId}/> : null}
-            <button className={classes.button} onClick={handleReset}>console log dates</button>
-            </MuiThemeProvider>
-            {touched && ((error && <AlertMessage>{error}</AlertMessage>))}
-    </div>
+            </Grid>
+        </MuiPickersUtilsProvider>
+        </MuiThemeProvider>
+        {touched && ((error && <AlertMessage>{error}</AlertMessage>))}
+        </div>
     );
-}
+};
 
 
-export default reduxForm<{}, Props>({
+
+interface LocationDateProps {
+    isCourse: boolean;
+    handleBack();
+};
+
+const EventLocationTimeInput = ({ isCourse, handleBack, handleSubmit }: LocationDateProps & InjectedFormProps<{}, LocationDateProps>) => {
+        const classes = useStyles();
+        return (
+            <div>
+                <TabBar>
+                    <form onSubmit={handleSubmit}>
+                        <StyleDiv>
+                            <EventDiv>
+                                <TextDiv>
+                                    Where are you planning your event?
+                                </TextDiv>
+                                <Field
+                                    validate={[ required ]}
+                                    name='location'
+                                    label='location'
+                                    component={renderSearchBar}
+                                />
+                            </EventDiv>
+                            <Divider variant="middle" />
+                            <EventDiv>
+                                <TextDiv>
+                                    When are you planning your event?
+                                </TextDiv>
+                                {
+                                    isCourse
+                                    ?
+                                    <FieldArray 
+                                        validate={[ required ]}
+                                        name='dateOfPublish' 
+                                        label='date of publish'
+                                        component={renderListOfDates} 
+                                        />        
+                                    :
+                                    <Field
+                                        validate={[ required ]}
+                                        name='dateOfPublish'
+                                        label='date of publish'
+                                        component={renderDateTime}
+                                    />
+                                    
+                                }
+                               
+                            </EventDiv>
+                        </StyleDiv>
+                    </form>
+                </TabBar>
+                <div className={classes.buttondiv}>
+                    <Button
+                        onClick={handleBack}
+                        className={classes.backButton}
+                    >
+                        RETURN
+                    </Button>
+                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                        Next
+                    </Button>
+                </div>
+            </div>
+        );
+};
+
+
+
+export default reduxForm<{}, LocationDateProps>({
     form: 'EventLocationTimeInput',
-    validate,
+    validate
+    // validate,
+    // initialValues: {
+    //     dateOfPublish: [moment(new Date()).format('YYYY-MM-DD')]
+    // }
   })(EventLocationTimeInput);
+
+
+
+

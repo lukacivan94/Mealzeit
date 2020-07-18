@@ -2,11 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import { Field, reduxForm } from 'redux-form';
-import { orange } from '@material-ui/core/colors';
-import { withStyles } from '@material-ui/core/styles';
+import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
+import { Button } from '@material-ui/core';
 
-//import RadioSelect from '../RadioSelect';
 import { TextDiv, TextSmallDiv, RowDiv } from '../../Styling/TextStyle';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -14,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import Radio from '@material-ui/core/Radio';
 import AlertMessage from '../AlertMessage';
+import TabBar from '../TabBar';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,16 +42,27 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         display: 'flex',
       },
+      backButton: {
+        marginRight: theme.spacing(1)
+      },
+      buttondiv: {
+          width: '100%',
+          justifyContent: 'center', 
+          paddingBottom: '10px',
+          alignItems: "center",
+          display: 'flex',
+          marginTop: '30px',
+        },
   }));
 
 
   const validate = values => {
-    const errors = { setMember: '', setPrice: '' };
+    const errors = { numberOfMembers: '', priceOfCourse: '' };
     const requiredFields = [
-        'setMember',
-        'virtualSelect',
-        'setPrice',
-        'premiumSelect'
+        'numberOfMembers',
+        'isVirtual',
+        'priceOfCourse',
+        'isIncludedInPremium'
     ];
     requiredFields.forEach(field => {
         if (!values[field]) {
@@ -60,14 +70,14 @@ const useStyles = makeStyles((theme) => ({
         }
     });
 
-    if(+values.setMember){
-      if(+values.setMember>30 || +values.setMember<0) {
-        errors.setMember = 'Invalid number of people';
+    if(+values.numberOfMembers){
+      if(+values.numberOfMembers>30 || +values.numberOfMembers<0) {
+        errors.numberOfMembers = 'Invalid number of people';
       }
     }
-    if(+values.setPrice){
-      if(+values.setPrice>5000 || +values.setPrice<0) {
-        errors.setPrice = 'Invalid number of people';
+    if(+values.priceOfCourse){
+      if(+values.priceOfCourse>5000 || +values.priceOfCourse<0) {
+        errors.priceOfCourse = 'Invalid number of people';
       }
     }
     return errors;
@@ -94,59 +104,78 @@ const RadioSelect = ({ input, ...rest }) => {
   }
 
 
+interface JoinPageProps {
+    handleBack();
+}
 
-const JoinPageCourse = () => {
+
+const JoinPageCourse = ({ handleSubmit, handleBack }: JoinPageProps & InjectedFormProps<{}, JoinPageProps>) => {
     const classes = useStyles();
         return (
-            <div className={classes.container}>
-                    <TextDiv>
-                        Participants Information
-                    </TextDiv>
-                <div className={classes.eventdiv}>
-                    <RowDiv>
-                        <TextSmallDiv>set number of members</TextSmallDiv>
-                        <Field
-                            validate={[ required, RangeMember ]}
-                            name='setMember'
-                            component={renderSetMembers}
-                        />
-                    </RowDiv>
-                    <RowDiv>
-                        <TextSmallDiv>Is this event virtual?</TextSmallDiv>
-                        <Field
-                          validate={[ required ]}
-                            name='virtualSelect'
-                            component={RadioSelect}
-                        />
-                    </RowDiv>
-                </div>
-
-                <Divider variant="middle" />
-
-                <div className={classes.eventdiv}>
-                    <RowDiv>
-                        <TextSmallDiv>set the price</TextSmallDiv>
-                        <Field
-                            validate={[ required, RangePrice ]}
-                            name='setPrice'
-                            component={renderSetPrice}
-                        />
-                    </RowDiv>
-                    <RowDiv>
-                        <TextSmallDiv>Is this event included in premium?</TextSmallDiv>
-                        <Field
+          <div>
+            <TabBar>
+              <div className={classes.container}>
+                      <TextDiv>
+                          Participants Information
+                      </TextDiv>
+                  <div className={classes.eventdiv}>
+                      <RowDiv>
+                          <TextSmallDiv>set number of members</TextSmallDiv>
+                          <Field
+                              validate={[ required, RangeMember ]}
+                              name='numberOfMembers'
+                              component={renderNumberOfMembers}
+                          />
+                      </RowDiv>
+                      <RowDiv>
+                          <TextSmallDiv>Is this event virtual?</TextSmallDiv>
+                          <Field
                             validate={[ required ]}
-                            name='premiumSelect'
-                            component={RadioSelect}
-                        />
-                    </RowDiv>
-                </div>
+                              name='isVirtual'
+                              component={RadioSelect}
+                          />
+                      </RowDiv>
+                  </div>
+
+                  <Divider variant="middle" />
+
+                  <div className={classes.eventdiv}>
+                      <RowDiv>
+                          <TextSmallDiv>set the price</TextSmallDiv>
+                          <Field
+                              validate={[ required, RangePrice ]}
+                              name='priceOfCourse'
+                              component={renderPriceOfCourse}
+                          />
+                      </RowDiv>
+                      <RowDiv>
+                          <TextSmallDiv>Is this event included in premium?</TextSmallDiv>
+                          <Field
+                              validate={[ required ]}
+                              name='isIncludedInPremium'
+                              component={RadioSelect}
+                          />
+                      </RowDiv>
+                  </div>
+              </div>
+            </TabBar>
+              <div className={classes.buttondiv}>
+                <Button
+                    onClick={handleBack}
+                    className={classes.backButton}
+                >
+                    Back
+                </Button>
+                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                    Next
+                </Button>
             </div>
+          </div>
         );
 };
 
 
-const renderSetMembers = ({
+const renderNumberOfMembers = ({
     label,
     input,
     meta: { touched, invalid, error },
@@ -159,7 +188,7 @@ const renderSetMembers = ({
             {...input}
             id="outlined-number1"
             type="number"
-            defaultValue="0"
+            //defaultValue="0"
             inputProps={{ min: "0", max: "50", step: "1" }} 
             variant="outlined"
             style={{ color: 'darkorange' }}
@@ -170,7 +199,7 @@ const renderSetMembers = ({
   };
 
 
-const renderSetPrice = ({
+const renderPriceOfCourse = ({
     label,
     input,
     meta: { touched, invalid, error },
@@ -184,7 +213,7 @@ const renderSetPrice = ({
             id="outlined-number2"
             label='€'
             type="number"
-            defaultValue="0"
+            //defaultValue="0"
             inputProps={{ min: "0", max: "5000", step: "1" }} 
             variant="outlined"
             style={{ color: 'darkorange' }}
@@ -194,9 +223,7 @@ const renderSetPrice = ({
     );
   };
 
-  
-
-  export default reduxForm({
+  export default reduxForm<{}, JoinPageProps>({
     form: 'JoinPageCourse',
     validate,
   })(JoinPageCourse);

@@ -2,8 +2,8 @@ import React from 'react';
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 
 
 
@@ -32,7 +32,7 @@ interface TabPanelProps {
 
 const AntTabs = withStyles({
   root: {
-    borderBottom: '1px solid white',//#e8e8e8,
+    borderBottom: '1px solid white',
   },
   indicator: {
     backgroundColor: 'darkOrange',
@@ -46,7 +46,7 @@ const AntTab = withStyles((theme: Theme) =>
       minWidth: 72,
       fontWeight: theme.typography.fontWeightRegular,
       fontSize: '18px',
-      marginRight: theme.spacing(6),
+      marginRight: theme.spacing(2),
       fontFamily: 'Source Sans Pro, sans-serif',
       '&:hover': {
         color: 'darkOrange',
@@ -78,7 +78,7 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Paper elevation={0}>{children}</Paper>
         </Box>
       )}
     </div>

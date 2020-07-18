@@ -36,7 +36,8 @@ exports.cookrooms_add_cookroom = (req, res) => {
                 requests: [],
                 is_volunteering: req.body.is_volunteering,
                 required_items: req.body.required_items,
-                suggested_price: req.body.suggested_price
+                suggested_price: req.body.suggested_price,
+                is_cancelled: false
             });
             cookroomId = cookroom._id;
             return cookroom
@@ -54,7 +55,7 @@ exports.cookrooms_add_cookroom = (req, res) => {
                 cookroomId: cookroomId,
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -85,7 +86,7 @@ exports.cookrooms_get_all = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/cookrooms/' + doc._id
                         }
                     }
                 })
@@ -107,7 +108,7 @@ exports.cookrooms_get_all = (req, res) => {
  */
 exports.cookrooms_get_cookrooms_of_user = (req, res) => {
     let userId = req.params.userId
-    Cookroom.find({ userId: userId })
+    Cookroom.find({ is_cancelled: false, userId: userId })
         .select('_id userId title')
         .exec()
         .then(docs => {
@@ -120,7 +121,7 @@ exports.cookrooms_get_cookrooms_of_user = (req, res) => {
                         title: doc.title,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/cookrooms/' + doc._id
+                            url: 'https://mealzeit.herokuapp.com/cookrooms/' + doc._id
                         }
                     }
                 })
@@ -143,7 +144,7 @@ exports.cookrooms_get_cookrooms_of_user = (req, res) => {
 exports.cookrooms_get_cookroom = (req, res) => {
     const id = req.params.cookroomId;
     Cookroom.findById(id)
-        .select('_id userId title location date_of_publish description members number_of_members date_time recipe invited_friends instant_join requests is_volunteering required_items suggested_price')
+        .select('_id userId title location date_of_publish description members number_of_members date_time recipe invited_friends instant_join requests is_volunteering required_items suggested_price is_cancelled')
         .exec()
         .then(doc => {
             if (doc) {
@@ -151,7 +152,7 @@ exports.cookrooms_get_cookroom = (req, res) => {
                     cookroom: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3000/cookrooms/'
+                        url: 'https://mealzeit.herokuapp.com/cookrooms/'
                     }
                 });
             } else {
@@ -182,7 +183,7 @@ exports.cookrooms_patch_cookroom = (req, res) => {
                 message: 'Cookroom updated',
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3000/cookrooms/' + id
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/' + id
                 }
             });
         })
@@ -205,7 +206,7 @@ exports.cookroom_add_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -241,7 +242,7 @@ async function makeRequestNotification(cookroomId, userId) {
         date_created: new Date(),
         type: "request",
         text: "You have a new request for " + title,
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()
@@ -272,7 +273,7 @@ exports.cookroom_accept_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -305,7 +306,7 @@ async function makeAcceptNotification(cookroomId, userId) {
         date: new Date(),
         type: "acceptance",
         text: "Your request to join " + title + " was accepted.",
-        isRead: false,
+        is_read: false,
     });
     await User.findOneAndUpdate(
         { _id: userId },
@@ -336,7 +337,7 @@ exports.cookroom_reject_request = (req, res) => {
                 message: "Cookroom updated",
                 request: {
                     type: "GET",
-                    url: "http://localhost:3000/cookrooms/" + cookroomId
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
                 }
             });
         })
@@ -368,7 +369,7 @@ async function makeRejectionNotification(cookroomId, userId) {
         type: "rejection",
         text:
             "Your request to join " + title + " was rejected.",
-        isRead: false,
+        is_read: false,
     });
     return notification
         .save()
@@ -380,6 +381,65 @@ async function makeRejectionNotification(cookroomId, userId) {
         );
 }
 
+/*
+* After the user leaves the cookroom, removes the user id from cookroom's members array
+* and removes the cookroom id from user's joined_cookrooms array
+*/
+exports.cookroom_leave_cookroom = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    const userId = req.params.userId; //User who is leaving the cookroom
+    Cookroom.update({ _id: cookroomId }, { $pull: { members: { $in: [userId] } } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom updated",
+                request: {
+                    type: "GET",
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    removeFromJoinedCookrooms(cookroomId, userId);
+};
+
+async function removeFromJoinedCookrooms(cookroomId, userId) {
+    try {
+        return User.update(
+            { _id: userId },
+            { $pull: { joined_cookrooms: { $in: [cookroomId] } } }
+        )
+    } catch (error) {
+        console.log("Following error happened: " + error);
+    }
+}
+
+/*
+* After the user cancels the cookroom, updates the is_cancelled value of cookroom
+*/
+exports.cookrooms_cancel_cookroom = (req, res) => {
+    const cookroomId = req.params.cookroomId;
+    Cookroom.update({ _id: cookroomId }, { $set: { is_cancelled: true } })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: "Cookroom cancelled",
+                request: {
+                    type: "GET",
+                    url: "https://mealzeit.herokuapp.com/cookrooms/" + cookroomId
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 
 /** (✓)
  * This function handles cookroom DELETE requests
@@ -394,7 +454,7 @@ exports.cookrooms_delete_cookroom = (req, res) => {
                 message: 'Cookroom deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/cookrooms/',
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/',
                 }
             })
         })
@@ -417,7 +477,7 @@ exports.cookrooms_delete_all = (req, res) => {
                 message: 'All cookrooms deleted',
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/cookrooms/',
+                    url: 'https://mealzeit.herokuapp.com/cookrooms/',
                 }
             })
         })

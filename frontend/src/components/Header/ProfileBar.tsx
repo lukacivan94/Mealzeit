@@ -1,10 +1,10 @@
 import React from 'react';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Profile from '../Layout/Profile';
 import profilePic from '../../assets/images/Profile_Pic.png';
 import { makeStyles } from '@material-ui/core/styles';
+import Notifications from '../Notification/Notifications';
+import { base64ToImage } from '../../utils/imageUtils';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,17 +26,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const ProfileBar = () => {
+export const ProfileBar = ({ user }) => {
     const classes = useStyles();
+
     return (
         <div className={classes.root}>
             <IconButton className={classes.icon} aria-label='show n new notifications' color='inherit'>
-                <Badge badgeContent={17} color='secondary'>
-                    <NotificationsIcon />
-                </Badge>
+                <Notifications />
             </IconButton>
-            <div className={classes.name}>John Doreath</div>
-            <Profile imageSource={profilePic} altText='ProfilePic' />
+            {user &&
+                <div className={classes.name}>{user.first_name + ' ' + user.last_name}</div>
+
+            }
+            {user && user.profile_picture ?
+                <Profile imageSource={`data:image/jpeg;base64,${user.profile_picture}`} altText='ProfilePic' />
+                :
+                <Profile imageSource={profilePic} altText='ProfilePic' />
+            }
         </div>
     );
-}
+};

@@ -7,15 +7,21 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'redux-logger';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import authReducer from './store/reducers/authReducer';
+import setAuthToken from './utils/authToken';
 
 const reducers = {
     form: formReducer,
     auth: authReducer
 };
 const reducer = combineReducers(reducers);
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(logger)));
+const store = createStore(reducer, composeWithDevTools(applyMiddleware()));
 
 const theme = createMuiTheme();
+
+const jwtToken = localStorage.getItem('jwtToken');
+if (jwtToken) {
+    setAuthToken(jwtToken);
+}
 
 class App extends React.PureComponent {
 

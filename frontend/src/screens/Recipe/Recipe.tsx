@@ -59,13 +59,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    userId: string;
+    userId?: string;
     history: History<LocationState>;
+    modal?: boolean;
+    handleDialogClose?: any;
+    handleSetRecipeId?: any;
+    input?: any;
+    handleRecipeInfo?: any;
 }
 
 const Recipe = (props: Props) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+
     const [recipeFirstStepValues, setRecipeFirstStepValues] = React.useState({
         recipe_title: '',
         ingredients: '',
@@ -75,10 +81,13 @@ const Recipe = (props: Props) => {
         instructions: ''
     });
 
+    const [selectedFriends, setSelectedFriends] = React.useState<string[]>([]);
+
     const [recipeSecondStepValues, setRecipeSecondStepValues] = React.useState({
-        isPrivate: false,
-        message: ''
+        isPrivate: false
     });
+
+    const [ingredients, setIngredients] = React.useState<Object[]>([]);
 
     const getSteps = () => {
         return ['Recipe Information', 'Sharing My Recipe'];
@@ -102,13 +111,12 @@ const Recipe = (props: Props) => {
 
     const handleSaveRecipeShare = (values) => {
         const recipeData = {
-            isPrivate: !!values.isPrivate,
-            message: values.message || ''
+            isPrivate: !!values.isPrivate
         };
 
-        setRecipeSecondStepValues(recipeData);
-
         const userId = localStorage.getItem('userId');
+
+        setRecipeSecondStepValues(recipeData);
 
         const recipeRequest = {
             recipe_title: recipeFirstStepValues.recipe_title,
@@ -117,16 +125,21 @@ const Recipe = (props: Props) => {
             preparation_time: recipeFirstStepValues.preparation_time,
             instructions: recipeFirstStepValues.instructions,
             calorie_count: '',
-            ingredients: [],
+            ingredients: ingredients,
             number_of_members: '',
-            instant_join: '',
-            description: values.message || '',
             is_public: !values.isPrivate,
-            userId: userId
+            userId: userId,
+            shared_with_friends: selectedFriends
         };
+
+        console.log('recipeRequest', recipeRequest);
 
         axios.post('/recipes/', recipeRequest)
             .then(res => {
+                if(props.modal) {
+                    props.handleSetRecipeId(res.data.recipeId);
+                    props.handleRecipeInfo(res.config.data);
+                }   
                 handleNext();
             })
             .catch(error => {
@@ -137,15 +150,21 @@ const Recipe = (props: Props) => {
                 }
                 handleReset();
             });
-
+        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
+        // handleNext();
+        // const result ='{"recipe_title":"chips chilly","food_type":"dinner","cuisine_type":"asian","preparation_time":"2 hr","instructions":"fry properly","calorie_count":"","ingredients":[],"number_of_members":"","instant_join":"","description":"","is_public":false,"userId":"5f10da4431e7ad2822c58833"}';
+        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
+        // props.handleRecipeInfo(result);
+        // handleNext();
+        
     };
 
     const getStepContent = (stepIndex: number, handleBack) => {
         switch (stepIndex) {
             case 0:
-                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} />);
+                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} ingredients={ingredients} setIngredients={setIngredients} />);
             case 1:
-                return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} />;
+                return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />;
             default:
                 return 'Unknown stepIndex';
         }
@@ -187,7 +206,14 @@ const Recipe = (props: Props) => {
                                     <RecipeConfirmationStep />
                                     <div className={classes.confirmButtonDiv}>
                                         <Button onClick={handleReset}>Reset</Button>
-                                        <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                        {
+                                            props.modal
+                                                ?
+                                                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={props.handleDialogClose}>Close</Button>
+                                                :
+                                                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
+                                        }
+
                                     </div>
                                 </div>
                             ) : (

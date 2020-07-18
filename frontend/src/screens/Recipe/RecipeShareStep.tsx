@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
 import LeftRightSlider from '../../components/ImageSlider/LeftRightSlider';
 import AvatarImage from '../../components/AvatarProfile/AvatarImage';
 import mealZeitLogo from '../../assets/images/MealZeit_logo.png';
@@ -7,6 +7,7 @@ import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextFiel
 import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import axios from '../../axios';
+import { base64ToImage } from '../../utils/imageUtils';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -88,21 +89,50 @@ const renderTextField = ({
         />
     );
 
+const StyledFriendDiv = styled.div`
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
 interface RecipeShareProps {
+    setSelectedFriends: Dispatch<SetStateAction<string[]>>;
+    selectedFriends: string[];
     isPrivate: boolean;
+    searchText: string;
     handleBack();
 }
 
 type Props = InjectedFormProps<{}, RecipeShareProps> & RecipeShareProps;
 
-const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
+const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends, setSelectedFriends, searchText }: Props) => {
     const classes = useStyles();
+    const [userFriends, setUserFriends] = React.useState<Object[]>([]);
+
+    useEffect(() => getFriends(), []);
 
     const getFriends = () => {
         const userId = localStorage.getItem('userId');
-        axios.get('/friends/' + userId)
+        axios.get('/users/' + userId)
             .then(res => {
-                console.log('res: ', res);
+
+                const frineds = res.data && res.data.user && res.data.user.friends.map((friend) => {
+
+                    axios.get('/users/' + friend)
+                        .then(res => {
+                            const friendInfo = res.data.user;
+                            setUserFriends(userFriends => [...userFriends, friendInfo]);
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                console.log(error.response.data);
+                                console.log(error.response.status);
+                                console.log(error.response.headers);
+                            }
+                        });
+                });
             })
             .catch(error => {
                 if (error.response) {
@@ -112,6 +142,25 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
                 }
             });
     };
+
+    const handleSelectedFriends = (index) => {
+        setSelectedFriends(selectedFriends => [...selectedFriends, userFriends[index]._id]);
+    };
+
+    const getFilteredFriends = () => {
+
+        return !searchText || searchText.length < 2
+            ? userFriends
+            : userFriends.filter(({ first_name, last_name }) =>
+                [first_name, last_name].some(
+                    (value) =>
+                        !!value &&
+                        value.toLowerCase().includes(searchText.toLowerCase())
+                )
+            );
+    };
+
+    const filteredFriends = getFilteredFriends();
 
     return (
         <Container component='main' maxWidth='sm'>
@@ -127,28 +176,31 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
                     />
                 </StyledFieldDiv>
             </StyledFieldDiv>
+            <StyledFieldDiv>
+                <Typography component='h6' variant='h6' style={{ color: 'darkorange' }}>
+                    Your Friends
+                    </Typography>
+                <Field
+                    name='searchText'
+                    component={renderTextField}
+                    label='Search'
+                />
+            </StyledFieldDiv>
             {!isPrivate &&
                 <>
                     <StyledFieldDiv>
                         <LeftRightSlider>
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
-                            <AvatarImage src={mealZeitLogo} key='logo' />
+                            {filteredFriends && filteredFriends.map((friend, index) => {
+                                return (
+                                    <StyledFriendDiv>
+                                        <AvatarImage src={friend.profile_picture ? base64ToImage(friend.profile_picture) : mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
+                                        <p>{friend.first_name + ' ' + friend.last_name}</p>
+                                    </StyledFriendDiv>
+                                );
+                            })
+
+                            }
                         </LeftRightSlider>
-                    </StyledFieldDiv>
-                    <StyledFieldDiv>
-                        <Field
-                            name='message'
-                            component={renderTextField}
-                            label='Your Message'
-                            fullWidth
-                            multiline
-                            rows={2}
-                            rowsMax={4}
-                        />
                     </StyledFieldDiv>
                 </>
 
@@ -171,7 +223,8 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
 const selector = formValueSelector('recipeShareForm');
 
 const mapStateToProps = (state) => ({
-    isPrivate: selector(state, 'isPrivate')
+    isPrivate: selector(state, 'isPrivate'),
+    searchText: selector(state, 'searchText')
 });
 
 const mapDispatchToProps = {};
