@@ -5,14 +5,18 @@ import axios from '../../axios';
 import { History, LocationState } from 'history';
 import { connect } from 'react-redux';
 import { login } from '../../store/actions/authActions';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import setAuthToken from '../../utils/authToken';
 
-// TODO: (burak) It will be added later
-// import setAuthToken from 'utils/authToken';
-// import jwt_decode from 'jwt-decode';
+const Alert = (props: AlertProps) => {
+    return <MuiAlert elevation={6} variant='filled' {...props} />;
+};
 
 interface AuthState {
     isModalOpen: boolean;
     modalText: string;
+    isWarningModalOpen: boolean;
 }
 
 interface AuthProps {
@@ -27,7 +31,8 @@ class Auth extends Component<AuthProps, AuthState> {
         super(props);
         this.state = {
             isModalOpen: false,
-            modalText: ''
+            modalText: '',
+            isWarningModalOpen: false
         };
     }
 
@@ -44,25 +49,23 @@ class Auth extends Component<AuthProps, AuthState> {
                 localStorage.setItem('userId', userId);
 
                 this.props.login(userId);
+          
+                setAuthToken(token);
+
                 axios.get('/users/' + userId)
                     .then(res => {
-                        console.log('res: ', res);
                         if (res.data && res.data.user) {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
                             this.props.history.push('/');
-                        }
-
+                        }                  
                     })
                     .catch(err => {
                         console.error('err: ', err);
                     });
-
-                // TODO: (burak) It will be added later
-                // setAuthToken(token);
-                // const decoded = jwt_decode(token);
             })
             .catch(err => {
                 console.error('err: ', err);
+                this.setState({ isWarningModalOpen: true });
             });
     }
 
@@ -70,10 +73,20 @@ class Auth extends Component<AuthProps, AuthState> {
         this.setState({ isModalOpen: false, modalText: '' });
     }
 
+    handleWarningModalClose = () => {
+        this.setState({ isWarningModalOpen: false });
+    }
+
     render() {
         return (
             <Screen>
-                <LoginForm onSubmit={this.handleLogin} />
+                <>
+                    <LoginForm onSubmit={this.handleLogin} />
+                    <Snackbar open={this.state.isWarningModalOpen} autoHideDuration={6000} onClose={this.handleWarningModalClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    >
+                        <Alert severity='error'>The email or password is incorrect! </Alert>
+                    </Snackbar>
+                </>
             </Screen >
         );
     }
