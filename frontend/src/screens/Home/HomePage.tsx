@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import FastfoodOutlinedIcon from '@material-ui/icons/FastfoodOutlined';
@@ -96,6 +96,9 @@ export const HomePage = (props: Props) => {
         setModal(false);
     };
 
+    const user = localStorage.getItem('user');
+    const userInfo = JSON.parse(user);
+
     return (
         <Screen>
             <div className={classes.root}>
@@ -104,7 +107,9 @@ export const HomePage = (props: Props) => {
                     <div className={classes.small}>Whether you want to help or simply meet someone - at MealZeit you'll find an event that fits you best.</div>
                     <div className={classes.buttonRow}>
                         <button className={classes.button} onClick={() => handleButtonClick('browse')}><div className={classes.text}><SearchIcon className={classes.icon} />Find an event</div></button>
-                        <button className={classes.button} onClick={() => handleButtonClick('course')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a course</div> </button>
+                        {((userInfo && !userInfo.is_expert_user) || !userInfo) &&
+                            <button className={classes.button} onClick={() => handleButtonClick('course')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a course</div> </button>
+                        }
                         <button className={classes.button} onClick={() => handleButtonClick('cookroom')}><div className={classes.text}><EventNoteIcon className={classes.icon} />Create a cookroom</div> </button>
                         <button className={classes.button} onClick={() => handleButtonClick('recipe')}><div className={classes.text}><FastfoodOutlinedIcon className={classes.icon} />Create a recipe</div> </button>
                     </div>
