@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CardCourse from './CardCourse';
 
@@ -8,11 +7,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
     },
   }),
 );
@@ -25,19 +19,41 @@ const dates : String[] = [];
 
 export default function GridList(props: Props) {
   const classes = useStyles();
-  const { type, joined, data } = props;
  
-  //const [CourseDate, setCourseDate ] = React.useState(dates);
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
         {
-              (type === "course" && !joined)
+              (props.type === "course" && !props.joined)
               ?
-              data.map((object, index) => {
+              props.data.map((object, index) => {
                 return(
                       <Grid item xs={4} key={index}>
-                          <CardCourse type={type} joined={joined} member={object.members} date={object.dates}/>
+                          <CardCourse type={props.type} 
+                                      joined={props.joined} 
+                                      member={object.members} 
+                                      date={object.dates} 
+                                      title={object.title} 
+                                      numberOfMembers={object.number_of_members}
+                            />
+                      </Grid>
+                  )})
+              :
+              null
+        }
+        {
+              (props.type === "cookroom" && !props.joined)
+              ?
+              props.data.map((object, index) => {
+                return(
+                      <Grid item xs={4} key={index}>
+                          <CardCourse type={props.type} 
+                                      joined={props.joined} 
+                                      member={object.members} 
+                                      date={object.date_time} 
+                                      title={object.title} 
+                                      numberOfMembers={object.number_of_members} 
+                                      request={object.request}/>
                       </Grid>
                   )})
               :

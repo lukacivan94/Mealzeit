@@ -50,7 +50,7 @@ export const Profile = () => {
     const [createdCookroomObjectList, setCreatedCookroomObjectList] = useState(obj);
     const [joinedCookroomObjectList, setJoinedCookroomObjectList] = useState(obj);
     const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(obj);
-    // const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(obj);
+    const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(obj);
 
     const userId = localStorage.getItem('userId');
 
@@ -62,46 +62,37 @@ export const Profile = () => {
                 val => {
                     axios.get("/courses/"+val).then(response=> {
                         setCreatedCoursesObjectList(createdCoursesObjectList => [...createdCoursesObjectList,response["data"]['course']] );
-                        //console.log(response["data"]['course']);
                     })}
             );
-            response["data"]['user']['joined_courses'].map(
-                val => {
-                    axios.get("/courses/"+val).then(response=> {
-                        setJoinedCoursesObjectList(joinedCoursesObjectList => [...joinedCoursesObjectList,response["data"]['course']] );
-                        //console.log(response["data"]['course']);
-                    })}
-            );
+            // response["data"]['user']['joined_courses'].map(
+            //     val => {
+            //         axios.get("/courses/"+val).then(response=> {
+            //             setJoinedCoursesObjectList(joinedCoursesObjectList => [...joinedCoursesObjectList,response["data"]['course']] );
+            //         })}
+            // );
             response["data"]['user']['created_cookrooms'].map(
                 val => {
                     axios.get("/cookrooms/"+val).then(response=> {
-                        setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookrooms']] );
-                        //console.log(response["data"]['course']);
+                        setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookroom']] );
+                        console.log(response["data"]['cookroom']);
                     })}
             );
-            response["data"]['user']['joined_cookrooms'].map(
-                val => {
-                    axios.get("/cookrooms/"+val).then(response=> {
-                        setJoinedCookroomObjectList(joinedCookroomObjectList => [...joinedCookroomObjectList,response["data"]['cookrooms']] );
-                        //console.log(response["data"]['course']);
-                    })}
-            );
-            response["data"]['user']['created_recipes'].map(
-                val => {
-                    axios.get("/recipes/"+val).then(response=> {
-                        setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipes']] );
-                        //console.log(response["data"]['course']);
-                    })}
-            );
-            // response["data"]['user']['created_courses'].map(
+            // response["data"]['user']['joined_cookrooms'].map(
             //     val => {
-            //         axios.get("/courses/"+val).then(response=> {
-            //             setSharedRecipeObjectList(sharedRecipeObjectList => [...sharedRecipeObjectList,response["data"]['course']] );
+            //         axios.get("/cookrooms/"+val).then(response=> {
+            //             setJoinedCookroomObjectList(joinedCookroomObjectList => [...joinedCookroomObjectList,response["data"]['cookroom']] );
+            //         })}
+            // );
+            // response["data"]['user']['created_recipes'].map(
+            //     val => {
+            //         axios.get("/recipes/"+val).then(response=> {
+            //             setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipes']] );
             //         })}
             // );
         }),
         axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(response => {
-            console.log(response);
+            setSharedRecipeObjectList(response['data']['recipes'])
+            //console.log(response['data']['recipes']);
         })
       },[]);
 
@@ -117,21 +108,21 @@ export const Profile = () => {
                         <CustomizedTabs 
                             label1="Created Cookrooms" 
                             label2="Joined Cookrooms" 
-                            left={<GridList type="cookroom" joined={0} data={createdCoursesObjectList}/>} 
-                            right={<GridList type="cookroom" joined={1} data={createdCoursesObjectList}/>}/>
+                            left={<GridList type="cookroom" joined={0} data={createdCookroomObjectList}/>} 
+                            right={<GridList type="cookroom" joined={1} data={joinedCookroomObjectList}/>}/>
                     </div>
                     <div className={classes.eventdiv}>
                         <CustomizedTabs 
                                 label1="Created Courses" 
                                 label2="Joined Courses" 
                                 left={<GridList type="course" joined={0} data={createdCoursesObjectList}/>} 
-                                right={<GridList type="course" joined={1} data={createdCoursesObjectList}/>} />
+                                right={<GridList type="course" joined={1} data={joinedCoursesObjectList}/>} />
                     </div>
                     <div className={classes.eventdiv}>
                         <CustomizedTabs 
                                 label1="Created Recipes" 
                                 label2="Shared With You" 
-                                left={<GridList type="recipe" joined={0} data={createdCoursesObjectList}/>} 
+                                left={<GridList type="recipe" joined={0} data={createdRecipeObjectList}/>} 
                                 right={<GridList type="recipe" joined={1} data={createdCoursesObjectList}/>} />
                     </div>
                 </div>

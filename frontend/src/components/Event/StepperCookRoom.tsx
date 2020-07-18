@@ -102,11 +102,13 @@ interface Props extends RouteComponentProps {
 const HorizontalLinearStepper =  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-
+  const [friendList, setfriendList] = React.useState([]);
+  
   const [cookroomFirstStepValues, setCookroomFirstStepValues] = React.useState({
     location: String(),
     date_time: Date()
   });
+
 
   const [cookroomSecondStepValues, setCookroomSecondStepValues] = React.useState({
     invited_friends: [],
@@ -135,11 +137,16 @@ const HorizontalLinearStepper =  (props: Props) => {
     handleNext();
   };
 
+
+
   const handleJoinMembers = (values) => {
+    console.log(values);
+    console.log(typeof(values.instantJoin));
+    let join = Boolean(values.instantJoin == 'yes') ;
     const JoinData = {
-        invited_friends: values.invitedFriends || [],
+        invited_friends: values.friendIdList || [],
         number_of_members: values.numberOfMembers || -1,
-        instant_join: values.instantJoin || undefined,
+        instant_join: join,
     };
     console.log(cookroomFirstStepValues);
     setCookroomSecondStepValues(JoinData);
@@ -148,9 +155,9 @@ const HorizontalLinearStepper =  (props: Props) => {
 
   const handleRecipeAdd = (values) => {
     const RecipeData = {
-        recipe: values.recipe || '',
+        recipe: values[0] || '',
     };
-
+    console.log(cookroomSecondStepValues);
     setCookroomThirdStepValues(RecipeData);
     handleNext();
   };
@@ -183,6 +190,7 @@ const HorizontalLinearStepper =  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
+    console.log(cookroomRequest);
     
     axios.post('/cookrooms/', cookroomRequest)
         .then(res => {
@@ -208,9 +216,9 @@ const HorizontalLinearStepper =  (props: Props) => {
       case 0:
         return (<EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} isCourse={ false }/>);
       case 1:
-        return <JoinPageRoom onSubmit={handleJoinMembers} handleBack={handleBack} />;
+        return <JoinPageRoom handleSubmitValues={handleJoinMembers} handleBack={handleBack} />;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} isCourse={ false }/>;
+        return <Menu handleBack={handleBack} isCourse={ false } handleSetRecipeIdList={handleRecipeAdd}/>;
       case 3:
           return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ false } />;
       default:

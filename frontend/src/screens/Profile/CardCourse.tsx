@@ -8,8 +8,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Paper from '@material-ui/core/Paper';
 
 import InteractiveList from './InteractiveList';
-
 import Collapsible from './Collapsible';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,17 +49,22 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'flex',
         alignSelf: 'flex-start',
         padding: theme.spacing(1),
+        paddingLeft: '15px',
     },
     elementTitle: {
         display: 'flex',
         flexDirection: 'row',
-        paddingRight: '10px',
+        fontSize: '16px',
+        fontFamily: 'Source Sans Pro, sans-serif',
     },
     elementContent: {
         height: '100%',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        fontSize: '15px',
+        paddingLeft: '15px',
+        fontFamily: 'Source Sans Pro, sans-serif',
     },
     elementContentValue: {
         display: 'flex',
@@ -96,26 +101,18 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     type: String;
     joined:Number;
-    member: any;
-    date: any;
+    member?: any;
+    date?: any;
+    title: any;
+    request?: any;
+    numberOfMembers?: Number;
   }
 
 
-export default function MediaControlCard(props) {
+export default function MediaControlCard(props: Props) {
     // type: cookroom, course, recipe
   const classes = useStyles();
   const theme = useTheme();
-  const { type, joined, member, date } = props;
-  console.log(member);
-//   const [CourseDate, setCourseDate ] = React.useState(dates);
-
-//   if(type === "course"){
-//     props.data.map(
-//         val => {
-//             setCourseDate(val['dates']);
-//         }
-//     )
-//   }
 
   return (
     <Card className={classes.root}>
@@ -123,34 +120,39 @@ export default function MediaControlCard(props) {
             <div className={classes.details} >
                 <div className={classes.content}>
                         <Typography className={classes.title} component="h6" variant="h6">
-                            Burger Day!
+                            {props.title}
                         </Typography>
                     {
-                        (type === "cookroom")
-                        ?
-                        <Collapsible heading="Date">
-                            <ul>
-                                <li>2021/23/22</li>
-                                <li>2021/23/22</li>
-                                <li>2021/23/22</li>
-                            </ul>
-                        </Collapsible>
-                        :
-                        null
-                    }
-                    {
-                        (type === "course")
+                        (props.type === "course" || props.type === "cookroom")
                         ?
                         <>
-                            <Collapsible heading="Date">
-                                <ul>
-                                    {
-                                    date.map((value, index) => (<li key={index}> {value} </li>))
-                                    }
-                                </ul>
-                            </Collapsible>
                             {
-                                (member === undefined || member.length == 0)
+                                    (props.type === "course")
+                                    ?
+                                    <Collapsible heading="Date">
+                                        <ul>
+                                            {
+                                            props.date.map((value, index) => (<li key={index}> {moment(value).format("YYYY-MM-DD HH:mm")} </li>))
+                                            }
+                                        </ul>
+                                    </Collapsible>
+                                    :
+                                    null
+                            }
+                            {
+                                    (props.type === "cookroom")
+                                    ?
+                                    <Paper>
+                                        <div className={classes.element}>
+                                            <div className={classes.elementTitle}> Date:</div>
+                                            <div className={classes.elementContent}>{moment(props.date).format("YYYY-MM-DD HH:mm")}</div>
+                                        </div>
+                                    </Paper>
+                                    :
+                                    null    
+                            }
+                            {
+                                (props.member === undefined || props.member.length === 0)
                                  
                                 ?
                                 null
@@ -158,7 +160,7 @@ export default function MediaControlCard(props) {
                                 <Collapsible heading="Members">
                                     <ul>
                                         {
-                                        member.map((value, index) => (<li key={index}> {value} </li>))
+                                        props.member.map((value, index) => (<li key={index}> {value} </li>))
                                         }
                                     </ul>
                                 </Collapsible>
@@ -170,21 +172,7 @@ export default function MediaControlCard(props) {
                         null
                     }
                     {
-                        (type === "cookroom" || type === "course")
-                        ?
-                        <Collapsible heading="Members">
-                            <ul>
-                                <li>Harry Warren</li>
-                                <li>Sally Bacardi</li>
-                                <li>Billy Joe</li>
-                            </ul>
-                        </Collapsible>
-                    
-                    :
-                        null
-                    }
-                    {
-                        (type === "cookroom")
+                        (props.type === "cookroom")
                         ?
 
                     <Collapsible heading="Requests">
@@ -199,7 +187,7 @@ export default function MediaControlCard(props) {
                         null
                     }
                     {
-                        (type === "recipe")
+                        (props.type === "recipe")
                         ?
                         <Paper>
                             <div className={classes.element}>
@@ -219,19 +207,19 @@ export default function MediaControlCard(props) {
         <div className={classes.iconrow} >
             <div className={classes.details} >
             {
-                 (type === "recipe")
+                 (props.type === "recipe")
                         ?
                     null
                     :
                 <div className={classes.element}>
-                    1/5
+                    {props.member.length}/{props.numberOfMembers}
                 </div>
             }
             {
-                joined
+                props.joined
                 ?
                 
-                    (type === "recipe")
+                    (props.type === "recipe")
                     ?
                     null
                     :

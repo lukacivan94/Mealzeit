@@ -97,7 +97,6 @@ const HorizontalLinearStepper=  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
-
   const [courseFirstStepValues, setCourseFirstStepValues] = React.useState({
     location: String(),
     dates: Array()
@@ -149,7 +148,7 @@ const HorizontalLinearStepper=  (props: Props) => {
 
   const handleRecipeAdd = (values) => {
     const RecipeData = {
-      list_of_recipes: values.recipe || []
+      list_of_recipes: values || []
     };
     setCourseThirdStepValues(RecipeData);
     handleNext();
@@ -184,6 +183,7 @@ const HorizontalLinearStepper=  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
+    console.log(courseRequest);
     
     axios.post('/courses/', courseRequest)
         .then(res => {
@@ -211,7 +211,7 @@ const HorizontalLinearStepper=  (props: Props) => {
       case 1:
         return <JoinPageCourse onSubmit={handleJoinMembers} handleBack={handleBack}/>;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack} isCourse={ true }/>;
+        return <Menu handleBack={handleBack} isCourse={ true } handleSetRecipeIdList={handleRecipeAdd}/>;
       case 3:
           return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ true } />;
       default:
@@ -261,9 +261,8 @@ const HorizontalLinearStepper=  (props: Props) => {
               <EventCreatedMessage />
             </Paper>
             <div className={classes.margin}>
-                <Button onClick={handleReset} variant="contained" className={classes.button}>
-                  Reset
-                </Button>
+                <Button onClick={handleReset} variant="contained" className={classes.button}>Reset</Button>
+                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
             </div>
           </div>
         ) : (

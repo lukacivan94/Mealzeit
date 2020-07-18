@@ -1,18 +1,18 @@
-import React from 'react';
-import { Field, reduxForm, FieldArray, InjectedFormProps, formValueSelector } from 'redux-form';
+import React, { useEffect, useState} from 'react';
+import axios from '../../../axios';
+import { Field, reduxForm, FieldArray, InjectedFormProps } from 'redux-form';
 import Divider from '@material-ui/core/Divider';
 import { Button } from '@material-ui/core';
 
-
 import LeftRightSlider from '../../ImageSlider/LeftRightSlider';
 import AvatarImage from '../../AvatarProfile/AvatarImage';
-import {ButtonStyle, StyleDiv, EventDiv, TextDiv, TextSmallDiv } from '../../Styling/TextStyle';
+import {StyleDiv, EventDiv, TextDiv, TextSmallDiv } from '../../Styling/TextStyle';
 import TabBar from '../TabBar';
 import Recipe from '../../../screens/Recipe/Recipe';
 import { History, LocationState } from 'history';
 
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,15 +21,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Fab from '@material-ui/core/Fab';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import CardCourse from './RecipeCard';
+import CardSharedOwn from './RecipeCardSharedOwn';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: '10px',
         alignItems: "center",
         display: 'flex',
+        marginTop: '30px',
       },
       button: {
         background: '#F88805',
@@ -73,13 +68,11 @@ const useStyles = makeStyles((theme) => ({
     margin: {
         marginBottom: theme.spacing(2),
     },
+    gridroot: {
+        flexGrow: 1,
+      },
 }));
 
-// const theme = createMuiTheme({
-//     palette: {
-//       primary: orange,
-//     },
-//   });
   
 // const required = value => value ? undefined : 'Required';
 
@@ -95,18 +88,112 @@ let history: History<LocationState>;
 interface MenuProps {
     isCourse: boolean,
     handleBack();
+    handleSetRecipeIdList?: any;
 }
 
-let recipesArrList : String[] = [];
+interface Provider {
+    recipe_title: string,
+    food_type: string,
+    cuisine_type: string,
+    preparation_time: string,
+    _id: string,
+}
 
-const Menu = ({ isCourse, handleSubmit, handleBack }: MenuProps & InjectedFormProps<{}, MenuProps>) => {
+
+
+const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & InjectedFormProps<{}, MenuProps>) => {
         const classes = useStyles();
 
-        const recipesArr : String[] = [];
 
-        const [open, setOpen] = React.useState(false);
-        const [recipiIdList, setRecipiIdList] = React.useState(recipesArr);
-        const [recipiId, setRecipiId] = React.useState('');
+        // -------------------------------------------------------------------------
+        const obj : Array<Provider> = [];
+        const acceptArr: Boolean[] = [];
+   
+        const [countRecipesCreated, setCountRecipesCreated] = useState(0);
+        // const [countRecipesShared, setCountRecipesShared] = useState(0);
+
+        const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(obj);
+        const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(obj);
+
+        const [acceptIcon, setAcceptIcon] = useState(acceptArr);
+        const [acceptIconCourse, setAcceptIconCourse] = useState(acceptArr);
+        const [allRecipeBool, setAllRecipeBool] = useState(acceptArr);
+    
+        const userId = localStorage.getItem('userId');
+        //console.log(userId);
+    
+        useEffect(() => {
+                axios.get("/users/"+userId).then(response => {
+                    setAcceptIconCourse(Array(response["data"]['user']['created_recipes'].length).fill(true));
+                    setCountRecipesCreated(response["data"]['user']['created_recipes'].length);
+                    setAllRecipeBool(Array(response["data"]['user']['created_recipes'].length).fill(true))
+                    response["data"]['user']['created_recipes'].map(
+                        val => {
+                            axios.get("/recipes/"+val).then(response=> {
+                                setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipe']]);
+
+                            })}
+                    );
+                    axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(res => {
+                        setSharedRecipeObjectList(res['data']['recipes']);
+                        setAcceptIcon(Array(res['data']['count']).fill(true));
+                        //setCountRecipes(countRecipes=>countRecipes+response['data']['count']);
+                        setAllRecipeBool(allRecipeBool=>allRecipeBool.concat(Array(res['data']['count']).fill(true)));
+                        //setCountRecipesShared(res["data"]['count']);
+                    });
+                })
+          },[]);
+
+        const handleRemoveRecipeID = (id, index) => {
+            setRecipeId(recipeId.filter(item => item !== id));
+            if(isCourse){
+                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
+            } else {
+                setAllRecipeBool(allRecipeBool.map(item => item=true));
+                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item));
+            }
+            
+        };
+        const handleAddRecipeID = (id, index) => {
+
+            if(isCourse){
+                setRecipeId(recipeId=>[...recipeId, id]);
+                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
+            } else {
+                setRecipeId([id]);
+                //setAllRecipeBool(allRecipeBool.map(item => item=true));
+                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
+            }
+        };
+        const handleRemoveRecipeCoursesID = (id, index) => {
+            setRecipeId(recipeId.filter(item => item !== id));
+
+            if(isCourse){
+                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
+            } else {
+  
+                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
+            }
+        };
+        const handleAddRecipeCoursesID = (id, index) => {
+            if(isCourse){
+                setRecipeId(recipeId=>[...recipeId, id]);
+                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
+            } else {
+                setRecipeId([id]);
+                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
+            }
+            
+        };
+
+
+        // -------------------------------------------------------------------------
+        const recipesArr : String[] = [];
+        const recipesInfo : Array<Provider> = [];// Object[] = [];
+
+        const [open, setOpen] = useState(false);
+        const [recipeId, setRecipeId] = useState(recipesArr);
+        const [recipeIdInfo, setRecipeIdInfo] = useState(recipesInfo);
         
 
         const handleClickOpen = () => {
@@ -114,26 +201,47 @@ const Menu = ({ isCourse, handleSubmit, handleBack }: MenuProps & InjectedFormPr
         };
 
         const handleClose = () => {
+            if(!isCourse) {
+                setAllRecipeBool(allRecipeBool.map(item => true));
+            };
+            setOpen(false);
+        };
+        const handleCancel = () => {
             setOpen(false);
         };
 
+        // send the recipe id list to the steppers:  Menu -> Stepper
+        const handleSendRecipeId = () => {
+            console.log(recipeId);
+            handleSetRecipeIdList(recipeId);
+        };
+
+        // set recipe id comming from recipe.tsx:  Recipe -> Menu
         const handleSetRecipeId = (id) => {
+            //setRecipeId(recipeId=>[...recipeId, id]);
             if(isCourse) {
-                setRecipiIdList([...recipiIdList, id]);
-                recipesArrList = recipiIdList;
+                setRecipeId(recipeId=>[...recipeId, id]);
             } else {
-                setRecipiId(id);
-                recipesArrList.push(id);
+                setRecipeId([id]);
             }
-            console.log(id);
+
         };
 
-
-        function importAll(r) {
-            return r.keys().map(r);
+        // set recipe information coming from recipe.tsx: Recipe -> Menu
+        const handleRecipeInfo = (info) => {
+            var newObj = JSON.parse(info);
+            if(isCourse) {
+                setRecipeIdInfo(recipeIdInfo=>[...recipeIdInfo, newObj]);
+            } else {
+                setRecipeIdInfo([newObj]);
+            }
         };
-        const listOfImages = importAll(require.context('../../../assets/images/profiles/', false, /\.(png|jpe?g|svg)$/));
-        
+
+        const handleRemoveItem = (index) => {
+            setRecipeIdInfo(recipeIdInfo.filter((item, id) => id !== index));
+            setRecipeId(recipeId.filter(item => recipeId.indexOf(item) !== index));
+        };
+
         return (
             <div>
                 <TabBar>
@@ -146,81 +254,92 @@ const Menu = ({ isCourse, handleSubmit, handleBack }: MenuProps & InjectedFormPr
                         <Divider variant="middle" />
                         <EventDiv>
                             <TextSmallDiv>Your Recipes</TextSmallDiv>
-                            <LeftRightSlider>
-                                    
-                                        {
-                                        listOfImages.map(
-                                            (image, index) =>  <AvatarImage key={index} src={image.default}/>
-                                        )
-                                        }
-                                    
-                            </LeftRightSlider>
+                            <div className={classes.gridroot}>
+                                <Grid container spacing={2}>
+                                
+                                        {createdRecipeObjectList.map((object, index) => (
+                
+                                                <Grid item xs={6}  key={index}>
+                                                    <CardSharedOwn recipe_title={object.recipe_title} 
+                                                                food_type={object.food_type} 
+                                                                cuisine_type={object.cuisine_type} 
+                                                                preparation_time={object.preparation_time}
+                                                                index={index} 
+                                                                deleteId={handleRemoveRecipeID}
+                                                                addId={handleAddRecipeID}
+                                                                accept={allRecipeBool[index]}
+                                                                id={object._id}
+                                                    />
+                                                </Grid>
+                                            ))}
+                                </Grid>
+                            </div>
                         </EventDiv>
                         <Divider variant="middle" />
                         <EventDiv>
                             <TextSmallDiv>Public Recipes</TextSmallDiv>
-                            <LeftRightSlider>
-                                    
-                                        {
-                                        listOfImages.map(
-                                            (image, index) =>  <AvatarImage key={index} src={image.default}/>
-                                        )
-                                        }
-                                    
-                            </LeftRightSlider>
+                            <div className={classes.gridroot}>
+                                <Grid container spacing={2}>
+                                
+                                        {sharedRecipeObjectList.map((object, index) => (
+                
+                                                <Grid item xs={6}  key={index}>
+                                                    <CardSharedOwn recipe_title={object.recipe_title} 
+                                                                food_type={object.food_type} 
+                                                                cuisine_type={object.cuisine_type} 
+                                                                preparation_time={object.preparation_time}
+                                                                index={index+countRecipesCreated}
+                                                                deleteId={handleRemoveRecipeID}
+                                                                addId={handleAddRecipeID}
+                                                                accept={allRecipeBool[index+countRecipesCreated]}
+                                                                id={object._id}
+                                                    />
+                                                </Grid>
+                                            ))}
+                                </Grid>
+                            </div>
                         </EventDiv>
                         <Divider variant="middle" />
                         <EventDiv>
                             <TextSmallDiv>Or ...</TextSmallDiv>
                             <button className={classes.button} onClick={handleClickOpen}>
-                                        Create a Recipe
+                                    Create a Recipe
                             </button>
                             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
                                 <AppBar className={classes.appBar}>
                                 <Toolbar className={classes.toolbar}>
-                                    <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                                    <IconButton edge="start" color="inherit" onClick={handleCancel} aria-label="close">
                                     <CloseIcon />
                                     </IconButton>
                                 </Toolbar>
                                 </AppBar>
-                                {/* <Field
-                                    name='recipe'
-                                    component={renderRecipe}
-                                    label='recipe'
-                                    {...{
-                                        handleClose: handleClose,
-                                        handleSetRecipeId: handleSetRecipeId
-                                    }}
-                                /> */}
-                                <Recipe history={history} modal={true} handleDialogClose={handleClose} handleSetRecipeId={handleSetRecipeId}/>
-                            
-                                {/* {
-                                    isCourse
-                                    ?
-                                    <FieldArray 
-                                        name='recipe' 
-                                        label='recipe'
-                                        component={renderListOfRecipes} 
-                                        />        
-                                    :
-                                    <Field
-                                        name='recipe'
-                                        label='recipe'
-                                        component={renderRecipe}
-                                    />
-                                    
-                                } */}
+                                <Recipe history={history} modal={true} handleDialogClose={handleClose} handleSetRecipeId={handleSetRecipeId} handleRecipeInfo={handleRecipeInfo}/>
                             
                             </Dialog>    
-                            <Field 
-                                name="recipe" 
-                                component={renderField}
-                                {...{
-                                    recipesArrList: recipesArrList,
-                                    isCourse: isCourse
-                                }}
-                            />
                         </EventDiv>
+                        {
+                                recipeIdInfo
+                                ?
+                        <div className={classes.gridroot}>
+                            <Grid container spacing={2}>
+                            
+                                    {recipeIdInfo.map((object, index) => (
+            
+                                            <Grid item xs={6}  key={index}>
+                                                <CardCourse recipe_title={object.recipe_title} 
+                                                            food_type={object.food_type} 
+                                                            cuisine_type={object.cuisine_type} 
+                                                            preparation_time={object.preparation_time}
+                                                            index={index}
+                                                            delId={()=>handleRemoveItem(index)}
+                                                />
+                                            </Grid>
+                                        ))}
+                            </Grid>
+                        </div>
+                         :
+                         null
+                        }
                     </StyleDiv>
                 </TabBar>
                 <div className={classes.buttondiv}>
@@ -230,7 +349,7 @@ const Menu = ({ isCourse, handleSubmit, handleBack }: MenuProps & InjectedFormPr
                     >
                         Back
                     </Button>
-                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
+                    <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSendRecipeId}>
                         Next
                     </Button>
                 </div>
@@ -274,95 +393,6 @@ const renderField = ({
         </div>
     );
 };
-
-// const renderRecipe = ({
-//     label,
-//     input,
-//     meta: { touched, invalid, error },
-//     type,
-//     handleClose,
-//     handleSetRecipeId,
-//     ...custom
-// }) => (
-//         <Recipe 
-//             {...input}
-//             history={history} 
-//             modal={true} 
-//             handleDialogClose={handleClose} 
-//             handleSetRecipeId={handleSetRecipeId}
-//         />
-//     );
-
-
-// const renderRecipeInfo = ({
-//         label,
-//         input,
-//         meta: { touched, invalid, error },
-//         type,
-//         handleClose,
-//         handleSetRecipeId,
-//         ...custom
-//     }) => {
-//     const classes = useStyles();
-        
-//     return (
-//         <div className={classes.demo}>
-//             <Divider variant="middle" />
-//             <List dense>
-//                 <ListItem>
-//                   <ListItemText
-//                     primary={props.name}
-//                   />
-//                   <ListItemSecondaryAction>
-//                     <IconButton edge="end" aria-label="check">
-//                       <CancelIcon className={classes.iconReject} />
-//                     </IconButton>
-//                   </ListItemSecondaryAction>
-//                 </ListItem>
-//             </List>
-//         </div>
-//         );
-//     };
-
-
-// const renderListOfRecipes = ({ fields, meta: { error } }) => {
-    
-//     const classes = useStyles();
-//     return (
-//     <div>
-//         <MuiThemeProvider theme={theme}>
-//         <Fab className={classes.margin} color='primary'  variant="extended" onClick={() => fields.push()}>
-//             <AddIcon className={classes.extendedIcon} />
-//             Add Date
-//         </Fab>
-//       </MuiThemeProvider>
-//       {fields.map((date, index) => (
-
-//         <div className={classes.demo}  key={index}>
-//             <Divider variant="middle" />
-//             <List dense>
-//                 <ListItem>
-//                     <Field
-//                         validate={[ required ]}
-//                         name={date}
-//                         type="text"
-//                         component={renderRecipe}
-//                         label={`date #${index + 1}`}
-//                     />
-//                 <ListItemSecondaryAction>
-//                     <IconButton edge="end" aria-label="check"  onClick={() => fields.remove(index)}>
-//                         <DeleteIcon className={classes.iconReject} />
-//                     </IconButton>
-//                 </ListItemSecondaryAction>
-//                 </ListItem>
-//             </List>
-//         </div>
-//       ))}
-//       <Divider variant="middle" />
-//       {(error && <AlertMessage>{error}</AlertMessage>)}
-//     </div>
-//   );
-// };
 
 
 export default reduxForm<{}, MenuProps>({
