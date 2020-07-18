@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: 'column',
             alignItems: 'center',
             backgroundColor: 'transparent',
-            margin: '50px 50px 0 50px',
+            margin: '50px 50px 0 50px'
         },
         wrapper: {
             padding: '30px',
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: 'center',
             paddingTop: '50px',
             margin: '0 auto',
-            fontFamily: 'Source Sans Pro, sans-serif',
+            fontFamily: 'Source Sans Pro, sans-serif'
         },
         buttondiv: {
             display: 'flex',
@@ -108,6 +108,8 @@ const Recipe = (props: Props) => {
 
         setRecipeSecondStepValues(recipeData);
 
+        const userId = localStorage.getItem('userId');
+
         const recipeRequest = {
             recipe_title: recipeFirstStepValues.recipe_title,
             food_type: recipeFirstStepValues.food_type,
@@ -120,7 +122,7 @@ const Recipe = (props: Props) => {
             instant_join: '',
             description: values.message || '',
             is_public: !values.isPrivate,
-            userId: props.userId
+            userId: userId
         };
 
         axios.post('/recipes/', recipeRequest)

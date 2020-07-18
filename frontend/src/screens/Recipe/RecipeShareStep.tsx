@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Container, Typography, FormControlLabel, Checkbox, InputLabel, TextField, Button, makeStyles } from '@material-ui/core';
 import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
+import axios from '../../axios';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -96,6 +97,21 @@ type Props = InjectedFormProps<{}, RecipeShareProps> & RecipeShareProps;
 
 const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit }: Props) => {
     const classes = useStyles();
+
+    const getFriends = () => {
+        const userId = localStorage.getItem('userId');
+        axios.get('/friends/' + userId)
+            .then(res => {
+                console.log('res: ', res);
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+    };
 
     return (
         <Container component='main' maxWidth='sm'>
