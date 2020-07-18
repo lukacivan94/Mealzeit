@@ -17,13 +17,10 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: 'transparent',
-        margin: '50px 50px 0 50px',
     },
     wrapper: {
-        padding: '30px',
         textAlign: 'center',
         alignItems: 'center',
-        paddingTop: '50px',
         margin: '0 auto',
         fontFamily: 'Source Sans Pro, sans-serif',
     },

@@ -87,6 +87,10 @@ const Profile = (props: Props) => {
     props.history.push('/');
   };
 
+  const handleProfile = () => {
+    props.history.push('/profile');
+  };
+
   return (
     <div className={classes.root}>
       <Avatar className={classes.profile} src={props.imageSource} alt={props.altText} aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick} />
@@ -101,7 +105,7 @@ const Profile = (props: Props) => {
           <ListItemIcon>
             <AccountCircleIcon fontSize='small' />
           </ListItemIcon>
-          <ListItemText primary='Profile' />
+          <ListItemText primary='Profile' onClick={handleProfile} />
         </StyledMenuItem>
 
         <StyledMenuItem>

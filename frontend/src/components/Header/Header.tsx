@@ -76,7 +76,7 @@ const Header = (props: Props) => {
                         //className={classes.button}
                         onClick={goToLogin}
                     >
-                        Log In
+                        Sign In
                   </StyledButton>
                     <StyledButton
                         variant='contained'
