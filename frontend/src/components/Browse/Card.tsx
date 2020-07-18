@@ -16,6 +16,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Avatars from '../Browse/Avatars';
 import GroupAvatars from '../Browse/GroupAvatar';
 import Divider from '@material-ui/core/Divider';
+import axios from '../../axios'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -122,7 +123,6 @@ const ColorButton = withStyles((theme) => ({
     },
   },
 }))(Button);
-const handleJoin=() => (alert('Congratulations you are in!!!'));
 interface Props {
     Title: string;
     Id: string;
@@ -138,13 +138,42 @@ interface Props {
     PreparationTime: string; 
     Price: Number;
     Rating: Number;
-    IncludedInPremium:Number;
-    name:string;
+    IncludedInPremium:string;
+    TRatings: Number;
+    Members:any;
+    NumMembers:any; 
 };
 
 export default function PublicCard(props:Props) {
   const classes = useStyles();
   const theme = useTheme();
+ 
+  const handleJoin=() => {
+    const userId = localStorage.getItem('userId');
+    axios.patch('cookrooms/addreq/'+props.Id+ '/'+ userId)
+    .then(res => {
+      console.log(res)
+    })
+    .catch(error => {
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        }
+      
+    });
+    if (props.Members.includes(userId)){
+      alert("You have already joined this course")
+    }
+    if(props.Members.length == props.NumMembers){
+      alert('Sorry the cookroom is already full!!!')
+    }else{
+      alert('Congratulations you are in!!!')
+    }
+    
+
+    
+  };
 
   return (
     <Card className={classes.root}>
@@ -182,6 +211,33 @@ export default function PublicCard(props:Props) {
 export  function CourseCard(props:Props) {
   const classes = useStyles();
   const theme = useTheme();
+  const handleJoin=() => {
+    const userId = localStorage.getItem('userId');
+    axios.patch('courses/join/'+props.Id+ '/'+ userId)
+    .then(res => {
+      console.log(".................................", res)
+  })
+  .catch(error => {
+      if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+      }
+      
+  });
+
+    if (props.Members.includes(userId)){
+      alert("You have already joined this course")
+    }
+
+    if(props.Members.length == props.NumMembers){
+      alert('Sorry the cookroom is already full!!!')
+    }else{
+      alert('Congratulations you are in!!!')
+    }
+
+  };
+
 
   return (
     <Card className={classes.root}>
@@ -195,7 +251,7 @@ export  function CourseCard(props:Props) {
         
         <Divider variant="middle" />
         <div className={classes.TabImage}>
-          <CourseTable Date = {props.Date}  Cuisine = {props.Cuisine} EventType = {props.EventType} Location = {props.Location} FoodType = {props.FoodType} MealType = {props.MealType} Size = {props.Size} Setting = {props.Setting} IncludedInPremium={props.IncludedInPremium}/>
+          <CourseTable Date = {props.Date} ImageSource = {props.ImageSource}  EventType = {props.EventType} TRatings = {props.TRatings} Location = {props.Location} Price ={props.Price}  Size = {props.Size} Setting = {props.Setting} Rating = {props.Rating} IncludedInPremium={props.IncludedInPremium}/>
           <CardMedia
           className={classes.cover}
           image={props.ImageSource}

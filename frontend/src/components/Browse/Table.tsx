@@ -37,10 +37,11 @@ const PublicTable = (props) => {
             <TableRow>
               <TableCell align="center">{props.Location}</TableCell>
               <TableCell align="center">{props.FoodType}</TableCell>
-              <TableCell align="center">{props.MealType}</TableCell>
+              <TableCell align="center">{props.Price}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell align="center">Size: {props.Size}</TableCell>
+              <TableCell align="center">Size: {props.PreparationTime}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -59,16 +60,17 @@ export const CourseTable = (props) => {
             <TableRow>
               <TableCell align="center">{props.Date}</TableCell>
               <TableCell align="center">{props.EventType}</TableCell>
-              <TableCell align="center">{props.Price}</TableCell>
+              <TableCell align="center">€{props.Price}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell align="center">{props.Location}</TableCell>
               <TableCell align="center">{props.IncludedInPremium}</TableCell>
-              <TableCell align="center">{props.Rating}</TableCell>
+              <TableCell align="center">Average Rating: {props.Rating}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell align="center">Size:{props.Size}</TableCell>
-              <TableCell align="center">{props.Setting}</TableCell>
+              <TableCell align="center">Setting: {props.Setting}</TableCell>
+              <TableCell align="center">Total Number of Ratings: {props.TRating}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
