@@ -97,10 +97,9 @@ const HorizontalLinearStepper=  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
-
   const [courseFirstStepValues, setCourseFirstStepValues] = React.useState({
     location: String(),
-    dates: []
+    dates: Array()
   });
 
   const [courseSecondStepValues, setCourseSecondStepValues] = React.useState({
@@ -111,7 +110,7 @@ const HorizontalLinearStepper=  (props: Props) => {
   });
 
   const [courseThirdStepValues, setCourseThirdStepValues] = React.useState({
-    list_of_recipes: []
+    list_of_recipes: Array()
   });
 
   const [courseFinalStepValues, setCourseFinalStepValues] = React.useState({
@@ -123,15 +122,20 @@ const HorizontalLinearStepper=  (props: Props) => {
   });
 
   const handleLocationDateSave = (values) => {
+    let newDate = [];
+    if(values.dateOfPublish){
+      newDate = values.dateOfPublish.map(val => val.toISOString());
+    }
     const LocationDate = {
         location: values.location || '',
-        dates: values.dateOfPublish || [],
+        dates: newDate || [],
     };
     setCourseFirstStepValues(LocationDate);
     handleNext();
   };
 
   const handleJoinMembers = (values) => {
+    console.log(courseFirstStepValues);
     const JoinData = {
         price_of_course: values.priceOfCourse || -1,
         number_of_members: values.numberOfMembers || -1,
@@ -144,7 +148,7 @@ const HorizontalLinearStepper=  (props: Props) => {
 
   const handleRecipeAdd = (values) => {
     const RecipeData = {
-      list_of_recipes: values.recipe || []
+      list_of_recipes: values || []
     };
     setCourseThirdStepValues(RecipeData);
     handleNext();
@@ -179,6 +183,7 @@ const HorizontalLinearStepper=  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
+    console.log(courseRequest);
     
     axios.post('/courses/', courseRequest)
         .then(res => {
@@ -202,13 +207,13 @@ const HorizontalLinearStepper=  (props: Props) => {
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} course={ true }/>;
+        return <EventLocationTimeInput onSubmit={handleLocationDateSave} handleBack={goToHome} isCourse={ true }/>;
       case 1:
         return <JoinPageCourse onSubmit={handleJoinMembers} handleBack={handleBack}/>;
       case 2:
-        return <Menu onSubmit={handleRecipeAdd} handleBack={handleBack}/>;
+        return <Menu handleBack={handleBack} isCourse={ true } handleSetRecipeIdList={handleRecipeAdd}/>;
       case 3:
-          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} course={ true } />;
+          return <MoreInfo onSubmit={handleMoreInfo} handleBack={handleBack} isCourse={ true } />;
       default:
         return 'Unknown step';
     }
@@ -256,27 +261,13 @@ const HorizontalLinearStepper=  (props: Props) => {
               <EventCreatedMessage />
             </Paper>
             <div className={classes.margin}>
-                <Button onClick={handleReset} variant="contained" className={classes.button}>
-                  Reset
-                </Button>
+                <Button onClick={handleReset} variant="contained" className={classes.button}>Reset</Button>
+                <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={goToHome}>Home Page</Button>
             </div>
           </div>
         ) : (
           <div style={{paddingBottom: '50px'}}>
             <Typography className={classes.instructions}  component={'div'} variant={'body2'}>{getStepContent(activeStep)}</Typography>
-            <div className={classes.margin}>
-                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className={classes.button}>
-                  Back
-                </Button>
-                <ColorButton
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </ColorButton>
-            </div>
           </div>
         )}
       </div>

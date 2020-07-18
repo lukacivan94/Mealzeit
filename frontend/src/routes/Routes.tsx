@@ -7,7 +7,7 @@ import CookRoom from '../screens/Event/CookRoom';
 import Auth from '../screens/Auth/Auth';
 import Recipe from '../screens/Recipe/Recipe';
 import BrowsePage from '../screens/Browse/BrowsePage';
-import Profile from '../screens/Profile/Profile';
+import Profile from '../screens/Profile/ProfilePage';
 import About from '../screens/About/About';
 import MissionVision from '../screens/About/Mission';
 
