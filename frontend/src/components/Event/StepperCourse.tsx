@@ -268,19 +268,6 @@ const HorizontalLinearStepper=  (props: Props) => {
         ) : (
           <div style={{paddingBottom: '50px'}}>
             <Typography className={classes.instructions}  component={'div'} variant={'body2'}>{getStepContent(activeStep)}</Typography>
-            <div className={classes.margin}>
-                <Button disabled={activeStep === 0} variant="contained" onClick={handleBack} className={classes.button}>
-                  Back
-                </Button>
-                <ColorButton
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </ColorButton>
-            </div>
           </div>
         )}
       </div>

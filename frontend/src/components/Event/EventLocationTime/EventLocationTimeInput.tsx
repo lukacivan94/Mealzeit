@@ -15,7 +15,7 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-
+import moment from 'moment';
 import { StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
 import AlertMessage from '../AlertMessage';
 import TabBar from '../TabBar';
@@ -190,6 +190,7 @@ const renderDateTime = ({
                 {...input}
                 format="yyyy/MM/dd hh:mm a"
                 minDate={new Date()}
+                helperText={''} 
                 />
             </Grid>
         </MuiPickersUtilsProvider>
@@ -271,7 +272,11 @@ const EventLocationTimeInput = ({ isCourse, handleBack, handleSubmit }: Location
 
 export default reduxForm<{}, LocationDateProps>({
     form: 'EventLocationTimeInput',
-    validate,
+    validate
+    // validate,
+    // initialValues: {
+    //     dateOfPublish: [moment(new Date()).format('YYYY-MM-DD')]
+    // }
   })(EventLocationTimeInput);
 
 

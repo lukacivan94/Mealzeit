@@ -395,17 +395,17 @@ export default function MediaControlCard(props: Props) {
                     null
                     :
                     <div className={classes.iconGroup}>
-                        <Tooltip title="cancel" placement="bottom">
+                        <Tooltip title="leave" placement="bottom">
                             <IconButton edge="end" aria-label="cancel"onClick={handleClickOpen}>
                                 <CancelIcon className={classes.icon2} />
                             </IconButton>
                         </Tooltip>
                         <MuiThemeProvider theme={theme}>
                         <Dialog open={open} TransitionComponent={Transition} keepMounted onClose={handleClickClose} aria-labelledby="alert-dialog-slide-title" aria-describedby="alert-dialog-slide-description">
-                            <DialogTitle id="alert-dialog-slide-title"><WarningIcon/>{"Do you want to cancel the event?"}</DialogTitle>
+                            <DialogTitle id="alert-dialog-slide-title"><WarningIcon  style={{ fill: 'red' }}/>{"Do you want to leave the event?"}</DialogTitle>
                             <DialogActions>
-                            <Button onClick={handleClickClose} color="primary">Disagree</Button>
-                            <Button onClick={handleCancelDelete} color="primary">Agree</Button>
+                            <Button style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleClickClose} color="primary">Disagree</Button>
+                            <Button style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleCancelDelete} color="primary">Agree</Button>
                             </DialogActions>
                         </Dialog>
                     </MuiThemeProvider>                       
@@ -421,10 +421,10 @@ export default function MediaControlCard(props: Props) {
                     </Tooltip>
                     <MuiThemeProvider theme={theme}>
                         <Dialog open={open} TransitionComponent={Transition} keepMounted onClose={handleClickClose} aria-labelledby="alert-dialog-slide-title" aria-describedby="alert-dialog-slide-description">
-                            <DialogTitle id="alert-dialog-slide-title"><WarningIcon/>{"Do you want to delete the event?"}</DialogTitle>
+                            <DialogTitle id="alert-dialog-slide-title"><WarningIcon  style={{ fill: 'red' }}/>{"Do you want to delete the event?"}</DialogTitle>
                             <DialogActions>
-                            <Button onClick={handleClickClose} color="primary">Disagree</Button>
-                            <Button onClick={handleCancelDelete} color="primary">Agree</Button>
+                            <Button  style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleClickClose} color="primary">Disagree</Button>
+                            <Button  style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleCancelDelete} color="primary">Agree</Button>
                             </DialogActions>
                         </Dialog>
                     </MuiThemeProvider>

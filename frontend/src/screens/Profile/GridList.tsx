@@ -121,18 +121,10 @@ export default function GridList(props: Props) {
       axios.patch(`/${type_room}/cancel/${type_id}/`)
           .then(res => {
               if(type_room == "cookrooms") {
-                if(event_joined) {
-                  setJoinedCookroomObjectList(joinedCookroomObjectList.filter(item => item._id !== type_id));
-                } else {
                   setCreatedCookroomObjectList(createdCookroomObjectList.filter(item => item._id !== type_id));
-                }
               }
               if(type_room == "courses") {
-                if(event_joined) {
-                  setJoinedCoursesObjectList(joinedCoursesObjectList.filter(item => item._id !== type_id));
-                } else {
                   setCreatedCoursesObjectList(createdCoursesObjectList.filter(item => item._id !== type_id));
-                }
               }
               if(type_room == "recipes") {
                 setCreatedRecipeObjectList(createdRecipeObjectList.filter(item => item._id !== type_id));
@@ -146,6 +138,26 @@ export default function GridList(props: Props) {
               }
           });
   };
+
+  const handleLeaveCourse =(type_room, type_id, event_joined) => {
+    axios.patch(`/${type_room}/leave/${type_id}/${userId}/`)
+        .then(res => {
+            if(type_room == "courses") {
+                setJoinedCoursesObjectList(joinedCoursesObjectList.filter(item => item._id !== type_id));
+            }     
+            if(type_room == "cookrooms") {
+              setJoinedCookroomObjectList(joinedCookroomObjectList.filter(item => item._id !== type_id)); 
+          }     
+                 
+        })
+        .catch(error => {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            }
+        });
+};
 
     
  
@@ -185,7 +197,7 @@ export default function GridList(props: Props) {
                                       title={object.title} 
                                       numberOfMembers={object.number_of_members}
                                       main_id={object._id}
-                                      performCancelDelete={handleCancelAndDelete}/>
+                                      performCancelDelete={handleLeaveCourse}/>
                       </Grid>
                   )})
               :
@@ -205,7 +217,8 @@ export default function GridList(props: Props) {
                                       numberOfMembers={object.number_of_members}
                                       main_id={object._id}
                                       request={object.requests}
-                            />
+                                      performCancelDelete={handleCancelAndDelete}/>
+
                       </Grid>
                   )})
               :
@@ -224,7 +237,7 @@ export default function GridList(props: Props) {
                                       title={object.title}
                                       main_id={object._id}
                                       numberOfMembers={object.number_of_members}
-                            />
+                                      performCancelDelete={handleLeaveCourse}/>
                       </Grid>
                   )})
               :
@@ -261,8 +274,7 @@ export default function GridList(props: Props) {
                                       cuisine_type={object.cuisine_type} 
                                       title={object.recipe_title}
                                       main_id={object._id}
-                                      preparation_time={object.preparation_time}
-                                      performCancelDelete={handleCancelAndDelete}/>
+                                      preparation_time={object.preparation_time}/>
                       </Grid>
                   )})
               :

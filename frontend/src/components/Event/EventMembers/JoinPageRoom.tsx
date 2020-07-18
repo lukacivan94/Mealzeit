@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 
 import AvatarImage from './FriendImage';
-import Counter from './Counter';
 import LeftRightSlider from '../../ImageSlider/LeftRightSlider';
 import {StyleDiv, EventDiv, TextDiv } from '../../Styling/TextStyle';
 
