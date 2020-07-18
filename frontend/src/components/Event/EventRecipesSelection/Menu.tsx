@@ -165,26 +165,6 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
                 setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
             }
         };
-        const handleRemoveRecipeCoursesID = (id, index) => {
-            setRecipeId(recipeId.filter(item => item !== id));
-
-            if(isCourse){
-                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
-            } else {
-  
-                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
-            }
-        };
-        const handleAddRecipeCoursesID = (id, index) => {
-            if(isCourse){
-                setRecipeId(recipeId=>[...recipeId, id]);
-                setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
-            } else {
-                setRecipeId([id]);
-                setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
-            }
-            
-        };
 
 
         // -------------------------------------------------------------------------
