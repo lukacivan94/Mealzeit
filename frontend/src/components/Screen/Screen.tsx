@@ -11,6 +11,9 @@ interface Props extends RouteComponentProps {
     children: React.ReactChild;
 }
 
+/** (✓)
+ * This class is a general Screen component to wrap up with this in all pages
+ */
 class Screen extends Component<Props> {
     render() {
         return (

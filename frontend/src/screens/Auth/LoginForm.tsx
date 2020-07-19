@@ -3,6 +3,10 @@ import { Field, reduxForm } from 'redux-form';
 import { TextField, Container, Button, Typography, makeStyles } from '@material-ui/core';
 import styled from 'styled-components';
 
+/** (✓)
+ * This is for validation in redux form for login form
+ */
+
 const validate = values => {
     const errors = { email: '' };
     const requiredFields = [
@@ -23,6 +27,9 @@ const validate = values => {
     return errors;
 };
 
+/** (✓)
+ * This functional components is for rendering text field in redux form fields
+ */
 const renderTextField = ({
     label,
     input,
@@ -41,6 +48,9 @@ const renderTextField = ({
         />
     );
 
+/** (✓)
+ * This is for material ui components' styles
+ */
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -66,6 +76,9 @@ const StyledDiv = styled.div`
     flex-direction: column;
 `;
 
+/** (✓)
+ * This functional component is Redux Form for login page 
+ */
 const LoginForm = ({ handleSubmit }) => {
     const classes = useStyles();
 
@@ -102,6 +115,9 @@ const LoginForm = ({ handleSubmit }) => {
     );
 };
 
+/** (✓)
+ * This functional component is Redux Form for login page with validations
+ */
 export default reduxForm({
     form: 'login',
     validate
