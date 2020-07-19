@@ -36,6 +36,7 @@ const StyledButton = styled(Button)`
     width: 50%;
     height: 50%;
     background-color: darkorange;
+    white-space: nowrap;
 `;
 
 interface Props {

@@ -1,3 +1,8 @@
 This file serves for sharing notes related to this app development
 
 Code alignment on Mac : Shift + Option + F
+
+Google Cloud deploy
+gsutil rsync -r gs://mealzeit ./mealzeitapp
+cd mealzeitapp
+gcloud app deploy
