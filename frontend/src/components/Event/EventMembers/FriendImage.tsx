@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
         height: '85px',
         margin: '10px',
         border: '1px solid grey',
-        overflow:'hidden',
+        overflow: 'hidden',
     },
     overlay: {
         position: 'absolute',
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     darkborder: {
         border: '2px solid green',
     },
-   
+
     text: {
         color: 'black',
         fontSize: '16px',
@@ -67,10 +67,10 @@ const useStyles = makeStyles((theme) => ({
         height: '85px',
         margin: '10px',
         border: '1px solid grey',
-        overflow:'hidden',
+        overflow: 'hidden',
         fontSize: '16px',
-      },
-      textInit: {
+    },
+    textInit: {
         color: 'white',
         fontSize: '32px',
         position: 'absolute',
@@ -78,10 +78,10 @@ const useStyles = makeStyles((theme) => ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
         textAlign: 'center',
-      }
-  }));
+    }
+}));
 
-  interface Props {
+interface Props {
     first_name: any;
     last_name: any;
     profile_picture: any;
@@ -89,11 +89,11 @@ const useStyles = makeStyles((theme) => ({
     addId: any;
     delId: any;
     key: any;
-  }
+}
 
 
 
-export default function AvatarImage(props: Props){
+export default function AvatarImage(props: Props) {
     const [hovered, setHovered] = React.useState(false);
     const [clicked, setClicked] = React.useState(false);
     const [count, setCount] = React.useState(0);
@@ -113,35 +113,34 @@ export default function AvatarImage(props: Props){
             setHovered(false);
         }
     };
-    const handleClicked =() => {
+    const handleClicked = () => {
         setClicked(!clicked);
-        console.log(count);
-        if(count % 2 === 0){
+        if (count % 2 === 0) {
             props.addId(props._id, props.first_name);
         } else {
             props.delId(props._id, props.first_name);
         }
-        setCount(count+1);
+        setCount(count + 1);
     };
 
 
     return (
-            <Tooltip title={props.first_name +' '+props.last_name} placement="bottom">
-                <div className={classes.container} key={props.key} onMouseOver={handleOver} onMouseOut={handleOut} onClick={handleClicked}>
-                    {
-                        props.profile_picture
+        <Tooltip title={props.first_name + ' ' + props.last_name} placement="bottom">
+            <div className={classes.container} key={props.key} onMouseOver={handleOver} onMouseOut={handleOut} onClick={handleClicked}>
+                {
+                    props.profile_picture
                         ?
-                        <Avatar className={classes.boxstyle} src={`data:image/jpeg;base64,${props.profile_picture}`}/>
+                        <Avatar className={classes.boxstyle} src={`data:image/jpeg;base64,${props.profile_picture}`} />
                         :
-                        <Avatar className={classes.orange}><div className={classes.textInit}>{props.first_name[0] + props.last_name[0]}</div></Avatar>            
-                    }         
-                    <div className={classes.overlay} style={{transform: `${hovered ? 'translate(9px, 0px) scale(1)': 'translate(9px, 0px) scale(0) '}`}}>
-                        <div className={classes.text}>Click to add</div>
-                    </div>
-                    <div className={classes.overlayClick} style={{transform: `${clicked ? 'translate(9px, 0px) scale(1)': 'translate(9px, 0px) scale(0) '}`}}>
-                        <div className={classes.text}><DoneOutlineIcon fontSize="large"/></div>
-                    </div>
+                        <Avatar className={classes.orange}><div className={classes.textInit}>{props.first_name[0] + props.last_name[0]}</div></Avatar>
+                }
+                <div className={classes.overlay} style={{ transform: `${hovered ? 'translate(9px, 0px) scale(1)' : 'translate(9px, 0px) scale(0) '}` }}>
+                    <div className={classes.text}>Click to add</div>
                 </div>
-            </Tooltip>
-        );
+                <div className={classes.overlayClick} style={{ transform: `${clicked ? 'translate(9px, 0px) scale(1)' : 'translate(9px, 0px) scale(0) '}` }}>
+                    <div className={classes.text}><DoneOutlineIcon fontSize="large" /></div>
+                </div>
+            </div>
+        </Tooltip>
+    );
 }
