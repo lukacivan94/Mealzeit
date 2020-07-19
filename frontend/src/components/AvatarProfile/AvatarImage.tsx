@@ -2,6 +2,12 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 
+/*
+* Common component and can be used accross any other component.
+* Loads the picture in the avatar and gives hover effect to it.
+* 
+*/
+
 const useStyles = makeStyles((theme) => ({
 
     container: {

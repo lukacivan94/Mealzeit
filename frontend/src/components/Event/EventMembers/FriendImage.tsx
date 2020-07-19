@@ -6,8 +6,13 @@ import { deepOrange } from '@material-ui/core/colors';
 import Tooltip from '@material-ui/core/Tooltip';
 import { base64ToImage } from '../../../utils/imageUtils';
 
-const useStyles = makeStyles((theme) => ({
+/** (✓)
+ *  Show the avatars of the friends of the user: on hover shows click to add and on click shows check mark.
+ */
 
+
+// Basic Styling specification of the all the components
+const useStyles = makeStyles((theme) => ({
     container: {
         position: 'relative',
     },
@@ -41,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
         height: '85px',
         backgroundColor: '#78ff63',
         overflow: 'hidden',
-        transition: '.3s ease',
+        transition: '.1s ease',
         opacity: 0.7,
         borderRadius: '50%',
         border: '2px solid green',
@@ -81,6 +86,8 @@ const useStyles = makeStyles((theme) => ({
       }
   }));
 
+
+// Interface specification for the exported default component and constants
   interface Props {
     first_name: any;
     last_name: any;
@@ -89,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     addId: any;
     delId: any;
     key: any;
-  }
+}
 
 
 
@@ -115,7 +122,6 @@ export default function AvatarImage(props: Props){
     };
     const handleClicked =() => {
         setClicked(!clicked);
-        console.log(count);
         if(count % 2 === 0){
             props.addId(props._id, props.first_name);
         } else {

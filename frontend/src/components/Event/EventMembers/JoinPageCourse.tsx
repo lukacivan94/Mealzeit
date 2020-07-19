@@ -15,6 +15,13 @@ import AlertMessage from '../AlertMessage';
 import TabBar from '../TabBar';
 
 
+ /** (✓)
+  *  Join page of the course where the information can be filled by the user.
+  * number of members, is virtual event, price of the event and if the event is premium or not!
+  */
+
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
     container: {
         fontFamily: 'Source Sans Pro, sans-serif',
@@ -56,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
+  // validation of the fields of the event!
   const validate = values => {
     const errors = { numberOfMembers: '', priceOfCourse: '' };
     const requiredFields = [
@@ -83,14 +91,12 @@ const useStyles = makeStyles((theme) => ({
     return errors;
 };
 
-
-
 const required = value => value ? undefined : 'Required';
 const RangeMember = value => value && (Number(value) < 0 || Number(value)>30) ? 'Invalid number of members less than or equal to 30!' : undefined;
 const RangePrice = value => value && (Number(value) < 0 || Number(value)>5000) ? 'Invalid Price, enter from 0 to 5000!': undefined;
 
 
-
+// helper component to render radio selection input
 const RadioSelect = ({ input, ...rest }) => {
     const classes = useStyles();
     return (
@@ -104,6 +110,7 @@ const RadioSelect = ({ input, ...rest }) => {
   }
 
 
+  // Interface specification for the exported default component and constants
 interface JoinPageProps {
     handleBack();
 }
@@ -120,7 +127,7 @@ const JoinPageCourse = ({ handleSubmit, handleBack }: JoinPageProps & InjectedFo
                       </TextDiv>
                   <div className={classes.eventdiv}>
                       <RowDiv>
-                          <TextSmallDiv>set number of members</TextSmallDiv>
+                          <TextSmallDiv>Set number of members</TextSmallDiv>
                           <Field
                               validate={[ required, RangeMember ]}
                               name='numberOfMembers'
@@ -141,7 +148,7 @@ const JoinPageCourse = ({ handleSubmit, handleBack }: JoinPageProps & InjectedFo
 
                   <div className={classes.eventdiv}>
                       <RowDiv>
-                          <TextSmallDiv>set the price</TextSmallDiv>
+                          <TextSmallDiv>Set the price</TextSmallDiv>
                           <Field
                               validate={[ required, RangePrice ]}
                               name='priceOfCourse'
@@ -174,7 +181,7 @@ const JoinPageCourse = ({ handleSubmit, handleBack }: JoinPageProps & InjectedFo
         );
 };
 
-
+// rendering all the text fields as a field component of redux
 const renderNumberOfMembers = ({
     label,
     input,
@@ -213,7 +220,6 @@ const renderPriceOfCourse = ({
             id="outlined-number2"
             label='€'
             type="number"
-            //defaultValue="0"
             inputProps={{ min: "0", max: "5000", step: "1" }} 
             variant="outlined"
             style={{ color: 'darkorange' }}

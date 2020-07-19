@@ -1,11 +1,21 @@
 import React, { useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from '../../axios';
-
 import Screen from '../../components/Screen/Screen';
 import CustomizedTabs from './CustomizedTabs';
 import GridList from './GridList';
 
+/*
+* ProfilePage: This component loads the profile page of the user.
+* The profile page consists of name, created/joined cookrooms,
+* created/joined courses, created recipes and shared recipes.
+* 
+* This component has tabs to display either each event is created/
+* joined/ shared.
+*/
+
+
+// Basic Styling of the all the components
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',

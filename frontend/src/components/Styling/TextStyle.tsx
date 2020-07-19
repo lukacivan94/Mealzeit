@@ -1,6 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+
+/*
+* Common component and can be used accross any other component.
+* Specification on how a component is displayed: color, font, padding, margin, alignments ....
+* 
+*/
+
 const useStyles = makeStyles((theme) => ({
     eventdiv: {
         paddingTop: '10px',

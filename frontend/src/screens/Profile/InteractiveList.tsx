@@ -12,7 +12,12 @@ import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 
 
+/*
+* Listing the request from the users in panels with accept/reject icons at the end.
+*/
 
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     demo: {
@@ -27,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-
+// Interface specification for the exported default component and constants
 interface Props {
   name: any;
   key: any;

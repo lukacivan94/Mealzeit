@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -132,7 +132,6 @@ const Recipe = (props: Props) => {
             shared_with_friends: selectedFriends
         };
 
-        console.log('recipeRequest', recipeRequest);
 
         axios.post('/recipes/', recipeRequest)
             .then(res => {
@@ -150,19 +149,13 @@ const Recipe = (props: Props) => {
                 }
                 handleReset();
             });
-        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
-        // handleNext();
-        // const result ='{"recipe_title":"chips chilly","food_type":"dinner","cuisine_type":"asian","preparation_time":"2 hr","instructions":"fry properly","calorie_count":"","ingredients":[],"number_of_members":"","instant_join":"","description":"","is_public":false,"userId":"5f10da4431e7ad2822c58833"}';
-        // props.handleSetRecipeId("3774747uufjffjjfjfjj");
-        // props.handleRecipeInfo(result);
-        // handleNext();
         
     };
 
     const getStepContent = (stepIndex: number, handleBack) => {
         switch (stepIndex) {
             case 0:
-                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} ingredients={ingredients} setIngredients={setIngredients} />);
+                return (<RecipeForm onSubmit={handleSaveRecipe} handleBack={goToHome} ingredients={ingredients} setIngredients={setIngredients} modal={props.modal}/>);
             case 1:
                 return <RecipeShareStep onSubmit={handleSaveRecipeShare} handleBack={handleBack} selectedFriends={selectedFriends} setSelectedFriends={setSelectedFriends} />;
             default:

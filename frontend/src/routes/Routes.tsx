@@ -10,6 +10,7 @@ import BrowsePage from '../screens/Browse/BrowsePage';
 import Profile from '../screens/Profile/ProfilePage';
 import About from '../screens/About/About';
 import MissionVision from '../screens/About/Mission';
+import RecipesSPV from '../screens/Profile/EditComponents/RecipesSPV';
 
 const token = localStorage.getItem('jwtToken');
 
@@ -26,6 +27,7 @@ const Routes = () => (
             <PrivateRoute path='/profile' component={Profile} />
             <Route path='/about' component={About} />
             <Route path='/mission' component={MissionVision} />
+            <Route path='/cookroomspv' component={RecipesSPV} />
             <Route render={() => <h1>404 Page not found</h1>} />
         </Switch>
     </Router>

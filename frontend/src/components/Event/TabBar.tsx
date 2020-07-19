@@ -1,6 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+  /** (✓)
+  * Common component to load the information in a left or right tab bar.
+  */
+
+
+  // Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',

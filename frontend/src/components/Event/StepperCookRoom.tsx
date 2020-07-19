@@ -20,6 +20,12 @@ import Menu from './EventRecipesSelection/Menu';
 import MoreInfo from './EventAdditionalInfo/MoreInfo';
 import axios from '../../axios';
 
+  /** (✓)
+   *  The Stepper component for the cookroom: handles calls to helper components to extract information from each
+   * step and uses axios call to send POST request to backend to create the cookroom.
+   * The stepper is used to guide the user and help them to understand how the event is structured.
+   */
+
 
 // style defination for the cookroom layout
 const useStyles = makeStyles((theme) => ({
@@ -88,7 +94,7 @@ const ColorButton = withStyles((theme) => ({
 }))(Button);
 
 
-
+// Interface specification for the exported default component and constants
 interface Props extends RouteComponentProps {
   userId: string;
   history: History<LocationState>;
@@ -96,13 +102,12 @@ interface Props extends RouteComponentProps {
 
 
   /** (✓)
-   * This function handles four steps of the stepper to finish configuring cookroom
+   * This function handles four steps of the stepper to finish configuring cookroom with all the state specifications.
    */
 
 const HorizontalLinearStepper =  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const [friendList, setfriendList] = React.useState([]);
   
   const [cookroomFirstStepValues, setCookroomFirstStepValues] = React.useState({
     location: String(),
@@ -140,15 +145,12 @@ const HorizontalLinearStepper =  (props: Props) => {
 
 
   const handleJoinMembers = (values) => {
-    console.log(values);
-    console.log(typeof(values.instantJoin));
     let join = Boolean(values.instantJoin == 'yes') ;
     const JoinData = {
         invited_friends: values.friendIdList || [],
         number_of_members: values.numberOfMembers || -1,
         instant_join: join,
     };
-    console.log(cookroomFirstStepValues);
     setCookroomSecondStepValues(JoinData);
     handleNext();
   };
@@ -157,7 +159,7 @@ const HorizontalLinearStepper =  (props: Props) => {
     const RecipeData = {
         recipe: values[0] || '',
     };
-    console.log(cookroomSecondStepValues);
+ 
     setCookroomThirdStepValues(RecipeData);
     handleNext();
   };
@@ -173,7 +175,7 @@ const HorizontalLinearStepper =  (props: Props) => {
         required_items: values.requiredItems || '',
         suggested_price: values.suggestedPrice || -1,
     };
-  
+ 
     setCookroomFinalStepValues(MoreInfo);
 
     const cookroomRequest = {
@@ -190,7 +192,6 @@ const HorizontalLinearStepper =  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
-    console.log(cookroomRequest);
     
     axios.post('/cookrooms/', cookroomRequest)
         .then(res => {

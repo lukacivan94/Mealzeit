@@ -6,7 +6,11 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 
 
+/*
+* Custumizable tab component that is reusable to show information in tabs.
+*/
 
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
@@ -16,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-
+// Interface specification for the exported default component and constants
 interface StyledTabProps {
   label: string;
 }
@@ -27,9 +31,7 @@ interface TabPanelProps {
   value: any;
 }
 
-
-
-
+// Overriding the default styling for custom design
 const AntTabs = withStyles({
   root: {
     borderBottom: '1px solid white',

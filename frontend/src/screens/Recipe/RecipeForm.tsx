@@ -138,11 +138,12 @@ interface RecipeProps {
     food: string;
     serving: string;
     ingredients: Object[];
+    modal?: any;
     setIngredients: Dispatch<SetStateAction<Object[]>>;
     handleBack();
 }
 
-const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngredients, ingredients }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
+const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngredients, ingredients, modal }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
     const classes = useStyles();
 
     const [isWarningModalOpen, setWarningModal] = React.useState(false);
@@ -252,12 +253,20 @@ const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngred
                     </StyledFieldDiv>
                 </form>
                 <div className={classes.buttondiv}>
-                    <Button
+                    {
+                        modal
+                        ?
+                        null
+                        :
+                        <Button
                         onClick={handleBack}
                         className={classes.backButton}
-                    >
-                        RETURN
-                    </Button>
+                        >
+                            RETURN
+                        </Button>
+
+                    }
+                    
                     <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
                         Next
                     </Button>

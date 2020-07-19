@@ -4,8 +4,6 @@ import { Field, reduxForm, FieldArray, InjectedFormProps } from 'redux-form';
 import Divider from '@material-ui/core/Divider';
 import { Button } from '@material-ui/core';
 
-import LeftRightSlider from '../../ImageSlider/LeftRightSlider';
-import AvatarImage from '../../AvatarProfile/AvatarImage';
 import {StyleDiv, EventDiv, TextDiv, TextSmallDiv } from '../../Styling/TextStyle';
 import TabBar from '../TabBar';
 import Recipe from '../../../screens/Recipe/Recipe';
@@ -25,7 +23,17 @@ import Grid from '@material-ui/core/Grid';
 import CardCourse from './RecipeCard';
 import CardSharedOwn from './RecipeCardSharedOwn';
 
+/** (✓)
+ * Common page for both the Cookroom and Course for selecting the recipes 1. own recipe list 2. public recipe
+ * API calls 3. Can also create a recipe by clicking create recipe button.
+ * 
+ * KEY DIFFERENCE
+ * Cookroom: Can only select a recipe.
+ * Course: Can select multiple recipes.
+ */
 
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
     backButton: {
         marginRight: theme.spacing(1)
@@ -74,9 +82,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
   
-// const required = value => value ? undefined : 'Required';
-
-  
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & { children?: React.ReactElement },
     ref: React.Ref<unknown>,
@@ -85,6 +90,9 @@ const Transition = React.forwardRef(function Transition(
   });
 
 let history: History<LocationState>;
+
+
+// Interface specification for the exported default component and constants
 interface MenuProps {
     isCourse: boolean,
     handleBack();
@@ -104,13 +112,15 @@ interface Provider {
 const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & InjectedFormProps<{}, MenuProps>) => {
         const classes = useStyles();
 
-
-        // -------------------------------------------------------------------------
+        /** (✓)
+         * Load user's Recipe and also the public recipes from API
+         */
+        // ------------------------------------------------------------------------- //
         const obj : Array<Provider> = [];
         const acceptArr: Boolean[] = [];
    
         const [countRecipesCreated, setCountRecipesCreated] = useState(0);
-        // const [countRecipesShared, setCountRecipesShared] = useState(0);
+
 
         const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(obj);
         const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(obj);
@@ -120,7 +130,6 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
         const [allRecipeBool, setAllRecipeBool] = useState(acceptArr);
     
         const userId = localStorage.getItem('userId');
-        //console.log(userId);
     
         useEffect(() => {
                 axios.get("/users/"+userId).then(response => {
@@ -137,9 +146,7 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
                     axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(res => {
                         setSharedRecipeObjectList(res['data']['recipes']);
                         setAcceptIcon(Array(res['data']['count']).fill(true));
-                        //setCountRecipes(countRecipes=>countRecipes+response['data']['count']);
                         setAllRecipeBool(allRecipeBool=>allRecipeBool.concat(Array(res['data']['count']).fill(true)));
-                        //setCountRecipesShared(res["data"]['count']);
                     });
                 })
           },[]);
@@ -161,15 +168,16 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
                 setAllRecipeBool(allRecipeBool.map((item, id) => (id===index)? !item : item));
             } else {
                 setRecipeId([id]);
-                //setAllRecipeBool(allRecipeBool.map(item => item=true));
                 setAllRecipeBool(allRecipeBool.map((item, val) => (val===index)? !item : item=true));
             }
         };
 
-
-        // -------------------------------------------------------------------------
+        /** (✓)
+         *  Create Recipe Button to open a modal and load the Recipe.tsx file in the modal.
+         */
+        // ------------------------------------------------------------------------- //
         const recipesArr : String[] = [];
-        const recipesInfo : Array<Provider> = [];// Object[] = [];
+        const recipesInfo : Array<Provider> = [];
 
         const [open, setOpen] = useState(false);
         const [recipeId, setRecipeId] = useState(recipesArr);
@@ -192,13 +200,11 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
 
         // send the recipe id list to the steppers:  Menu -> Stepper
         const handleSendRecipeId = () => {
-            console.log(recipeId);
             handleSetRecipeIdList(recipeId);
         };
 
         // set recipe id comming from recipe.tsx:  Recipe -> Menu
         const handleSetRecipeId = (id) => {
-            //setRecipeId(recipeId=>[...recipeId, id]);
             if(isCourse) {
                 setRecipeId(recipeId=>[...recipeId, id]);
             } else {
