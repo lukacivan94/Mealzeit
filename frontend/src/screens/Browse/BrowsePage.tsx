@@ -3,7 +3,7 @@ import Screen from '../../components/Screen/Screen';
 import {EventDiv, TextBigDiv, TextSmallDiv} from '../../components/Styling/TextStyle';
 import MultipleSelect from '../../components/Browse/Filters';
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
+import axios from '../../axios';
 
     
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,7 @@ export const Browse = () => {
     let cookroomsObject:Object[]= [];
     let completeCookroom:Object; 
    
-    const rUrl = "http://localhost:3000/recipes/"
+    const rUrl = "https://mealzeit.herokuapp.com/recipes/"
     
     //const[coursesObject, setCoursesObject] = useState(Object);
     //const[cookroomsObject, setCookroomsObject] = useState(Object);
@@ -55,7 +55,7 @@ export const Browse = () => {
             return original;
         
         }
-        axios.get("http://localhost:3000/courses/")
+        axios.get("https://mealzeit.herokuapp.com/courses/")
             .then(response => {
                 coursesObject = response["data"]["courses"]
                 coursesObject.map( 
@@ -76,7 +76,7 @@ export const Browse = () => {
                   
 
 
-        axios.get("http://localhost:3000/cookrooms/").then(response => {
+        axios.get("https://mealzeit.herokuapp.com/cookrooms/").then(response => {
         cookroomsObject = response["data"]["cookrooms"]
         cookroomsObject.map( 
             val =>{

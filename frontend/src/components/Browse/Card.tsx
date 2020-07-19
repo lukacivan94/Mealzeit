@@ -162,6 +162,8 @@ export default function PublicCard(props:Props) {
         }
       
     });
+    var joinelem = document.querySelector("joinButton")
+    joinelem.setAttribute('disabled', 'disabled');
     if (props.Members.includes(userId)){
       alert("You have already joined this course")
     }
@@ -195,13 +197,13 @@ export default function PublicCard(props:Props) {
         </div>
         <div className = {classes.icons}>
             <ColorButton
+                  id = "joinButton"
                   variant="contained"
                   color="primary"
                   onClick={handleJoin}
                   className={classes.button}
-                >
-                      Join    
-                </ColorButton>
+                  value={"Join"}
+                />
             </div>
       </div>
     </Card>
@@ -259,6 +261,7 @@ export  function CourseCard(props:Props) {
         </div>
         <div className = {classes.icons}>
             <ColorButton
+                  id= "joinButton"
                   variant="contained"
                   color="primary"
                   onClick={handleJoin}
