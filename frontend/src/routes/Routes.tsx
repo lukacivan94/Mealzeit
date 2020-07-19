@@ -12,8 +12,6 @@ import About from '../screens/About/About';
 import MissionVision from '../screens/About/Mission';
 import RecipesSPV from '../screens/Profile/EditComponents/RecipesSPV';
 
-const token = localStorage.getItem('jwtToken');
-
 /** (✓)
  * This functional component handles routes in order to navigate in app
  */
@@ -40,6 +38,8 @@ const Routes = () => (
  * This functional component handles redirection in routes if user is not authenticated
  */
 const PrivateRoute = ({ component: Component, ...rest }) => {
+    const token = localStorage.getItem('jwtToken');
+
     return (
         <Route
             {...rest}

@@ -20,7 +20,7 @@ MealZeit is available at: https://aqueous-glyph-283119.df.r.appspot.com/
     1. cd frontend
     2. npm install (install dependencies)
     3. npm start (serve frontend)
-    Frontend is also hosted on GoogleCloud platform at: 
+    Frontend is also hosted on GoogleCloud platform at: https://aqueous-glyph-283119.df.r.appspot.com/
  - Recipe API: Node.js, MongoDB:
     To run locally, within recipe api folder: 
     1. cd recipe\ api/
