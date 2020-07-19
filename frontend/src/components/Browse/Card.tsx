@@ -106,6 +106,7 @@ const useStyles = makeStyles((theme: Theme) =>
       order:0,
       flexGrow:1,
     },
+    
     rejectIcon: {
         height: 50,
         width: 50,
@@ -123,7 +124,8 @@ const ColorButton = withStyles((theme) => ({
     },
   },
 }))(Button);
-interface Props {
+interface PropsCourse {
+    ListDates:any; 
     Title: string;
     Id: string;
     ImageSource: string; 
@@ -144,12 +146,38 @@ interface Props {
     NumMembers:any; 
 };
 
-export default function PublicCard(props:Props) {
+interface PropsCookroom {
+  Requested:any;
+  Title: string;
+  Id: string;
+  ImageSource: string; 
+  Date: string;
+  Cuisine: String;
+  EventType: String;
+  Location : String;
+  FoodType: String;
+  MealType: String;
+  Size: Number;
+  Setting: string;
+  PreparationTime: string; 
+  Price: Number;
+  Rating: Number;
+  IncludedInPremium:string;
+  TRatings: Number;
+  Members:any;
+  NumMembers:any; 
+};
+
+export default function PublicCard(props:PropsCookroom) {
   const classes = useStyles();
   const theme = useTheme();
- 
+  const [join, setJoin] = React.useState<boolean>(false);
+  const [joinVal, setJoinVal] = React.useState<string>("Join");
+  const userId = localStorage.getItem('userId');
   const handleJoin=() => {
-    const userId = localStorage.getItem('userId');
+    setJoin(true)
+    setJoinVal("Request Sent")
+    
     axios.patch('cookrooms/addreq/'+props.Id+ '/'+ userId)
     .then(res => {
       console.log(res)
@@ -162,13 +190,10 @@ export default function PublicCard(props:Props) {
         }
       
     });
-    if (props.Members.includes(userId)){
-      alert("You have already joined this course")
-    }
-    if(props.Members.length == props.NumMembers){
-      alert('Sorry the cookroom is already full!!!')
+    if(props.Members.length >= props.NumMembers){
+      setJoinVal("Course Full")
     }else{
-      alert('Congratulations you are in!!!')
+      setJoinVal("Request Sent")
     }
     
 
@@ -193,47 +218,80 @@ export default function PublicCard(props:Props) {
           image={props.ImageSource}
           />
         </div>
-        <div className = {classes.icons}>
-            <ColorButton
-                  variant="contained"
-                  color="primary"
-                  onClick={handleJoin}
-                  className={classes.button}
-                >
-                      Join    
+        {props.Members.includes(userId)?
+          
+            <div className = {classes.icons}>
+              <ColorButton
+                      id = "Full"
+                      variant="contained"
+                      color="primary"
+                      onClick={handleJoin}
+                      className={classes.button}
+                      disabled={true}
+                      value={""}
+                    >
+                    Already joined
+                </ColorButton>  
+            </div>:props.Requested.includes(userId)?
+            <div className = {classes.icons}>
+              <ColorButton
+                      id = "Full"
+                      variant="contained"
+                      color="primary"
+                      onClick={handleJoin}
+                      className={classes.button}
+                      disabled={true}
+                      value={""}
+                    >
+                    Already Requested
+                </ColorButton>  
+          </div>:
+            <div className = {classes.icons}>
+              <ColorButton
+                    id = "joinButton"
+                    variant="contained"
+                    color="primary"
+                    onClick={handleJoin}
+                    className={classes.button}
+                    disabled={join}
+                    value={joinVal}
+                    >
+                    {joinVal}
                 </ColorButton>
             </div>
+          }
       </div>
     </Card>
   );
 }
 
-export  function CourseCard(props:Props) {
+export  function CourseCard(props:PropsCourse) {
   const classes = useStyles();
   const theme = useTheme();
+  const [join, setJoin] = React.useState<boolean>(false);
+  const [joinVal, setJoinVal] = React.useState<string>("Join");
+  const userId = localStorage.getItem('userId');
+
   const handleJoin=() => {
-    const userId = localStorage.getItem('userId');
+    setJoin(true)
+    
     axios.patch('courses/join/'+props.Id+ '/'+ userId)
     .then(res => {
-      console.log(".................................", res)
-  })
-  .catch(error => {
-      if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-      }
-      
-  });
 
-    if (props.Members.includes(userId)){
-      alert("You have already joined this course")
-    }
+    })
+    .catch(error => {
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        }
+        
+    });
 
-    if(props.Members.length == props.NumMembers){
-      alert('Sorry the cookroom is already full!!!')
+    if(props.Members.length >= props.NumMembers){
+      setJoinVal("Course Full")
     }else{
-      alert('Congratulations you are in!!!')
+      setJoinVal("Joined course")
     }
 
   };
@@ -251,22 +309,39 @@ export  function CourseCard(props:Props) {
         
         <Divider variant="middle" />
         <div className={classes.TabImage}>
-          <CourseTable Date = {props.Date} ImageSource = {props.ImageSource}  EventType = {props.EventType} TRatings = {props.TRatings} Location = {props.Location} Price ={props.Price}  Size = {props.Size} Setting = {props.Setting} Rating = {props.Rating} IncludedInPremium={props.IncludedInPremium}/>
+          <CourseTable ListDates = {props.ListDates} ImageSource = {props.ImageSource}  EventType = {props.EventType} TRatings = {props.TRatings} Location = {props.Location} Price ={props.Price}  Size = {props.Size} Setting = {props.Setting} Rating = {props.Rating} IncludedInPremium={props.IncludedInPremium}/>
           <CardMedia
           className={classes.cover}
           image={props.ImageSource}
           />
         </div>
-        <div className = {classes.icons}>
+         {props.Members.includes(userId)?
+            <div className = {classes.icons}>
+              <ColorButton
+                      id = "Full"
+                      variant="contained"
+                      color="primary"
+                      onClick={handleJoin}
+                      className={classes.button}
+                      disabled={true}
+                      value={""}
+                    >
+                    Course Already Joined
+                </ColorButton>  
+            </div>:<div className = {classes.icons}>
             <ColorButton
-                  variant="contained"
-                  color="primary"
-                  onClick={handleJoin}
-                  className={classes.button}
-                >
-                      Join    
-                </ColorButton>
+                      id = "joinButton"
+                      variant="contained"
+                      color="primary"
+                      onClick={handleJoin}
+                      className={classes.button}
+                      disabled={join}
+                      value={joinVal}
+                    >
+                    {joinVal}
+                  </ColorButton>  
             </div>
+          } 
       </div>
     </Card>
   );

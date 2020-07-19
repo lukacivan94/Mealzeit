@@ -9,6 +9,9 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import authReducer from './store/reducers/authReducer';
 import setAuthToken from './utils/authToken';
 
+/** (✓)
+ * This object consists of all reducers in redux
+ */
 const reducers = {
     form: formReducer,
     auth: authReducer
@@ -16,13 +19,22 @@ const reducers = {
 const reducer = combineReducers(reducers);
 const store = createStore(reducer, composeWithDevTools(applyMiddleware()));
 
+/** (✓)
+ * This is for using material ui in order to use its components
+ */
 const theme = createMuiTheme();
 
+/** (✓)
+ * This sets token in axios headers for authentication
+ */
 const jwtToken = localStorage.getItem('jwtToken');
 if (jwtToken) {
     setAuthToken(jwtToken);
 }
 
+/** (✓)
+ * This class is main app with using redux and material-ui
+ */
 class App extends React.PureComponent {
 
     render() {

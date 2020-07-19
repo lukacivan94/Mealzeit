@@ -129,8 +129,8 @@ exports.recipes_get_recipe = (req, res) => {
 };
 
 /** (✓)
- * This function handles cookroom GET requests
- * It finds all cookroom entries in the database of the specified user
+ * This function handles recipe GET requests
+ * It finds all recipe entries in the database of the specified user
  * and returns them in the response
  */
 exports.recipes_get_recipes_of_user = (req, res) => {

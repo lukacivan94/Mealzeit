@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
      margin: '10px',
     },
     DontShow:{
-      visibility:'hidden',
+      display:'none',
     },
     Show:{
       visibility:'visible',
@@ -168,9 +168,9 @@ export default function MultipleSelect(props:Props) {
   const theme = useTheme();
   const [selectedDate, setSelectedDate] = React.useState<Date|null>(today);
   const [selectedSetting, setSelectedSetting] = React.useState<string | null>("");
-  const [selectedMealType, setSelectedMealType] = React.useState<string | null>("");
-  const [selectedFoodType, setSelectedFoodType] = React.useState<string | null>("");
-  const [selectedCuisineType, setSelectedCuisineType] = React.useState<string | null>("");
+  const [selectedMealType, setSelectedMealType] = React.useState<string>("");
+  const [selectedFoodType, setSelectedFoodType] = React.useState<string>("");
+  const [selectedCuisineType, setSelectedCuisineType] = React.useState<string>("");
   const [selectedEvent, setSelectedEvent] = React.useState<string | null>("");
   const [searches, setSearch] = React.useState<string>("");
   const [selectedCookroomEvent,setSelectedCookroomEvent]= React.useState<string | null>("");
@@ -237,10 +237,9 @@ export default function MultipleSelect(props:Props) {
   };
     const filterPrice = ftype =>{
        const initPrice = ftype.price_of_course
-       const lower_bound = initPrice - 10
-       const upper_bound = initPrice + 10
+      
 
-       if((lower_bound<= parseInt(price.numberformat,10))&&(parseInt(price.numberformat,10)<= upper_bound)||(price.numberformat=='')){
+       if((initPrice <= parseInt(price.numberformat,10))||(price.numberformat=='')){
          return true
        }else{
          return false
@@ -250,13 +249,13 @@ export default function MultipleSelect(props:Props) {
 
 
 
-  const filterFoodType = ftype =>((ftype.food_type == selectedFoodType)|| (selectedFoodType == ""));
+  const filterFoodType = ftype =>((ftype.food_type.toLowerCase() == selectedFoodType.toLowerCase())|| (selectedFoodType == ""));
   const filterEventType = ftype =>(((ftype.hasOwnProperty("course_rating"))&&(selectedEvent == "Course"))|| (selectedEvent == "") );
   const filterVolunteering = ftype =>(((selectedCookroomEvent == getEvent(ftype.is_volunteering))|| (selectedCookroomEvent == "") ));
   const filterEventType2 = ftype =>(((ftype.hasOwnProperty("is_volunteering"))&&(selectedEvent == "Cookroom"))|| (selectedEvent == "") );
   const filterSetting = ftype =>((getIsVirtual(ftype.is_virtual) == selectedSetting) || (selectedSetting == ""));
   const filterMealType = ftype =>((getMealType(ftype.date_time) == selectedMealType)||(selectedMealType == ""));
-  const filterCuisine = ftype =>((ftype.cuisine_type == selectedCuisineType) || (selectedCuisineType == ""));
+  const filterCuisine = ftype =>((ftype.cuisine_type.toLowerCase() == selectedCuisineType.toLowerCase()) || (selectedCuisineType == ""));
   // const filterPrice = ftype =>((parseInt(ftype.price_of_course,10) <= parseInt(price.numberformat,10)-25)||(parseInt(ftype.price_of_course,10) >= (parseInt(price.numberformat,10)+25)) || (price.numberformat == ""));
   const filterSize = ftype =>((ftype.number_of_members == values.numberformat) || (values.numberformat == ""));
   //const filterTitle = ftype =>((ftype.title.includes(searches ))|| (searches == ""));
@@ -323,7 +322,7 @@ export default function MultipleSelect(props:Props) {
               />
             </MuiPickersUtilsProvider>
           </FormControl>
-              <div className ={selectedEvent=="Course" ? classes.DontShow : classes.Show} >
+              <div className ={(selectedEvent=="Course" || selectedEvent == "")? classes.DontShow : classes.Show} >
                 <FormControl className={classes.formControl} onChange={handleChangeVolunteering}>
                   <InputLabel htmlFor="native-select">Cookroom Type</InputLabel>
                   <Select native defaultValue="" id="EventType" value ={selectedCookroomEvent}>
@@ -357,13 +356,13 @@ export default function MultipleSelect(props:Props) {
                   <InputLabel htmlFor="native-select">Food type</InputLabel>
                   <Select native defaultValue="" id="FoodType" value = {selectedFoodType}>
                     <option aria-label="None" value="" />
-                      <option value={"Vegeterian"}>Vegeterian</option>
+                      <option value={"Vegetarian"}>Vegetarian</option>
                       <option value={"Vegan"}>Vegan</option>
                       <option value={"Meat based"}>Meat based</option>
                   </Select>
                 </FormControl>
             </div>
-            <div className ={(selectedEvent=="Course" || selectedEvent == "") ? classes.Show : classes.DontShow}>
+            <div className ={(selectedEvent=="Cookroom" || selectedEvent == "") ? classes.DontShow : classes.Show}>
                 <FormControl className={classes.formControl} onChange={handleChangeSetting}>
                   <InputLabel htmlFor="native-select">Setting</InputLabel>
                   <Select native defaultValue="" id="Setting" value ={selectedSetting}>
@@ -395,7 +394,7 @@ export default function MultipleSelect(props:Props) {
                 (val) => <CourseCard key={val._id} Id={val._id} ImageSource={CourseImage} Title= {val.title} Date = {getDates(val.date_of_publish)} 
                 EventType = "Course" Location = {val.location} Rating = {val.course_rating}  Size = {val.number_of_members} Setting = {getIsVirtual(val.is_virtual)} 
                 Price = {val.price_of_course} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Members = {val.members} NumMembers={val.number_of_members}/>
+                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Members = {val.members} NumMembers={val.number_of_members} ListDates={getDates(val.dates[0])}/>
                 )
 
             }
@@ -406,7 +405,7 @@ export default function MultipleSelect(props:Props) {
                 filteredCookrooms.map(
                 (val) => <PublicCard key={val._id} ImageSource={CookroomImage} Title= {val.title} Date = {getDates(val.date_time)} EventType = {getEvent(val.is_volunteering)}  Location = {val.location} Size = {val.number_of_members} 
                 Price = {val.suggested_price} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= "" Rating={0} Members = {val.members} NumMembers={val.number_of_members}/>
+                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= "" Rating={0} Members = {val.members} NumMembers={val.number_of_members} Requested = {val.requests}/>
                 )
                 
             }

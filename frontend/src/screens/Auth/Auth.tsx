@@ -9,6 +9,9 @@ import { Snackbar } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import setAuthToken from '../../utils/authToken';
 
+/** (✓)
+ * This is alert component from material-ui
+ */
 const Alert = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant='filled' {...props} />;
 };
@@ -25,6 +28,10 @@ interface AuthProps {
     login(userId);
 }
 
+/** (✓)
+ * This class handles authentication and login
+ */
+
 class Auth extends Component<AuthProps, AuthState> {
 
     constructor(props) {
@@ -36,6 +43,10 @@ class Auth extends Component<AuthProps, AuthState> {
         };
     }
 
+    /** (✓)
+     * This function handles login and calls axios post request
+     * After successful call , it stores user information into localStorage
+     */
     handleLogin = (values) => {
         const loginData = {
             password: values.password,
@@ -49,7 +60,7 @@ class Auth extends Component<AuthProps, AuthState> {
                 localStorage.setItem('userId', userId);
 
                 this.props.login(userId);
-          
+
                 setAuthToken(token);
 
                 axios.get('/users/' + userId)
@@ -57,7 +68,7 @@ class Auth extends Component<AuthProps, AuthState> {
                         if (res.data && res.data.user) {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
                             this.props.history.push('/');
-                        }                  
+                        }
                     })
                     .catch(err => {
                         console.error('err: ', err);
@@ -69,14 +80,24 @@ class Auth extends Component<AuthProps, AuthState> {
             });
     }
 
+    /** (✓)
+     * This function handles success modal close
+     */
+
     handleModalClose = () => {
         this.setState({ isModalOpen: false, modalText: '' });
     }
 
+    /** (✓)
+     * This function handles warning modal close
+     */
     handleWarningModalClose = () => {
         this.setState({ isWarningModalOpen: false });
     }
 
+    /** (✓)
+     * Render method consists of LoginForm and WarningModal for fail login request
+     */
     render() {
         return (
             <Screen>
@@ -100,4 +121,7 @@ const mapDispatchToProps = {
     login
 };
 
+/** (✓)
+ * Auth component uses redux connect to use actions and store 
+ */
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

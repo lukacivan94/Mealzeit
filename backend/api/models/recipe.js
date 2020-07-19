@@ -8,7 +8,7 @@ const recipeSchema = Schema({
         ref: 'User',
         required: [true, 'User is required.']
     },
-    recipe_title: { 
+    recipe_title: {
         type: String,
         validate: {
             validator: function (v) {
@@ -23,10 +23,10 @@ const recipeSchema = Schema({
     cuisine_type: { type: String },
     preparation_time: { type: String },
     instructions: { type: String },
-    calorie_count: { 
+    calorie_count: {
         type: Number,
-        min: [0, "Minimum calorie count is 0."], 
-        max: [10000, "Maximum calorie count is 10000."], 
+        min: [0, "Minimum calorie count is 0."],
+        max: [10000, "Maximum calorie count is 10000."],
         default: 0
     },
     recipe_rating: { type: Number },

@@ -14,6 +14,9 @@ import RecipesSPV from '../screens/Profile/EditComponents/RecipesSPV';
 
 const token = localStorage.getItem('jwtToken');
 
+/** (✓)
+ * This functional component handles routes in order to navigate in app
+ */
 const Routes = () => (
     <Router>
         <Switch>
@@ -33,6 +36,9 @@ const Routes = () => (
     </Router>
 );
 
+/** (✓)
+ * This functional component handles redirection in routes if user is not authenticated
+ */
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
         <Route

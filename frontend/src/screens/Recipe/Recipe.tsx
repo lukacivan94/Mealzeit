@@ -13,6 +13,9 @@ import { RecipeConfirmationStep } from './RecipeConfirmationStep';
 import { connect } from 'react-redux';
 import { History, LocationState } from 'history';
 
+/** (✓)
+ * These are material-ui styles for customizing material-ui components
+ */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -68,6 +71,10 @@ interface Props {
     handleRecipeInfo?: any;
 }
 
+/** (✓)
+ * This functional component handles recipe creation
+ */
+
 const Recipe = (props: Props) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
@@ -93,6 +100,9 @@ const Recipe = (props: Props) => {
         return ['Recipe Information', 'Sharing My Recipe'];
     };
 
+    /** (✓)
+     * This function saves values from redux form in first step of recipe form
+     */
     const handleSaveRecipe = (values) => {
 
         const recipeData = {
@@ -109,6 +119,10 @@ const Recipe = (props: Props) => {
         handleNext();
     };
 
+    /** (✓)
+     * This function saves values from redux form in second step of recipe form
+     * And calls axios post for recipe creation
+     */
     const handleSaveRecipeShare = (values) => {
         const recipeData = {
             isPrivate: !!values.isPrivate
@@ -132,13 +146,12 @@ const Recipe = (props: Props) => {
             shared_with_friends: selectedFriends
         };
 
-
         axios.post('/recipes/', recipeRequest)
             .then(res => {
-                if(props.modal) {
+                if (props.modal) {
                     props.handleSetRecipeId(res.data.recipeId);
                     props.handleRecipeInfo(res.config.data);
-                }   
+                }
                 handleNext();
             })
             .catch(error => {
@@ -152,6 +165,9 @@ const Recipe = (props: Props) => {
         
     };
 
+    /** (✓)
+     * This function handles steps in stepper component
+     */
     const getStepContent = (stepIndex: number, handleBack) => {
         switch (stepIndex) {
             case 0:
@@ -163,24 +179,39 @@ const Recipe = (props: Props) => {
         }
     };
 
+    /** (✓)
+     * This function increases step count to go next to step in stepper
+     */
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
+    /** (✓)
+     * This function decreases step count to go back to step in stepper
+     */
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    /** (✓)
+     * This function resets stepper 
+     */
     const handleReset = () => {
         setActiveStep(0);
     };
 
+    /** (✓)
+     * This function navigates to home page
+     */
     const goToHome = () => {
         props.history.push('/');
     };
 
     const steps = getSteps();
 
+    /** (✓)
+     * Return method consists of Recipe page inside Stepper
+     */
     return (
         <Screen>
             <div className={classes.main}>
@@ -226,4 +257,7 @@ const mapStateToProps = (state) => ({
     userId: state.auth.userId
 });
 
+/** (✓)
+ * Recipe component uses redux connect to use actions and store 
+ */
 export default connect(mapStateToProps)(Recipe);
