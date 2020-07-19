@@ -394,7 +394,7 @@ export default function MultipleSelect(props:Props) {
                 (val) => <CourseCard key={val._id} Id={val._id} ImageSource={CourseImage} Title= {val.title} Date = {getDates(val.date_of_publish)} 
                 EventType = "Course" Location = {val.location} Rating = {val.course_rating}  Size = {val.number_of_members} Setting = {getIsVirtual(val.is_virtual)} 
                 Price = {val.price_of_course} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Members = {val.members} NumMembers={val.number_of_members}/>
+                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Members = {val.members} NumMembers={val.number_of_members} ListDates={getDates(val.dates[0])}/>
                 )
 
             }
@@ -405,7 +405,7 @@ export default function MultipleSelect(props:Props) {
                 filteredCookrooms.map(
                 (val) => <PublicCard key={val._id} ImageSource={CookroomImage} Title= {val.title} Date = {getDates(val.date_time)} EventType = {getEvent(val.is_volunteering)}  Location = {val.location} Size = {val.number_of_members} 
                 Price = {val.suggested_price} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= "" Rating={0} Members = {val.members} NumMembers={val.number_of_members}/>
+                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= "" Rating={0} Members = {val.members} NumMembers={val.number_of_members} Requested = {val.requests}/>
                 )
                 
             }
