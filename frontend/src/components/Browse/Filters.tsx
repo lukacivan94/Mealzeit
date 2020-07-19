@@ -5,6 +5,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import NumberFormat from 'react-number-format';
+
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -20,12 +21,15 @@ import moment from 'moment';
 import { getTime } from 'date-fns';
 
 
-
 interface Props{
   Courses:any;
   Cookrooms:any;
 
 }
+
+/** (✓)
+ * Styles for the components 
+ */
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -76,19 +80,13 @@ const MenuProps = {
   },
 };
 
-
-const tday = new Date();
-// function getDates(date:Date|null){
-
-//   if (date == null){
-//     return null
-//   } else {
-//     const new_date = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-//     const string_date = new_date.toString()
-//     return  string_date
-//   }
-// }
+/** (✓)
+ * the function getHours deconstructs the date string into hours so that we can use it for the meal type 
+ * getMeal type function sues the time in the date string to figure out the meal type as it is needed to figure out wether the 
+ * Meal type is breakfast, lunch dinner or brunch 
+ */
 const  getHours = (val) => moment(val).format("HH")
+
 function getMealType(val){
   const time = getHours(val);
   const hInt = parseInt(time, 10);
@@ -103,24 +101,33 @@ function getMealType(val){
     return "Dinner"
   }
 }
+// * the function getDates deconstructs the date string into the date YYYY-MM-HH format 
+
 function getDates(val){
+  const dt = moment(val).format("YYYY-MM-DD")
+  return dt.toString()
+}
+function getDateTime(val){
   const dt = moment(val).format("YYYY-MM-DD HH:MM")
   return dt.toString()
 }
-console.log(getMealType("2020-07-16T18:30:42.392Z"))
+// this function returns wether the classroom is virtual or not for the courses object by looking at the is_virtual parameter
+const getIsVirtual= setting => (setting? "Online" : "Classroom");
 
+//this function determines wether the course is a premiumn course or not 
+const getPremium = prem => (prem? "Included in Premium": "Not included in Premium")
+
+//this function returns wether the type of agthering in cookroom is a volunteering event or not 
+const getEvent= (val) => val? "Volunteering": "Get Together";
+
+const Range = value => parseInt(value,10) && (parseInt(value,10) < 0 || parseInt(value,10)>5000) ? 'Invalid Price, enter from 0 to 5000!': undefined;
 
 const today = new Date()
 
-function getStyles(name: string, personName: string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
+/** (✓)
+ * This is the number format used for the price and the size inpiut fields and the interfaces that are used for these fields are given below
+ */
 function NumberFormatCustom(props: NumberFormatCustomProps) {
   const { inputRef, onChange, ...other } = props;
 
@@ -149,23 +156,18 @@ interface NumberFormatCustomProps {
   name: string;
 }
 
-interface State {
-  
+interface State { 
   numberformat: string;
 }
-interface StateText {
-  text: string;
-}
-const getIsVirtual= setting => (setting? "Online" : "Classroom");
-const getPremium = prem => (prem? "Included in Premium": "Not included in Premium")
 
-const getEvent= (val) => val? "Volunteering": "Get Together";
-
-
-//..................Main function ..............................................................................................................
+/** (✓)
+ * This is a multiple select function where we use  multiple filters to filter out the cards according to the filters selected by the user 
+ */
 export default function MultipleSelect(props:Props) {
   const classes = useStyles();
   const theme = useTheme();
+ 
+  //setting the state variables
   const [selectedDate, setSelectedDate] = React.useState<Date|null>(today);
   const [selectedSetting, setSelectedSetting] = React.useState<string | null>("");
   const [selectedMealType, setSelectedMealType] = React.useState<string>("");
@@ -181,6 +183,8 @@ export default function MultipleSelect(props:Props) {
   const [price, setPrice] = React.useState<State>({
     numberformat: "",
   });
+
+  //on change functions to changes each states
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
@@ -221,8 +225,8 @@ export default function MultipleSelect(props:Props) {
     setSelectedCookroomEvent(event.target.value);
   };
   
-  useEffect(() => console.log( getDates(selectedDate), [getDates(selectedDate)]));
-
+ 
+  //this function is a  filter for the seaarch by titletle and we make case it case insensitive
   function filterTitle(ftype){
     if(ftype.title!= null){
       if((ftype.title.toLowerCase().includes(searches.toLowerCase()))||(searches=="")){
@@ -235,20 +239,17 @@ export default function MultipleSelect(props:Props) {
       return false
     }
   };
-    const filterPrice = ftype =>{
-       const initPrice = ftype.price_of_course
-      
-
-       if((initPrice <= parseInt(price.numberformat,10))||(price.numberformat=='')){
-         return true
+  //this function is a filter by price so the courses with price below the numbers entered will be shown
+  const filterPrice = ftype =>{
+    const initPrice = ftype.price_of_course
+      if((initPrice <= parseInt(price.numberformat,10))||(price.numberformat=='')){
+        return true
        }else{
          return false
        }
 
     }
-
-
-
+  //array of filters according to Food type, event type, setting, meal type and so on 
   const filterFoodType = ftype =>((ftype.food_type.toLowerCase() == selectedFoodType.toLowerCase())|| (selectedFoodType == ""));
   const filterEventType = ftype =>(((ftype.hasOwnProperty("course_rating"))&&(selectedEvent == "Course"))|| (selectedEvent == "") );
   const filterVolunteering = ftype =>(((selectedCookroomEvent == getEvent(ftype.is_volunteering))|| (selectedCookroomEvent == "") ));
@@ -256,18 +257,22 @@ export default function MultipleSelect(props:Props) {
   const filterSetting = ftype =>((getIsVirtual(ftype.is_virtual) == selectedSetting) || (selectedSetting == ""));
   const filterMealType = ftype =>((getMealType(ftype.date_time) == selectedMealType)||(selectedMealType == ""));
   const filterCuisine = ftype =>((ftype.cuisine_type.toLowerCase() == selectedCuisineType.toLowerCase()) || (selectedCuisineType == ""));
-  // const filterPrice = ftype =>((parseInt(ftype.price_of_course,10) <= parseInt(price.numberformat,10)-25)||(parseInt(ftype.price_of_course,10) >= (parseInt(price.numberformat,10)+25)) || (price.numberformat == ""));
   const filterSize = ftype =>((ftype.number_of_members == values.numberformat) || (values.numberformat == ""));
-  //const filterTitle = ftype =>((ftype.title.includes(searches ))|| (searches == ""));
-  const filterDate = ftype =>((getDates(ftype.date_of_publish) == getDates(selectedDate)) || (getDates(selectedDate) == getDates(today)));
-  const filters = [filterEventType,filterSize,filterPrice,filterSetting,filterTitle,filterDate];
+  const filterDate = ftype =>((getDates(ftype.date_time) == getDates(selectedDate)) || (getDates(selectedDate) == getDates(today)));
+  const filterDateCourses = ftype =>((getDates(ftype.dates[0]) == getDates(selectedDate)) || (getDates(selectedDate) == getDates(today)));
+
+
+  /** (✓)
+   * filterss array contain all the filters for the courses object
+   * filters2 contains all the filters relevant for the cookromm object
+   * we apply each filter to the array of courses and cookrooms respectively  
+   * and then store all the filtered courses and cookroom in filtered cookrooms and filtered courses 
+  */
+  const filters = [filterEventType,filterSize,filterPrice,filterSetting,filterTitle,filterDateCourses];
   const filters2 = [filterEventType2,filterSize,filterCuisine,filterFoodType,filterTitle,filterDate,filterMealType,filterVolunteering];
   const filteredCourses = filters.reduce((d, f) => d.filter(f) , props.Courses)
-  //const filteredCourses = props.Courses
-
-  //const filteredCookrooms = filters.reduce((d, f) => d.filter(f) , cookrooms)
   const filteredCookrooms = filters2.reduce((d, f) => d.filter(f) , props.Cookrooms)
-  console.log(props.Cookrooms)
+
   return (
     <div className={classes.root}>
       
@@ -375,6 +380,7 @@ export default function MultipleSelect(props:Props) {
                 <FormControl className={classes.formControl}>
                   <TextField
                     label="Price in Euros"
+                    
                     value={price.numberformat}
                     onChange={handleChangePrice}
                     name="numberformat"
@@ -389,12 +395,12 @@ export default function MultipleSelect(props:Props) {
       </div>
       <Divider variant="middle" />
       <div>
-            {
+            {   //this takes all the courses information and we display it one by one in an array
                 filteredCourses.map(
-                (val) => <CourseCard key={val._id} Id={val._id} ImageSource={CourseImage} Title= {val.title} Date = {getDates(val.date_of_publish)} 
+                (val) => <CourseCard key={val._id} Id={val._id} ImageSource={CourseImage} Title= {val.title}  
                 EventType = "Course" Location = {val.location} Rating = {val.course_rating}  Size = {val.number_of_members} Setting = {getIsVirtual(val.is_virtual)} 
                 Price = {val.price_of_course} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Members = {val.members} NumMembers={val.number_of_members} ListDates={getDates(val.dates[0])}/>
+                 Members = {val.members} NumMembers={val.number_of_members} ListDates={getDateTime(val.dates[0])}/>
                 )
 
             }
@@ -402,10 +408,11 @@ export default function MultipleSelect(props:Props) {
         </div>
         <div>
             {
+                //this takes all the cookrooms information and we display it one by one in an array
                 filteredCookrooms.map(
-                (val) => <PublicCard key={val._id} ImageSource={CookroomImage} Title= {val.title} Date = {getDates(val.date_time)} EventType = {getEvent(val.is_volunteering)}  Location = {val.location} Size = {val.number_of_members} 
-                Price = {val.suggested_price} IncludedInPremium = {getPremium(val.is_included_in_premium)} TRatings= {val.number_of_ratings} PreparationTime = {val.preparation_time}
-                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= "" Rating={0} Members = {val.members} NumMembers={val.number_of_members} Requested = {val.requests}/>
+                (val) => <PublicCard key={val._id} ImageSource={CookroomImage} Title= {val.title} Date = {getDateTime(val.date_time)} EventType = {getEvent(val.is_volunteering)}  Location = {val.location} Size = {val.number_of_members} 
+                Price = {val.suggested_price}   PreparationTime = {val.preparation_time}
+                FoodType={val.food_type} MealType = {val.meal_type} Cuisine={val.cuisine_type} Id={val._id} Setting= ""  Members = {val.members} NumMembers={val.number_of_members} Requested = {val.requests}/>
                 )
                 
             }

@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   
 });
 
-
+//this is table in the card when the cookroom infos are displayed 
 const PublicTable = (props) => {
   const classes = useStyles();
 
@@ -41,7 +41,7 @@ const PublicTable = (props) => {
             </TableRow>
             <TableRow>
               <TableCell align="center">Size: {props.Size}</TableCell>
-              <TableCell align="center">Size: {props.PreparationTime}</TableCell>
+              <TableCell align="center">PreparationTime: {props.PreparationTime}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -49,6 +49,8 @@ const PublicTable = (props) => {
     </Paper>
   );
 }
+//this is a table in the card when the courses infos are displayed 
+
 export const CourseTable = (props) => {
   const classes = useStyles();
 

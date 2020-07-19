@@ -136,6 +136,7 @@ const JoinPageRoom = ({ handleSubmit, handleBack, handleSubmitValues }: JoinPage
         const [numberOfMembers, setNumberOfMembers] = useState(numMem);
         const [instantJoin, setInstantJoin] = useState(joinstr);
         const [error, setError] = useState('');
+        const [searches, setSearch] = useState<string>("");
 
     
         const userId = localStorage.getItem('userId');
@@ -149,6 +150,8 @@ const JoinPageRoom = ({ handleSubmit, handleBack, handleSubmitValues }: JoinPage
               );
           })
         },[]);
+
+       
         const handleRemoveFriend = (id, name) => {
           setFriendIdList(friendIdList.filter(item => item !== id));
         };
@@ -163,7 +166,14 @@ const JoinPageRoom = ({ handleSubmit, handleBack, handleSubmitValues }: JoinPage
         };
         const handleSendValues = () => {
           handleSubmitValues({friendIdList:friendIdList, numberOfMembers:numberOfMembers, instantJoin:instantJoin});
-      };           
+      };
+      const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+      };
+      const  filterName = (ftype) => ((ftype.first_name.toLowerCase().includes(searches.toLowerCase()))||(ftype.last_name.toLowerCase().includes(searches.toLowerCase()))||(searches==""))
+      
+      const filteredName = FriendList.filter(filterName);
+
         return (
           <div>
             <TabBar>
@@ -172,10 +182,18 @@ const JoinPageRoom = ({ handleSubmit, handleBack, handleSubmitValues }: JoinPage
                       <TextDiv>
                           Who would you like to join?
                       </TextDiv>
+                      <TextField
+                                id="standard-multiline-flexible"
+                                label="Search Friend List "
+                                multiline
+                                rowsMax={2}
+                                value={searches}
+                                onChange={handleChangeSearch}
+                          />                      
                           <LeftRightSlider>
                               
                              
-                                  {FriendList.map((object, index) => (
+                                  {filteredName.map((object, index) => (
      
                                         <AvatarImage profile_picture={object.profile_picture}
                                                     first_name={object.first_name} 

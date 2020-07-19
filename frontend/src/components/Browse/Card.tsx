@@ -129,12 +129,8 @@ interface PropsCourse {
     Title: string;
     Id: string;
     ImageSource: string; 
-    Date: string;
-    Cuisine: String;
     EventType: String;
     Location : String;
-    FoodType: String;
-    MealType: String;
     Size: Number;
     Setting: string;
     PreparationTime: string; 
@@ -161,13 +157,11 @@ interface PropsCookroom {
   Setting: string;
   PreparationTime: string; 
   Price: Number;
-  Rating: Number;
-  IncludedInPremium:string;
-  TRatings: Number;
   Members:any;
   NumMembers:any; 
 };
 
+//this fucntion  is to create a  cookroom cards to be displayed and sends the patch request when the user clicks on join 
 export default function PublicCard(props:PropsCookroom) {
   const classes = useStyles();
   const theme = useTheme();
@@ -212,40 +206,45 @@ export default function PublicCard(props:PropsCookroom) {
         
         <Divider variant="middle" />
         <div className={classes.TabImage}>
-          <Table Date = {props.Date}  Cuisine = {props.Cuisine} EventType = {props.EventType} Location = {props.Location} FoodType = {props.FoodType} MealType = {props.MealType} Size = {props.Size} Setting = {props.Setting}/>
+          <Table Date = {props.Date}  Cuisine = {props.Cuisine} EventType = {props.EventType} Location = {props.Location} FoodType = {props.FoodType} PreparationTime = {props.PreparationTime} MealType = {props.MealType} Size = {props.Size} Setting = {props.Setting}/>
           <CardMedia
-          className={classes.cover}
-          image={props.ImageSource}
+            className={classes.cover}
+            image={props.ImageSource}
           />
         </div>
+        
+         {/*this checks wether the user has already joined the cookroom or sen the requerst to join, if not the n the button is enabled otherwise button is diabled*/}
+
         {props.Members.includes(userId)?
-          
-            <div className = {classes.icons}>
-              <ColorButton
-                      id = "Full"
-                      variant="contained"
-                      color="primary"
-                      onClick={handleJoin}
-                      className={classes.button}
-                      disabled={true}
-                      value={""}
-                    >
-                    Already joined
-                </ColorButton>  
-            </div>:props.Requested.includes(userId)?
-            <div className = {classes.icons}>
-              <ColorButton
-                      id = "Full"
-                      variant="contained"
-                      color="primary"
-                      onClick={handleJoin}
-                      className={classes.button}
-                      disabled={true}
-                      value={""}
-                    >
-                    Already Requested
-                </ColorButton>  
+          <div className = {classes.icons}>
+            <ColorButton
+              id = "Full"
+              variant="contained"
+              color="primary"
+              onClick={handleJoin}
+              className={classes.button}
+              disabled={true}
+              value={""}
+            >
+              Already joined
+            </ColorButton>  
+
           </div>:
+          props.Requested.includes(userId)?
+            <div className = {classes.icons}>
+              <ColorButton
+                id = "Full"
+                variant="contained"
+                color="primary"
+                onClick={handleJoin}
+                className={classes.button}
+                disabled={true}
+                value={""}
+              >
+                Already Requested
+              </ColorButton>  
+            </div>:
+
             <div className = {classes.icons}>
               <ColorButton
                     id = "joinButton"
@@ -264,6 +263,8 @@ export default function PublicCard(props:PropsCookroom) {
     </Card>
   );
 }
+
+//this fucntion  is to create a  course cards to be displayed and sends the patch request when the user clicks on join 
 
 export  function CourseCard(props:PropsCourse) {
   const classes = useStyles();
@@ -315,6 +316,7 @@ export  function CourseCard(props:PropsCourse) {
           image={props.ImageSource}
           />
         </div>
+        {/*this checks wether the user has already joined the cookroom or sen the requerst to join, if not the n the button is enabled otherwise button is diabled*/}
          {props.Members.includes(userId)?
             <div className = {classes.icons}>
               <ColorButton

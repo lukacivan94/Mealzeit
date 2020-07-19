@@ -11,6 +11,7 @@ import TabBar from '../TabBar';
 import Recipe from '../../../screens/Recipe/Recipe';
 import { History, LocationState } from 'history';
 
+import TextField from '@material-ui/core/TextField';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -118,6 +119,8 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
         const [acceptIcon, setAcceptIcon] = useState(acceptArr);
         const [acceptIconCourse, setAcceptIconCourse] = useState(acceptArr);
         const [allRecipeBool, setAllRecipeBool] = useState(acceptArr);
+        const [searches, setSearch] = React.useState<string>("");
+
     
         const userId = localStorage.getItem('userId');
         //console.log(userId);
@@ -154,6 +157,9 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
             }
             
         };
+        const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearch(event.target.value);
+          };
         const handleAddRecipeID = (id, index) => {
 
             if(isCourse){
@@ -171,6 +177,10 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
         const recipesArr : String[] = [];
         const recipesInfo : Array<Provider> = [];// Object[] = [];
 
+        const  filterTitle = (ftype) => ((ftype.recipe_title.toLowerCase().includes(searches.toLowerCase()))||(searches==""))
+        
+        const filteredRecipe = sharedRecipeObjectList.filter(filterTitle);
+            
         const [open, setOpen] = useState(false);
         const [recipeId, setRecipeId] = useState(recipesArr);
         const [recipeIdInfo, setRecipeIdInfo] = useState(recipesInfo);
@@ -258,10 +268,18 @@ const Menu = ({ isCourse, handleBack, handleSetRecipeIdList }: MenuProps & Injec
                         <Divider variant="middle" />
                         <EventDiv>
                             <TextSmallDiv>Public Recipes</TextSmallDiv>
+                            <TextField
+                                id="standard-multiline-flexible"
+                                label="Search Public Recipe"
+                                multiline
+                                rowsMax={2}
+                                value={searches}
+                                onChange={handleChangeSearch}
+                            />
                             <div className={classes.gridroot}>
                                 <Grid container spacing={2}>
                                 
-                                        {sharedRecipeObjectList.map((object, index) => (
+                                        {filteredRecipe.map((object, index) => (
                 
                                                 <Grid item xs={6}  key={index}>
                                                     <CardSharedOwn recipe_title={object.recipe_title} 
