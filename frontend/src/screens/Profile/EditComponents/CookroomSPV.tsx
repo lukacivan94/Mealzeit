@@ -149,7 +149,6 @@ export const CookroomSPV = (props: Props) => {
         if(changed) {
             axios.patch(`/cookrooms/${props.id}`, infoToPatch)
             .then(res => {
-                console.log("SUCCESS!!!!");
                 props.handleDialogClose();
             })
             .catch(error => {

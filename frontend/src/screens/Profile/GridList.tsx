@@ -66,9 +66,10 @@ export default function GridList(props: Props) {
   const cookroomArr : Array<CookroomProvider> = [];
   const courseArr : Array<CourseProvider> = [];
   const recipeArr : Array<RecipeProvider> = [];
-  const dates : String[] = [];
+
 
   // State specifications
+
   const [createdCookroomObjectList, setCreatedCookroomObjectList] = useState(cookroomArr);
   const [joinedCookroomObjectList, setJoinedCookroomObjectList] = useState(cookroomArr);
 
@@ -78,30 +79,28 @@ export default function GridList(props: Props) {
   const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(recipeArr);
   const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(recipeArr);
 
-  const [searches, setSearch] = useState<string>("");
-
   const userId = localStorage.getItem('userId');
 
   // When the component is mounted, axios calls is performed to get the information from backend
-  const reloadCreatedCookroom = (reload) => {
-		axios.get("/users/"+userId).then(response => {
-			response["data"]['user']['created_cookrooms'].map(
+  
+  const reloadCreatedCookroom = (data,reload) => {
+    if(reload) {
+      setCreatedCookroomObjectList(cookroomArr);
+    }; 
+    data['created_cookrooms'].map(
               val => {
                   axios.get("/cookrooms/"+val).then(response=> {
                     if(!response["data"]['cookroom']['is_cancelled']){
-                      if(reload) {
-                        setCreatedCookroomObjectList(cookroomArr);
-                      } 
                       setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookroom']] );                
                     }
             })}
           );
-		})
+		
 	};
 
-	const reloadJoinedCookroom = (reload) => {
-		axios.get("/users/"+userId).then(response => {
-				response["data"]['user']['joined_cookrooms'].map(
+	const reloadJoinedCookroom = (data) => {
+
+    data['joined_cookrooms'].map(
 	              val => {
 	                  axios.get("/cookrooms/"+val).then(response=> {
 	                    if(!response["data"]['cookroom']['is_cancelled']){
@@ -109,27 +108,23 @@ export default function GridList(props: Props) {
 	                    }
 	            })}
 	          );
-		})
 	};
-	const reloadCreatedCourse = (reload) => {
-		axios.get("/users/"+userId).then(response => {
-			response["data"]['user']['created_courses'].map(
+	const reloadCreatedCourse = (data,reload) => {
+    if(reload) {
+      setCreatedCoursesObjectList(courseArr);
+    };
+    data['created_courses'].map(
               val => {
                   axios.get("/courses/"+val).then(response=> {
                     if(!response["data"]['course']['is_cancelled']){
-                      if(reload) {
-                        setCreatedCoursesObjectList(courseArr);
-                      } 
                       setCreatedCoursesObjectList(createdCoursesObjectList => [...createdCoursesObjectList,response["data"]['course']] );
                     }
                   })}
           	);
-		})
 	};
 
-	const reloadJoinedCourse = (reload) => {
-		axios.get("/users/"+userId).then(response => {
-			response["data"]['user']['joined_courses'].map(
+	const reloadJoinedCourse = (data) => {
+    data['joined_courses'].map(
               val => {
                   axios.get("/courses/"+val).then(response=> {
                     if(!response["data"]['course']['is_cancelled']){
@@ -137,53 +132,56 @@ export default function GridList(props: Props) {
                     }
                     })}
           	);
-		})
 	};
-	const reloadCreatedRecipes = (reload) => {
-		axios.get("/users/"+userId).then(response => {
-      response["data"]['user']['created_recipes'].map(
+	const reloadCreatedRecipes = (data,reload) => {
+    if(reload) {
+      setCreatedRecipeObjectList(recipeArr);
+    };
+
+    data['created_recipes'].map(
         val => {
             axios.get("/recipes/"+val).then(response=> {
               if(!response["data"]['recipe']['is_cancelled']){
-                if(reload) {
-                  setCreatedRecipeObjectList(recipeArr);
-                }
                 setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipe']] );
               }
               })}
     );
-		})
 
 	};
 
-	const reloadSharedRecipes = (reload) => {
-		axios.get("/users/"+userId).then(response => {
+	const reloadSharedRecipes = () => {
 			axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(response => {
 	          setSharedRecipeObjectList(response['data']['recipes'])
 	      })
-		})
   };
   
   useEffect(() => {
-    reloadCreatedCookroom(0);
-    reloadJoinedCookroom(0);
-    reloadCreatedCourse(0);
-    reloadJoinedCourse(0);
-    reloadCreatedRecipes(0);
-    reloadSharedRecipes(0);
-
+    axios.get("/users/"+userId).then(response => {
+      reloadCreatedCookroom(response["data"]['user'], 0);
+      reloadJoinedCookroom(response["data"]['user']);
+      reloadCreatedCourse(response["data"]['user'], 0);
+      reloadJoinedCourse(response["data"]['user']);
+      reloadCreatedRecipes(response["data"]['user'],0);
+      reloadSharedRecipes();
+		});
   },[]);
 
   // reload the page after the patch request passes through
   const handleReloadByType = (event_type) => {
     if(event_type === "cookrooms") {
-      reloadCreatedCookroom(1);
+      axios.get("/users/"+userId).then(response => {
+        reloadCreatedCookroom(response["data"]['user'],1);
+      })
     }
     if(event_type === "courses") {
-      reloadCreatedCourse(1);
+      axios.get("/users/"+userId).then(response => {
+        reloadCreatedCourse(response["data"]['user'],1);
+      })
     }
     if(event_type === "recipes") {
-      reloadCreatedRecipes(1);
+      axios.get("/users/"+userId).then(response => {
+        reloadCreatedRecipes(response["data"]['user'],1);
+      })
     }
 
   };

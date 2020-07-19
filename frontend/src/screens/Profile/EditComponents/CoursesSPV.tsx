@@ -136,11 +136,10 @@ export const courseSPV = (props: Props) => {
             infoToPatch.push({propName: "is_included_in_premium", value: premium});
             changed=1;
         };
-        console.log(infoToPatch);
+
         if(changed) {
             axios.patch(`/courses/${props.id}`, infoToPatch)
             .then(res => {
-                console.log("SUCCESS!!!!");
                 props.handleDialogClose();
             })
             .catch(error => {
