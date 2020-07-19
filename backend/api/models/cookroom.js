@@ -15,10 +15,10 @@ const cookroomSchema = extendSchema(Event.schema, {
     requests: { type: Array }, // Array of users who requested to join the cookroom
     is_volunteering: { type: Boolean },
     required_items: { type: Array },
-    suggested_price: { 
+    suggested_price: {
         type: Number,
-        min: [0, "Minimum price is 0."], 
-        max: [200, "Maximum price is 200. You shouldn't be making money on this."], 
+        min: [0, "Minimum price is 0."],
+        max: [200, "Maximum price is 200. You shouldn't be making money on this."],
         default: 0
     }
 });
