@@ -21,6 +21,9 @@ const foodTypes = [
     { value: 'meat based', text: 'Meat based' }
 ];
 
+/** (✓)
+ * This is for validation in redux form for recipe form
+ */
 const validate = values => {
     const errors = { recipeTitle: '', ingredients: '' };
     const requiredFields = [
@@ -36,15 +39,24 @@ const validate = values => {
     return errors;
 };
 
+/** (✓)
+ * This is for validation ingredients field
+ */
 const validateIngredient = (value) => {
     return !value ? 'Required to add ingredient' : '';
 
 };
 
+/** (✓)
+ * This is for error modal 
+ */
 const Alert = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant='filled' {...props} />;
 };
 
+/** (✓)
+ * This functional components is for rendering text field in redux form fields
+ */
 const renderTextField = ({
     label,
     input,
@@ -65,6 +77,9 @@ const renderTextField = ({
         />
     );
 
+/** (✓)
+ * This functional components is for rendering error messages in redux form fields
+ */
 const renderFromHelper = ({ touched, error }) => {
     if (!(touched && error)) {
         return;
@@ -73,6 +88,9 @@ const renderFromHelper = ({ touched, error }) => {
     }
 };
 
+/** (✓)
+ * This functional components is for rendering select field in redux form fields
+ */
 const renderSelectField = ({
     input,
     label,
@@ -92,6 +110,9 @@ const renderSelectField = ({
         </FormControl>
     );
 
+/** (✓)
+ * This is for styling material-ui components
+ */
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -120,6 +141,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+/** (✓)
+ * These are styled components
+ */
 const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -138,19 +162,28 @@ interface RecipeProps {
     food: string;
     serving: string;
     ingredients: Object[];
+    modal?: any;
     setIngredients: Dispatch<SetStateAction<Object[]>>;
     handleBack();
 }
 
-const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngredients, ingredients }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
+/** (✓)
+ * This functional component is Redux Form for recipe page 
+ */
+const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngredients, ingredients, modal }: RecipeProps & InjectedFormProps<{}, RecipeProps>) => {
     const classes = useStyles();
 
     const [isWarningModalOpen, setWarningModal] = React.useState(false);
 
+    /** (✓)
+     * This methods handles deleting ids in ingredients
+     */
     const handleDeleteId = (ids) => {
         setIngredients((ingredients) => ingredients.filter((chip?: any) => chip.key !== ids));
     };
-
+    /** (✓)
+     * This methods handles adding food and serving in ingredients
+     */
     const handleIngredientAdd = () => {
         if (food && serving) {
             setIngredients((ingredients) => [...ingredients, { key: ingredients.length, label: food + ', ' + serving }]);
@@ -252,12 +285,20 @@ const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngred
                     </StyledFieldDiv>
                 </form>
                 <div className={classes.buttondiv}>
-                    <Button
+                    {
+                        modal
+                        ?
+                        null
+                        :
+                        <Button
                         onClick={handleBack}
                         className={classes.backButton}
-                    >
-                        RETURN
-                    </Button>
+                        >
+                            RETURN
+                        </Button>
+
+                    }
+                    
                     <Button variant='contained' style={{ backgroundColor: 'darkorange', color: 'white' }} onClick={handleSubmit}>
                         Next
                     </Button>
@@ -267,6 +308,10 @@ const RecipeForm = ({ handleSubmit, handleBack, food, serving, change, setIngred
     );
 };
 
+/** (✓)
+ * This functional component is Redux Form for recipe page with validations 
+ * Connect is used for reaching values in recipe redux form
+ */
 const selector = formValueSelector('recipeForm');
 
 const mapStateToProps = (state) => ({

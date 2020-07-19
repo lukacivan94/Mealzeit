@@ -6,6 +6,10 @@ import Paper from '@material-ui/core/Paper';
 
 import Screen from '../../components/Screen/Screen';
 
+/*
+* Mission and Goal statement of MealZeit; what we stand for as a platform!
+*/
+
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',

@@ -30,9 +30,6 @@ interface Props {
 
 export default function  Avatars(props:Props){
     const classes = useStyles();
-    //console.log(props.imageSource);
-    // const listOfImages = importAll(require.context('../../assets/images/Invited/', false, /\.(png|jpe?g|svg)$/));
-    //console.log(listOfImages)
     return (
         <div className = {classes.ParentDiv}> 
                 <Avatar alt={props.name} src={props.Invited}/>

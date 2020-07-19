@@ -6,7 +6,12 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+/*
+* Collapsible: Component inside card event, which is an accordian. It can be expanded to
+* reveal more information.
+*/
 
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     heading: {

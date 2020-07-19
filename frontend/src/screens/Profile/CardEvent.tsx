@@ -1,5 +1,6 @@
 import React , { useEffect, useState} from 'react';
-import axios from '../../axios';
+import moment from 'moment';
+
 import { Theme, createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -7,13 +8,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Paper from '@material-ui/core/Paper';
-
-import InteractiveList from './InteractiveList';
-import Collapsible from './Collapsible';
-import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -21,13 +17,29 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import WarningIcon from '@material-ui/icons/Warning';
 import Button from '@material-ui/core/Button';
-
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
+import CloseIcon from '@material-ui/icons/Close';
+
+import axios from '../../axios';
+import CookroomSPV from './EditComponents/CookroomSPV';
+import CoursesSPV from './EditComponents/CoursesSPV';
+import RecipesSPV from './EditComponents/RecipesSPV';
+import InteractiveList from './InteractiveList';
+import Collapsible from './Collapsible';
+
+/*
+* CardEvent: Event is cookroom, courses or recipes, and the data from the grid is wrapped in the card
+* to show inner components with data. Controls for add/delete request, delete/edit event is performed here.
+* Dialogue is used to show all the editable components.
+*/
 
 
+// Basic Styling specification of the all the components
 const theme = createMuiTheme({
     palette: {
       primary: orange,
@@ -41,6 +53,7 @@ const Transition = React.forwardRef(function Transition(
   ) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
+
   
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -132,11 +145,21 @@ const useStyles = makeStyles((theme: Theme) =>
           marginTop: theme.spacing(2),
         },
       },
+      appBar: {
+        position: 'relative',
+        backgroundColor: 'darkorange',
+        marginBottom: '10px',
+      },
+    toolbar: {
+        minHeight: 80,
+      },
   }),
 );
 
+
+// Interface specification for the exported default component
 interface Props {
-    type: String;
+    type: String;       // type: cookrooms, courses, recipes
     joined:Number;
     member?: any;
     date?: any;
@@ -144,22 +167,22 @@ interface Props {
     request?: any;
     numberOfMembers?: Number;
     main_id?: any;
-    performCancelDelete?: any;
+    performCancelDelete?: any; // function to delete or cancel an event
 
     food_type?: any;
     cuisine_type?: any;
     preparation_time?: any;
+    reloadEvent?: any;  // function to reload an event after patch
 }
 
-
+// Interface specification for the declared constant
 interface Provider {
     _id: string,
     full_name: string
   }
 
 
-export default function MediaControlCard(props: Props) {
-    // type: cookrooms, courses, recipes
+export default function MediaControlCard(props: Props) {   
   const classes = useStyles();
   const theme = useTheme();
 
@@ -167,7 +190,9 @@ export default function MediaControlCard(props: Props) {
   const [memberName, setMemberName] = useState(obj);
   const [requestName, setRequestName] = useState(obj);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
+// When the component is mounted, axios calls is performed to get the information from backend
   useEffect(() => {
       if(props.member){
         props.member.map(
@@ -189,12 +214,11 @@ export default function MediaControlCard(props: Props) {
 
     },[]);
 
-
+    // axios calls to patch events: adding or removing the request from a user to another user
     const handleAddRequestToMember = (mid, fullName) => {
         
         axios.patch(`/${props.type}/accreq/${props.main_id}/${mid}/`)
             .then(res => {
-                console.log(res);
                 setRequestName(requestName.filter(item => item._id !== mid));
                 setMemberName(memberName=>[...memberName, {_id:mid, full_name: fullName}]);
             })
@@ -209,7 +233,6 @@ export default function MediaControlCard(props: Props) {
     const handleRejectRequestToMember =(mid) => {
         axios.patch(`/${props.type}/rejectreq/${props.main_id}/${mid}/`)
             .then(res => {
-                console.log(res);
                 setRequestName(requestName.filter(item => item._id !== mid));
             })
             .catch(error => {
@@ -222,22 +245,30 @@ export default function MediaControlCard(props: Props) {
     };
 
 
+    // Controlling opening and closing of modals and dialouges
     const handleCancelDelete = () => {
         setOpen(false);
         props.performCancelDelete(props.type, props.main_id);
-
     };
-
     const handleClickOpen = () => {
         setOpen(true);
       };
-      const handleClickClose = () => {
+    const handleClickClose = () => {
         setOpen(false);
-      };
+    };
+    const handleEditClickOpen = () => {
+        setEditOpen(true);
+    };
+    const handleEditClose = () => {
+        setEditOpen(false);
+        props.reloadEvent(props.type);
+    };
+    const handleEditCancel = () => {
+        setEditOpen(false);
+    };
 
 
-
-
+// based on the type specifications, the buttons or components are shown and actions are performed
   return (
     <Card className={classes.root}>
         <div className={classes.info} >
@@ -256,7 +287,7 @@ export default function MediaControlCard(props: Props) {
                             {
                                     (props.type === "courses")
                                     ?
-                                    <Collapsible heading="Date">
+                                    <Collapsible heading="Dates">
                                         <ul>
                                             {
                                             props.date.map((value, index) => (<li key={index}> {moment(value).format("YYYY-MM-DD HH:mm")} </li>))
@@ -429,10 +460,40 @@ export default function MediaControlCard(props: Props) {
                         </Dialog>
                     </MuiThemeProvider>
                     <Tooltip title="edit" placement="bottom">
-                        <IconButton edge="end" aria-label="edit">
+                        <IconButton edge="end" aria-label="edit" onClick={handleEditClickOpen}>
                             <EditIcon className={classes.icon1}/>
                         </IconButton>
                     </Tooltip>
+                    <Dialog fullScreen open={editOpen} onClose={handleEditClose} TransitionComponent={Transition}>
+                        <AppBar className={classes.appBar}>
+                        <Toolbar className={classes.toolbar}>
+                            <IconButton edge="start" color="inherit" onClick={handleEditCancel} aria-label="close">
+                            <CloseIcon />
+                            </IconButton>
+                        </Toolbar>
+                        </AppBar>
+                        {
+                            (props.type === 'cookrooms')
+                            ?
+                            <CookroomSPV id ={props.main_id} handleDialogClose={handleEditClose}/>
+                            :
+                            null
+                        }
+                        {
+                            (props.type === 'courses')
+                            ?
+                            <CoursesSPV id ={props.main_id} handleDialogClose={handleEditClose}/>
+                            :
+                            null
+                        }
+                        {
+                            (props.type === 'recipes')
+                            ?
+                            <RecipesSPV id ={props.main_id} handleDialogClose={handleEditClose}/>
+                            :
+                            null
+                        }
+                    </Dialog>
                     
                 </div>
             }

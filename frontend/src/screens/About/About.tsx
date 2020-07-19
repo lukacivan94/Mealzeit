@@ -9,6 +9,12 @@ import ashish from '../../assets/images/Team/ashish.png';
 import burak from '../../assets/images/Team/burak.png';
 import ivan from '../../assets/images/Team/ivan.png';
 
+
+/*
+* Information about the Team displayed in about page 
+*/
+
+// Basic Styling of the all the components
 const useStyles = makeStyles((theme) => ({
     root: {
         height: '100%',
@@ -57,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const About = () => {
-    const classes = useStyles();
 
+    const classes = useStyles();
 
     return (
         <Screen>

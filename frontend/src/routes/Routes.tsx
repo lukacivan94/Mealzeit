@@ -10,9 +10,13 @@ import BrowsePage from '../screens/Browse/BrowsePage';
 import Profile from '../screens/Profile/ProfilePage';
 import About from '../screens/About/About';
 import MissionVision from '../screens/About/Mission';
+import RecipesSPV from '../screens/Profile/EditComponents/RecipesSPV';
 
 const token = localStorage.getItem('jwtToken');
 
+/** (✓)
+ * This functional component handles routes in order to navigate in app
+ */
 const Routes = () => (
     <Router>
         <Switch>
@@ -26,11 +30,15 @@ const Routes = () => (
             <PrivateRoute path='/profile' component={Profile} />
             <Route path='/about' component={About} />
             <Route path='/mission' component={MissionVision} />
+            <Route path='/cookroomspv' component={RecipesSPV} />
             <Route render={() => <h1>404 Page not found</h1>} />
         </Switch>
     </Router>
 );
 
+/** (✓)
+ * This functional component handles redirection in routes if user is not authenticated
+ */
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
         <Route

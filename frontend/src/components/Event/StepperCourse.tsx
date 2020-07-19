@@ -20,8 +20,13 @@ import Menu from './EventRecipesSelection/Menu';
 import MoreInfo from './EventAdditionalInfo/MoreInfo';
 import axios from '../../axios';
 
+  /** (✓)
+   *  The Stepper component for the course: handles calls to helper components to extract information from each
+   * step and uses axios call to send POST request to backend to create the course.
+   * The stepper is used to guide the user and help them to understand how the event is structured.
+   */
 
-
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
@@ -75,6 +80,8 @@ const theme = createMuiTheme({
   }
 });
 
+
+// Overriding the default styling for custom design
 const ColorButton = withStyles((theme) => ({
   root: {
     color: theme.palette.getContrastText(orange[500]),
@@ -86,13 +93,17 @@ const ColorButton = withStyles((theme) => ({
 }))(Button);
 
 
+
+// Interface specification for the exported default component and constants
 interface Props extends RouteComponentProps {
   userId: string;
   history: History<LocationState>;
 }
 
 
-
+/** (✓)
+ * This function handles four steps of the stepper to finish configuring cookroom with all the state specifications.
+ */
 const HorizontalLinearStepper=  (props: Props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -135,7 +146,6 @@ const HorizontalLinearStepper=  (props: Props) => {
   };
 
   const handleJoinMembers = (values) => {
-    console.log(courseFirstStepValues);
     const JoinData = {
         price_of_course: values.priceOfCourse || -1,
         number_of_members: values.numberOfMembers || -1,
@@ -183,7 +193,6 @@ const HorizontalLinearStepper=  (props: Props) => {
         suggested_price: values.suggestedPrice,
         userId: userId
     };
-    console.log(courseRequest);
     
     axios.post('/courses/', courseRequest)
         .then(res => {

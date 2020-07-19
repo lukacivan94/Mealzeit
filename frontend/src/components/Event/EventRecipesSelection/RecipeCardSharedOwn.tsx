@@ -7,7 +7,12 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
+ /** (✓)
+  * This shows the OWN and SHARED recipes on a card with the relevant information shown.
+  * Can select and cancel the recipe.
+  */
 
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -79,6 +84,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
+
+// Interface specification for the exported default component and constants
 
 interface Props {
     recipe_title: any;

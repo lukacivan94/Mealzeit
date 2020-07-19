@@ -57,18 +57,28 @@ const useStyles = makeStyles((theme) => ({
     text: {
         paddingBottom: '4px',
     },
+    alertText: {
+        margin: '20% 30%',
+        backgroundColor: 'white',
+        padding: '10% 15%',
+        textAlign: 'center',
+        color: 'darkorange',
+        textTransform: 'capitalize',
+        fontSize: 'x-large',
+        fontFamily: 'cursive',
+    }
 }));
 
-const StyledText = styled.p`
-    margin: 20% 30%;
-    background-color: white;
-    padding: 10% 15%;
-    text-align: center;
-    color: darkorange;
-    text-transform: capitalize;
-    font-size: x-large;
-    font-family: cursive;
-`;
+// const StyledText = styled.p`
+//     margin: 20% 30%;
+//     background-color: white;
+//     padding: 10% 15%;
+//     text-align: center;
+//     color: darkorange;
+//     text-transform: capitalize;
+//     font-size: x-large;
+//     font-family: cursive;
+// `;
 
 interface Props {
     history: History<LocationState>;
@@ -116,7 +126,7 @@ export const HomePage = (props: Props) => {
                 open={isModalOpen}
                 onClose={handleModalClose}
             >
-                <StyledText>You must be signed in</StyledText>
+                <div className={classes.alertText}>You must be signed in</div>
             </Modal>
         </Screen>
     );

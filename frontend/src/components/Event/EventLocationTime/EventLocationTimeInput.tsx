@@ -29,6 +29,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
 
+ /** (✓)
+  * Handles two main information common to both course and cookroom: Location and Date
+  * Cookroom: Only single date can be selected!
+  * Course: Multiple dates can be selected!
+  */
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
     button: {
         background: '#F88805',
@@ -89,6 +96,8 @@ const theme = createMuiTheme({
   },
 });
 
+// validation of the fields of the event!
+
 const required = value => value ? undefined : 'Required';
 
 const validate = values => {
@@ -106,7 +115,7 @@ const validate = values => {
 };
 
 
-
+// rendering the search bar
 const renderSearchBar = ({
     label,
     input,
@@ -134,7 +143,7 @@ const renderSearchBar = ({
 };
 
 
-
+// rendering list of dates for the course
 const renderListOfDates = ({ fields, meta: { error } }) => {
     
     const classes = useStyles();
@@ -174,6 +183,8 @@ const renderListOfDates = ({ fields, meta: { error } }) => {
   );
 };
 
+// rendering single date for cookroom but used in list of dates for course.
+
 const renderDateTime = ({
     label,
     input,
@@ -201,7 +212,7 @@ const renderDateTime = ({
 };
 
 
-
+// Interface specification for the exported default component and constants
 interface LocationDateProps {
     isCourse: boolean;
     handleBack();

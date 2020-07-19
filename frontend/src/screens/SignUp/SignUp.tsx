@@ -6,6 +6,9 @@ import Modal from '@material-ui/core/Modal';
 import styled from 'styled-components';
 import { History, LocationState } from 'history';
 
+/** (✓)
+ * These are styled components for customizing styles
+ */
 const StyledText = styled.p`
     margin: 20% 30%;
     background-color: white;
@@ -43,6 +46,10 @@ interface SignupProps {
     history: History<LocationState>;
 }
 
+/** (✓)
+ * This class handles sign-up
+ */
+
 export default class Signup extends Component<SignupProps, SignupState> {
 
     constructor(props) {
@@ -53,6 +60,11 @@ export default class Signup extends Component<SignupProps, SignupState> {
             image: ''
         };
     }
+
+    /** (✓)
+     * This function handles signup and calls axios post request
+     * After successful call , it opens a modal for success message
+     */
 
     handleSignup = (values) => {
 
@@ -86,16 +98,25 @@ export default class Signup extends Component<SignupProps, SignupState> {
             });
     }
 
+    /** (✓)
+     * This function handles modal close and navigates to sign in afterwards
+     */
     handleModalClose = () => {
         this.setState({ isModalOpen: false, modalText: '' }, () => {
             this.props.history.push('/sign-in');
         });
     }
 
+    /** (✓)
+     * This function save base64 string to state
+     */
     handleImage = (base64Image) => {
         this.setState({ image: base64Image });
     }
 
+    /** (✓)
+     * Render method consists of SignUpForm and Modal for fail signup request
+     */
     render() {
         return (
             <Screen>

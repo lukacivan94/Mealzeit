@@ -19,6 +19,17 @@ import Radio from '@material-ui/core/Radio';
 import AlertMessage from '../AlertMessage';
 import TabBar from '../TabBar';
 
+
+ /** (✓)
+  *  Join page of the cookroom where the information can be filled by the user and selection can be made.
+  * selecting friends from the friend list and allowing the other non friends to join.
+  * Note that radio selection for the user to let the non friends join automatically without any consent from
+  * the creator of the cookroom is noted here...either can join and no actions of accepting the request .. or
+  * each request should be accepted is handled here.
+  */
+
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -67,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
         }
   }));
 
-
+// validation of the fields of the event!
   const validate = values => {
     const errors = { numberOfMembers: '', instantJoin: '', invitedFriends:'' };
     const requiredFields = [
@@ -92,6 +103,8 @@ const useStyles = makeStyles((theme) => ({
 const RangeMember = value => value && (Number(value) < 0 || Number(value)>30) ? 'Invalid number of members less than or equal to 30!' : undefined;
 const required = value => value ? undefined : 'Required';
 
+
+// helper component to render radio selection input
 const RadioSelect = ({ input, touched, error, ...rest}) => {
     const classes = useStyles();
 
@@ -108,6 +121,7 @@ const RadioSelect = ({ input, touched, error, ...rest}) => {
     );
   }
 
+  // Interface specification for the exported default component and constants
 interface JoinPageProps {
     handleBack();
     handleSubmitValues?: any;
@@ -156,6 +170,7 @@ const JoinPageRoom = ({ handleSubmit, handleBack, handleSubmitValues }: JoinPage
           setFriendIdList(friendIdList.filter(item => item !== id));
         };
         const handleAddFriend = (id, name) => {
+            setFriendIdList(friendIdList.filter(item => item !== id));
             setFriendIdList(friendIdList=>[...friendIdList, id]);
         };  
         const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {

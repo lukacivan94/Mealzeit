@@ -21,9 +21,14 @@ import { Container } from '@material-ui/core';
 const languages = [
     'English',
     'German',
-    'Turkish'
+    'Turkish',
+    'Serbian',
+    'Nepali'
 ];
 
+/** (✓)
+ * This is for validation in redux form for sign-up
+ */
 const validate = values => {
     const errors = { email: '' };
     const requiredFields = [
@@ -48,11 +53,17 @@ const validate = values => {
     return errors;
 };
 
+/** (✓)
+ * This is for validation phone number field
+ */
 const validatePhoneNumber = value =>
     value && !/^(0|[1-9]{3}[-][0-9]{3}[-][0-9]{4})$/i.test(value)
         ? 'Invalid phone number, must be 10 digits'
         : undefined;
 
+/** (✓)
+ * This is for normalizing phone number field
+ */
 const normalizePhone = value => {
     if (!value) {
         return value
@@ -69,7 +80,11 @@ const normalizePhone = value => {
         6,
         10
     )}`
-}
+};
+
+/** (✓)
+ * This functional components is for rendering text field in redux form fields
+ */
 const renderTextField = ({
     label,
     input,
@@ -89,6 +104,9 @@ const renderTextField = ({
         />
     );
 
+/** (✓)
+ * This functional components is for rendering radio button in redux form fields
+ */
 const radioButton = ({ input, ...rest }) => (
     <>
         <StyledFieldDiv>
@@ -106,6 +124,9 @@ const radioButton = ({ input, ...rest }) => (
     </>
 );
 
+/** (✓)
+ * This functional components is for rendering checkbox in redux form fields
+ */
 const renderCheckbox = ({ input, label }) => (
     <StyledRadioField>
         <FormControlLabel
@@ -123,6 +144,9 @@ const renderCheckbox = ({ input, label }) => (
     </StyledRadioField>
 );
 
+/** (✓)
+ * This functional components is for rendering image field in redux form fields
+ */
 const renderImageField = ({ classesButton, onDropMethod, value, ...custom }) => (
     <div>
         <StyledInputLabel>Profile Picture</StyledInputLabel>
@@ -135,6 +159,9 @@ const renderImageField = ({ classesButton, onDropMethod, value, ...custom }) => 
     </div>
 );
 
+/** (✓)
+ * These are styled components
+ */
 const StyledInputLabel = styled(InputLabel)`
     margin-bottom: 10px;
 `;
@@ -153,6 +180,9 @@ const StyledDiv = styled.div`
     flex-direction: column;
 `;
 
+/** (✓)
+ * This is for styling material-ui components
+ */
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         paper: {
@@ -183,10 +213,16 @@ interface SignUpProps {
     handleImage(imageText: string);
 }
 
+/** (✓)
+ * This functional component is Redux Form for sign-up page 
+ */
 const SignUpForm = (props: SignUpProps & InjectedFormProps<{}, SignUpProps>) => {
     const { handleSubmit, pristine, reset, submitting } = props;
     const classes = useStyles();
 
+    /** (✓)
+     * This methods handles image upload and converts images into base64 string
+     */
     const onDrop = (event) => {
         const acceptedFile = event.target.files[0];
 
@@ -323,6 +359,10 @@ const SignUpForm = (props: SignUpProps & InjectedFormProps<{}, SignUpProps>) => 
     );
 };
 
+/** (✓)
+ * This functional component is Redux Form for login page with validations 
+ * Some fileds like languages and date of birth are initial values in redux-form
+ */
 export default reduxForm<{}, SignUpProps>({
     form: 'signUpForm', // a unique identifier for this form
     validate,

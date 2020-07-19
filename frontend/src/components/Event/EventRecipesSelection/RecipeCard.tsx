@@ -7,7 +7,16 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
+/** (✓)
+  * Card to load the recipes, With all the information of the recipe like food type cuisine type,
+  * preparation time, title, ....
+  * NOTE
+  * This card has the recipe information from the recipe creation button:
+  * Can only delete the recipe from selection but the recipe is available to use later.
+  */
 
+
+  // Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -80,6 +89,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+
+// Interface specification for the exported default component and constants
 interface Props {
     recipe_title: any;
     food_type: any;

@@ -4,6 +4,18 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CardEvent from './CardEvent';
 
+/*
+* GridList: This component uses axios calls to get all the information of the user and then load it
+* in the state as a list. When a component changes, the state also changes and connect to the backend
+* via patch request to cancel/leave/edit an event.
+*
+*
+* created/joined courses/cookrooms, created recipes and shared recipes all are loaded in the grid format
+* and the information from backend is passed to the card.
+*/
+
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -11,11 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
+
+// Interface specification for the exported component
 interface Props {
   type: String;
   joined:Number;
 }
 
+// Interface specification for the declared constant
 interface CookroomProvider {
   _id: any;
   members: any;
@@ -43,6 +58,7 @@ interface RecipeProvider {
 }
 
 
+
 export default function GridList(props: Props) {
   const classes = useStyles();
 
@@ -51,11 +67,8 @@ export default function GridList(props: Props) {
   const courseArr : Array<CourseProvider> = [];
   const recipeArr : Array<RecipeProvider> = [];
   const dates : String[] = [];
-  // const coursesId : String[] = [];
 
-  
-
-  // const [createdCoursesIdList, //] = useState(coursesId);
+  // State specifications
   const [createdCookroomObjectList, setCreatedCookroomObjectList] = useState(cookroomArr);
   const [joinedCookroomObjectList, setJoinedCookroomObjectList] = useState(cookroomArr);
 
@@ -65,59 +78,119 @@ export default function GridList(props: Props) {
   const [createdRecipeObjectList, setCreatedRecipeObjectList] = useState(recipeArr);
   const [sharedRecipeObjectList, setSharedRecipeObjectList] = useState(recipeArr);
 
+  const [searches, setSearch] = useState<string>("");
+
   const userId = localStorage.getItem('userId');
 
-  useEffect(() => {
-      axios.get("/users/"+userId).then(response => {
-          //setCreatedCoursesIdList(response["data"]['user']['created_courses']);
-          response["data"]['user']['created_courses'].map(
+  // When the component is mounted, axios calls is performed to get the information from backend
+  const reloadCreatedCookroom = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+			response["data"]['user']['created_cookrooms'].map(
+              val => {
+                  axios.get("/cookrooms/"+val).then(response=> {
+                    if(!response["data"]['cookroom']['is_cancelled']){
+                      if(reload) {
+                        setCreatedCookroomObjectList(cookroomArr);
+                      } 
+                      setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookroom']] );                
+                    }
+            })}
+          );
+		})
+	};
+
+	const reloadJoinedCookroom = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+				response["data"]['user']['joined_cookrooms'].map(
+	              val => {
+	                  axios.get("/cookrooms/"+val).then(response=> {
+	                    if(!response["data"]['cookroom']['is_cancelled']){
+	                      setJoinedCookroomObjectList(joinedCookroomObjectList => [...joinedCookroomObjectList,response["data"]['cookroom']] );
+	                    }
+	            })}
+	          );
+		})
+	};
+	const reloadCreatedCourse = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+			response["data"]['user']['created_courses'].map(
               val => {
                   axios.get("/courses/"+val).then(response=> {
                     if(!response["data"]['course']['is_cancelled']){
+                      if(reload) {
+                        setCreatedCoursesObjectList(courseArr);
+                      } 
                       setCreatedCoursesObjectList(createdCoursesObjectList => [...createdCoursesObjectList,response["data"]['course']] );
                     }
                   })}
-          );
-          response["data"]['user']['joined_courses'].map(
+          	);
+		})
+	};
+
+	const reloadJoinedCourse = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+			response["data"]['user']['joined_courses'].map(
               val => {
                   axios.get("/courses/"+val).then(response=> {
                     if(!response["data"]['course']['is_cancelled']){
                       setJoinedCoursesObjectList(joinedCoursesObjectList => [...joinedCoursesObjectList,response["data"]['course']] );
                     }
                     })}
-          );
-          response["data"]['user']['created_cookrooms'].map(
-              val => {
-                  axios.get("/cookrooms/"+val).then(response=> {
-                    if(!response["data"]['cookroom']['is_cancelled']){
-                      setCreatedCookroomObjectList(createdCookroomObjectList => [...createdCookroomObjectList,response["data"]['cookroom']] );                    
-                    }
-                    })}
-          );
-          response["data"]['user']['joined_cookrooms'].map(
-              val => {
-                  axios.get("/cookrooms/"+val).then(response=> {
-                    if(!response["data"]['cookroom']['is_cancelled']){
-                      setJoinedCookroomObjectList(joinedCookroomObjectList => [...joinedCookroomObjectList,response["data"]['cookroom']] );
-                    }
-                    })}
-          );
-          response["data"]['user']['created_recipes'].map(
-              val => {
-                  axios.get("/recipes/"+val).then(response=> {
-                    if(!response["data"]['recipe']['is_cancelled']){
+          	);
+		})
+	};
+	const reloadCreatedRecipes = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+      response["data"]['user']['created_recipes'].map(
+        val => {
+            axios.get("/recipes/"+val).then(response=> {
+              if(!response["data"]['recipe']['is_cancelled']){
+                if(reload) {
+                  setCreatedRecipeObjectList(recipeArr);
+                }
+                setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipe']] );
+              }
+              })}
+    );
+		})
 
-                      setCreatedRecipeObjectList(createdRecipeObjectList => [...createdRecipeObjectList,response["data"]['recipe']] );
-                    }
-                    })}
-          );
-      })
-      axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(response => {
-          setSharedRecipeObjectList(response['data']['recipes'])
-      })
-    },[]);
+	};
 
-    const handleCancelAndDelete =(type_room, type_id, event_joined) => {
+	const reloadSharedRecipes = (reload) => {
+		axios.get("/users/"+userId).then(response => {
+			axios.get("https://mealzeit-recipe-api.herokuapp.com/recipes").then(response => {
+	          setSharedRecipeObjectList(response['data']['recipes'])
+	      })
+		})
+  };
+  
+  useEffect(() => {
+    reloadCreatedCookroom(0);
+    reloadJoinedCookroom(0);
+    reloadCreatedCourse(0);
+    reloadJoinedCourse(0);
+    reloadCreatedRecipes(0);
+    reloadSharedRecipes(0);
+
+  },[]);
+
+  // reload the page after the patch request passes through
+  const handleReloadByType = (event_type) => {
+    if(event_type === "cookrooms") {
+      reloadCreatedCookroom(1);
+    }
+    if(event_type === "courses") {
+      reloadCreatedCourse(1);
+    }
+    if(event_type === "recipes") {
+      reloadCreatedRecipes(1);
+    }
+
+  };
+
+
+  // cancelling or deleting calls for axios
+  const handleCancelAndDelete =(type_room, type_id, event_joined) => {
       axios.patch(`/${type_room}/cancel/${type_id}/`)
           .then(res => {
               if(type_room == "cookrooms") {
@@ -159,6 +232,8 @@ export default function GridList(props: Props) {
         });
 };
 
+
+
     
  
   return (
@@ -178,7 +253,8 @@ export default function GridList(props: Props) {
                                       numberOfMembers={object.number_of_members} 
                                       request={object.requests}
                                       main_id={object._id}
-                                      performCancelDelete={handleCancelAndDelete}/>
+                                      performCancelDelete={handleCancelAndDelete}
+                                      reloadEvent={handleReloadByType}/>
                       </Grid>
                   )})
               :
@@ -217,7 +293,8 @@ export default function GridList(props: Props) {
                                       numberOfMembers={object.number_of_members}
                                       main_id={object._id}
                                       request={object.requests}
-                                      performCancelDelete={handleCancelAndDelete}/>
+                                      performCancelDelete={handleCancelAndDelete}
+                                      reloadEvent={handleReloadByType}/>
 
                       </Grid>
                   )})
@@ -256,7 +333,8 @@ export default function GridList(props: Props) {
                                       title={object.recipe_title}
                                       main_id={object._id}
                                       preparation_time={object.preparation_time}
-                                      performCancelDelete={handleCancelAndDelete}/>
+                                      performCancelDelete={handleCancelAndDelete}
+                                      reloadEvent={handleReloadByType}/>
                       </Grid>
                   )})
               :

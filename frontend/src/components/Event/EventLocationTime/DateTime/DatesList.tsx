@@ -3,6 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 
+
+ /** (✓)
+* Common component used throughout to show date list or any data in chips.
+*/
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -17,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 export default function DatesList({ dates, id }) {
   const classes = useStyles();
 
@@ -24,7 +31,6 @@ export default function DatesList({ dates, id }) {
     id(chipToDelete.key);
   };
   
-
   return (
     <Paper elevation={0} component="ul" className={classes.root}>
       {dates.map((data) => {

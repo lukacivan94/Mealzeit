@@ -95,7 +95,7 @@ const Profile = (props: Props) => {
     <div className={classes.root}>
       <Avatar className={classes.profile} src={props.imageSource} alt={props.altText} aria-controls='simple-menu' aria-haspopup='true' onClick={handleClick} />
       <StyledMenu
-        id='simple-menu'
+        id='simple-menu-1'
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}

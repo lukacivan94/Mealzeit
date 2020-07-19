@@ -4,7 +4,12 @@ import { Alert } from '@material-ui/lab';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 
+ /** (✓)
+  * Common component used throughout to show alert message when the validation test fails.
+  */
 
+
+// Basic Styling specification of the all the components
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

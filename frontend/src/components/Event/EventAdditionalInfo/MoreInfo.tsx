@@ -16,7 +16,14 @@ import Radio from '@material-ui/core/Radio';
 import AlertMessage from '../AlertMessage';
 import TabBar from '../TabBar';
 
+/** (✓)
+* Last page in the stepper which returns a component to fill the more information relevant to the Event
+* Such as title, description => common to both course and cookroom.
+* But extra information such as is volunteering, suggested price and required item field appears for cookroom only.
+*/
 
+
+// Basic Styling specification of the all the components
 const theme = createMuiTheme({
     palette: {
       primary: orange,
@@ -49,11 +56,12 @@ const theme = createMuiTheme({
         },
   }));
 
+  // validation of the fields of the event!
 const required = value => value ? undefined : 'Required';
 const Range = value => value && (Number(value) < 0 || Number(value)>5000) ? 'Invalid Price, enter from 0 to 5000!': undefined;
 
 const validate = values => {
-    const errors = { suggestedPrice: '' };
+    const errors = { title:'', description:'', isVolunteering:'', requiredItems:'', suggestedPrice: '' };
     const requiredFields = [
         'title',
         'description',
@@ -87,6 +95,8 @@ const RadioSelect = ({ input, ...rest }) => {
   );
 };
 
+
+// Interface specification for the exported default component and constants
 interface MoreInfoProps {
   isCourse: boolean;
   handleBack();
@@ -174,7 +184,7 @@ const MoreInfo = ({ isCourse, handleBack, handleSubmit }: MoreInfoProps & Inject
 }
 
 
-
+// render component for the fields in the event
 const renderTitle = ({
     label,
     input,

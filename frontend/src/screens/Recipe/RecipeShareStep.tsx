@@ -8,6 +8,7 @@ import { Field, reduxForm, InjectedFormProps, formValueSelector } from 'redux-fo
 import { connect } from 'react-redux';
 import axios from '../../axios';
 import { base64ToImage } from '../../utils/imageUtils';
+import FriendImage from '../../components/Event/EventMembers/FriendImage';
 
 const StyledFieldDiv = styled.div`
     margin-bottom: 10px;
@@ -160,6 +161,14 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
             );
     };
 
+    const handleRemoveFriend = (id) => {
+        setSelectedFriends(selectedFriends.filter(friend => friend._id !== id));
+    };
+
+    const handleAddFriend = (id, name) => {
+        setSelectedFriends(selectedFriends => [...selectedFriends, id]);
+    };
+
     const filteredFriends = getFilteredFriends();
 
     return (
@@ -193,7 +202,15 @@ const RecipeShareStep = ({ isPrivate, handleBack, handleSubmit, selectedFriends,
                             {filteredFriends && filteredFriends.map((friend, index) => {
                                 return (
                                     <StyledFriendDiv>
-                                        <AvatarImage src={friend.profile_picture ? base64ToImage(friend.profile_picture) : mealZeitLogo} key={index} alignItems='center' justifyContent='center' onClick={() => handleSelectedFriends(index)} />
+                                        <FriendImage
+                                            profile_picture={friend.profile_picture}
+                                            first_name={friend.first_name}
+                                            last_name={friend.last_name}
+                                            _id={friend._id}
+                                            key={index}
+                                            delId={handleRemoveFriend}
+                                            addId={handleAddFriend}
+                                        />
                                         <p>{friend.first_name + ' ' + friend.last_name}</p>
                                     </StyledFriendDiv>
                                 );
