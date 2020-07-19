@@ -342,7 +342,7 @@ export default function MultipleSelect(props:Props) {
                   <Select native defaultValue="" id="Mealtype" value= {selectedMealType}>
                       <option aria-label="None" value=""/>
                       <option value={"Breakfast"}>Breakfast</option>
-                      <option value={"Lunch"}>Brunch</option>
+                      <option value={"Brunch"}>Brunch</option>
                       <option value={"Lunch"}>Lunch</option>
                       <option value={"Dinner"}>Dinner</option>
                   </Select>
